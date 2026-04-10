@@ -78,13 +78,13 @@ Legend: **Y** = supported in practice, **P** = partial / edge-case risk, **N** =
 | Item | Status |
 |------|--------|
 | Xcode project | Y — primary |
-| SwiftPM `Package.swift` | **Started** — `swift build` / `swift test`; `FountainCore` / `FountainHTML` / umbrella `Fountain`; CI on `master` via GitHub Actions |
+| SwiftPM `Package.swift` | **Started** — `swift build` / `swift test`; `FountainCore` / `FountainHTML` / umbrella `Fountain`; CI on `master` via GitHub Actions; release checklist [SPM-Release-Checklist.md](SPM-Release-Checklist.md) |
 | Contributor workflow | **Started** — [CONTRIBUTING.md](../CONTRIBUTING.md); `FountainScriptRendering` protocol for pluggable writers (Phase 8.1) |
 
 ---
 
 ## Next steps (from roadmap)
 
-1. Expand this matrix with **test fixture IDs** per row (link to `Tests/FountainPackageTests/Fixtures/`, `Phase5ProductionFeaturesTests`, `BigFishCorpusTests`, and Xcode `FountainTests` corpora).
+1. Expand this matrix with **test fixture IDs** per row (`Tests/FountainPackageTests/Fixtures/*.fountain` + `PackageFixtureCorpusTests`, `Phase5ProductionFeaturesTests`, `BigFishCorpusTests`, Xcode `FountainTests` corpora).
 2. Phase 2: replace legacy `FNElement` **class** with a `Codable` struct (or dual-stack with explicit migration).
 3. Phase 3–4: line tokenizer + block builder; retire regex-only body parse incrementally.

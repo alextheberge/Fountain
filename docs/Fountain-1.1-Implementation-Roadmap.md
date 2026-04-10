@@ -93,7 +93,7 @@ This document turns [Project Specification- Fountain Swift (Next-Gen).md](../Pro
 | 4.2 | **Dual dialogue** (`^`): pair detection and **column** metadata in `attributes`. | **Started:** `SpecTraceabilityTests` (`dualDialogue` + `dualDialogueColumn` `0`/`1` on ``FNElement`` / ``FountainMetadataKey``) |
 | 4.3 | **Action** merging rules (soft line breaks vs hard breaks) — explicitly match 1.1; **remove reliance on trailing spaces** for forcing; prefer **`!`**. | **Started:** `ActionMergingTests` (soft merge + `!` continuation); prefer `!` over whitespace-only “forced” lines (parser still accepts legacy `^\\s{2,}$` action lines — document only) |
 | 4.4 | **Centered text** `> ... <` vs **forced transition** `>` — disambiguation per spec. | **Started:** `ParseStructureTests` |
-| 4.5 | Emit final **`[FNElement]`** list from token stream. | Round-trip: parse → canonical structure matches golden |
+| 4.5 | Emit final **`[FNElement]`** list from token stream. | **Started:** `Phase45RoundTripTests` (JSON `FountainDocument` round-trip + `FountainWriter` re-parse kind sequence) |
 
 ---
 
@@ -129,7 +129,7 @@ This document turns [Project Specification- Fountain Swift (Next-Gen).md](../Pro
 
 | Step | Action | Done when |
 |------|--------|-----------|
-| 7.1 | Curate **official-style fixture set**: minimal one-liners per rule + **Big Fish** + **Brick & Steel** + edge cases (forced lines, boneyard, dual). | **Started:** `FountainTests/Big Fish.fountain` exercised by `BigFishCorpusTests` (SPM); add `Tests/Fixtures/` mirror as needed |
+| 7.1 | Curate **official-style fixture set**: minimal one-liners per rule + **Big Fish** + **Brick & Steel** + edge cases (forced lines, boneyard, dual). | **Started:** `BigFishCorpusTests` + `Tests/FountainPackageTests/Fixtures/*.fountain` (`PackageFixtureCorpusTests`) |
 | 7.2 | Add **structured assertions**: expected `FNElementType` sequences + key attributes (not only string snapshots). | **Started:** `ParseAssertions` + `ParseStructureTests` |
 | 7.3 | Track **external suite** if one exists (community “standardized Fountain test suite” — integrate or vendor with license check). | **Started:** README § other implementations & fixtures |
 | 7.4 | **Regression policy:** any parser bugfix adds a **minimal** new fixture. | **Started:** [CONTRIBUTING.md](../CONTRIBUTING.md) |
@@ -157,7 +157,7 @@ This document turns [Project Specification- Fountain Swift (Next-Gen).md](../Pro
 |------|--------|-----------|
 | 9.1 | **`parse(_:)` async**: offload full parse to `Task.detached` or custom executor; **synchronous** wrapper documented as “small docs only.” | **Started:** ``FNScript.parseStringAsync`` / ``parseFileAsync`` + `FNScriptAsyncTests` |
 | 9.2 | **Streaming API** (optional): `AsyncSequence` of elements for preview. | **Started:** ``FNScript.scriptElementStream(from:)`` → `AsyncStream<ScriptElement>` (full parse, then yield) |
-| 9.3 | **Incremental parse** (advanced): diff by line map; **last** after baseline is solid. | Spike doc + go/no-go |
+| 9.3 | **Incremental parse** (advanced): diff by line map; **last** after baseline is solid. | **Started:** [Fountain-Incremental-Parse-Spike.md](Fountain-Incremental-Parse-Spike.md) (go/no-go checklist) |
 
 ---
 
@@ -165,9 +165,9 @@ This document turns [Project Specification- Fountain Swift (Next-Gen).md](../Pro
 
 | Step | Action | Done when |
 |------|--------|-----------|
-| 10.1 | **SPM** is default distribution; tag semver. | Release doc |
+| 10.1 | **SPM** is default distribution; tag semver. | **Started:** [SPM-Release-Checklist.md](SPM-Release-Checklist.md) |
 | 10.2 | **Conditional compilation:** `#if canImport(UIKit)` only in **render** or **sample** targets, not in parser. | **Started:** `.github/workflows/swift.yml` greps `Fountain/*.swift` excluding `Platform` / `FNPaginator` / `FNHTMLScript` |
-| 10.3 | **SwiftWasm** (stretch): build script + CI matrix entry; document unsupported APIs. | Issue or doc “experimental” |
+| 10.3 | **SwiftWasm** (stretch): build script + CI matrix entry; document unsupported APIs. | **Started:** [SwiftWasm-Experimental.md](SwiftWasm-Experimental.md) (CI Wasm not enabled yet) |
 
 ---
 
@@ -211,5 +211,8 @@ Fill as you implement. Link each row to tests.
 
 - [Project Specification- Fountain Swift (Next-Gen).md](../Project%20Specification-%20Fountain%20Swift%20(Next-Gen).md) — vision and constraints  
 - [README](../README.markdown) — current project state  
+- [Fountain-Incremental-Parse-Spike.md](Fountain-Incremental-Parse-Spike.md) — Phase 9.3 incremental parse planning  
+- [SPM-Release-Checklist.md](SPM-Release-Checklist.md) — Phase 10.1 tagging / semver  
+- [SwiftWasm-Experimental.md](SwiftWasm-Experimental.md) — Phase 10.3 Wasm notes  
 
 When this roadmap and the gap analysis diverge from reality, **update the tables** in the same PR as the code change.
