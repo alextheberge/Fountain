@@ -57,51 +57,67 @@ public class FastFountainParser {
             ? nsContents.substring(to: firstBlankLineRange.location)
             : contents
 
+        // A lone `Key:` line before the first blank line (e.g. "FADE IN:") matches
+        // kDirectivePattern and was incorrectly stripped as an empty title-page field,
+        // dropping the slugline from the body. Real title pages have multiple lines
+        // and/or inline `Key: value` rows—only skip parsing when there is a single
+        // directive-only line (no `Key: value` on the same line).
+        var shouldParseTitlePage = true
+        let nonEmptyTopLines = topOfDocument.split(separator: "\n").map(String.init).filter { !$0.isEmpty }
+        if nonEmptyTopLines.count == 1,
+           let only = nonEmptyTopLines.first,
+           only.isMatchedByRegex(kDirectivePattern),
+           !only.isMatchedByRegex(kInlinePattern) {
+            shouldParseTitlePage = false
+        }
+
         // ----------------------------------------------------------------------
         // TITLE PAGE
         // ----------------------------------------------------------------------
-        var foundTitlePage = false
-        var openKey = ""
-        var openValues: [String] = []
-        let topLines = topOfDocument.components(separatedBy: "\n")
+        if shouldParseTitlePage {
+            var foundTitlePage = false
+            var openKey = ""
+            var openValues: [String] = []
+            let topLines = topOfDocument.components(separatedBy: "\n")
 
-        for line in topLines {
-            if line.isEmpty || line.isMatchedByRegex(kDirectivePattern) {
-                foundTitlePage = true
-                if !openKey.isEmpty {
-                    titlePage.append([openKey: openValues])
-                }
-                openKey = line.stringByMatching(kDirectivePattern, capture: 1)?.lowercased() ?? ""
-                if openKey == "author" { openKey = "authors" }
-                openValues = []
-            } else if line.isMatchedByRegex(kInlinePattern) {
-                foundTitlePage = true
-                if !openKey.isEmpty {
-                    titlePage.append([openKey: openValues])
+            for line in topLines {
+                if line.isEmpty || line.isMatchedByRegex(kDirectivePattern) {
+                    foundTitlePage = true
+                    if !openKey.isEmpty {
+                        titlePage.append([openKey: openValues])
+                    }
+                    openKey = line.stringByMatching(kDirectivePattern, capture: 1)?.lowercased() ?? ""
+                    if openKey == "author" { openKey = "authors" }
+                    openValues = []
+                } else if line.isMatchedByRegex(kInlinePattern) {
+                    foundTitlePage = true
+                    if !openKey.isEmpty {
+                        titlePage.append([openKey: openValues])
+                        openKey = ""
+                        openValues = []
+                    }
+                    var key = line.stringByMatching(kInlinePattern, capture: 1)?.lowercased() ?? ""
+                    let value = line.stringByMatching(kInlinePattern, capture: 2) ?? ""
+                    if key == "author" { key = "authors" }
+                    titlePage.append([key: [value]])
                     openKey = ""
                     openValues = []
+                } else if foundTitlePage {
+                    openValues.append(line.trimmingCharacters(in: .whitespaces))
                 }
-                var key = line.stringByMatching(kInlinePattern, capture: 1)?.lowercased() ?? ""
-                let value = line.stringByMatching(kInlinePattern, capture: 2) ?? ""
-                if key == "author" { key = "authors" }
-                titlePage.append([key: [value]])
-                openKey = ""
-                openValues = []
-            } else if foundTitlePage {
-                openValues.append(line.trimmingCharacters(in: .whitespaces))
             }
-        }
 
-        if foundTitlePage {
-            if openKey.isEmpty && openValues.isEmpty && titlePage.isEmpty {
-                // do nothing
-            } else {
-                if !openKey.isEmpty {
-                    titlePage.append([openKey: openValues])
-                    openKey = ""
-                    openValues = []
+            if foundTitlePage {
+                if openKey.isEmpty && openValues.isEmpty && titlePage.isEmpty {
+                    // do nothing
+                } else {
+                    if !openKey.isEmpty {
+                        titlePage.append([openKey: openValues])
+                        openKey = ""
+                        openValues = []
+                    }
+                    contents = contents.replacingOccurrences(of: topOfDocument, with: "")
                 }
-                contents = contents.replacingOccurrences(of: topOfDocument, with: "")
             }
         }
 
@@ -283,7 +299,7 @@ public class FastFountainParser {
 
             // Scene Headings -- must be preceded by a blank line
             if newlinesBefore > 0 && line.isMatchedByRegex(
-                "^(INT|EXT|EST|(I|INT)\\.?\\/(E|EXT)\\.?)[\\.-\\s][^\\n]+$",
+                "^(INT|EXT|EST|(I|INT)\\.?\\/(E|EXT)\\.?)[\\.\\-\\s][^\\n]+$",
                 options: .caseInsensitive
             ) {
                 newlinesBefore = 0

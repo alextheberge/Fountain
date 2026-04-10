@@ -7,7 +7,6 @@
 
 import UIKit
 import WebKit
-import Fountain
 
 class ViewController: UIViewController {
     private var webView: WKWebView!

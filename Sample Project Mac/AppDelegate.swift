@@ -7,9 +7,9 @@
 
 import AppKit
 import WebKit
-import Fountain
 
 @main
+@objc(AppDelegate)
 class AppDelegate: NSObject, NSApplicationDelegate {
     @IBOutlet var webView: WKWebView!
 
