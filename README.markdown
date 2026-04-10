@@ -8,33 +8,52 @@ Fountain supports everything that a writer is likely to need in the early, creat
 
 Fountain is also a good format for archiving screenplays without worry of file-format obsolescence or incompatibility. For this reason, Fountain does support scene numbers.
 
-For more details on Fountain see http://fountain.io.
+For more details on Fountain see [fountain.io](https://fountain.io).
 
 ## Overview
 
 To encourage and ease integration of Fountain into your own apps we're making our own Fountain code available to you under a permissive MIT license. The code was designed for our own use, so your mileage may vary, but we're hoping this will at least help you get going with Fountain.
 
-The Xcode project includes files to read and write Fountain files, and stores the file in a fairly generic data model. If this model is insufficent for your needs, or you have your own model you'd like to use, we recommend using a converter to bridge the two models.
+The Xcode project **Fountain** targets **macOS 12+** and **iOS 15+** and compiles the core library in **Swift** (alongside **legacy Objective-C** sources kept for reference). The library reads and writes Fountain files and stores the script in a generic data model. If this model is insufficient for your needs, or you have your own model you'd like to use, we recommend using a converter to bridge the two models.
 
 One important note: we do not deal with text styling (bold, italic, underline, etc) in the parser or data model. We retain the styling and pass it along for downstream use. That is, whatever is supposed to display or print the Fountain file should handle text styling and clean up of the styling markup. We think that's just easier on everyone. We've included regular expressions for text styling, in case you need them.
+
+### Sample apps and tests
+
+- **Sample Project Mac** loads `Big Fish.fountain`, builds HTML with `FNHTMLScript`, and displays it in a **`WKWebView`** (see `Application.xib` and `AppDelegate.swift`). The app delegate is exposed to the nib as **`@objc(AppDelegate)`** so the class resolves correctly at load time.
+- **Sample Project iOS** does the same in code with `WKWebView` (`ViewController.swift`).
+- **FountainTests** is a macOS unit-test bundle; the scheme runs tests hosted in the Mac sample app. Set **`PRODUCT_BUNDLE_IDENTIFIER`** in the target that owns each `Info.plist` so it matches **`$(PRODUCT_BUNDLE_IDENTIFIER)`** in the plist (avoids Xcode warnings and signing issues).
+
+### Parser notes (FastFountainParser)
+
+Recent maintenance aligned **FastFountainParser** with practical Fountain documents:
+
+- **Scene headings**: the scene-heading regular expression uses a character class written so **`NSRegularExpression` compiles** (dot, hyphen, and whitespace are explicit; a buggy class caused every scene line to fall through as action).
+- **Title page**: a lone directive-only line before the first blank line (for example **`FADE IN:`** with nothing after the colon) is **not** treated as a title-page field, so sluglines are not stripped from the body.
+
+If you rely on the older **FountainParser** / **RegexKitLite** Objective-C path, those files remain under `Fountain/Legacy/`.
 
 ## Components
 
 ### FNScript
 
-FNScript is intended to make it easy to drop Fountain support into new apps. FNScript handles reading and writing of Fountain files, and holds the script content. The content of the script is represented as an NSArray of FNElements, and the title page is an NSArray of NSDictionary items.
+FNScript is intended to make it easy to drop Fountain support into new apps. FNScript handles reading and writing of Fountain files, and holds the script content. In Swift, script elements are **`[FNElement]`** and the title page is an array of dictionaries **`[[String: [String]]]`** (legacy Objective-C uses `NSArray` / `NSDictionary`).
 
 ### FNElement
 
-This is the data model for the script elements.
+This is the data model for the script elements (Objective-C **`FNElement`**, Swift **`FNElement`**).
 
 ### FastFountainParser
 
-FastFountainParser is a redesigned line-by-line parser. The advantages to this parser over the previously used FountainParser are 1) less reliance on regular expressions (it should be much easier to change now) and 2) greatly improved performance. FastFountainParser is roughly 10 times faster than FountainParser. It is the default in FNScript, however you may still use the older FountainParser via using the FNParserTypeRegex option on the appropriate methods.
+FastFountainParser is a redesigned line-by-line parser. The advantages to this parser over the previously used FountainParser are 1) less reliance on regular expressions (it should be much easier to change now) and 2) greatly improved performance. FastFountainParser is roughly 10 times faster than FountainParser. It is the default in **Swift** `FNScript` initializers; pass **`parser: .regex`** if you need the older **`FountainParser`** pipeline.
 
 ### FountainWriter
 
-FountainWriter provides class methods to convert an FNScript into a Fountain NSString.
+FountainWriter converts an `FNScript` back into Fountain markup (**`String`** / **`NSString`** APIs depending on language).
+
+### FNHTMLScript
+
+FNHTMLScript renders an `FNScript` as HTML for preview or export. The sample apps bundle **`ScriptCSS.css`** and load it from **`Bundle.main`** when building the page.
 
 ### FountainParser
 
@@ -42,22 +61,27 @@ FountainParser provides class methods to read a Fountain script's title page and
 
 ### FountainRegexes
 
-This file contains all the regular expressions used by FountainParser. It remains a part of this package because regular expressions provide the simplest route to portability. That said, please be aware that the regular expressions are not fully compliant with the tests, and may not be updated for a while.
+Shared regular-expression constants used by **FountainParser** and related code. The **Swift** implementation uses **`NSRegularExpression`** (no RegexKitLite). The legacy **Objective-C** stack still links **RegexKitLite** where those files are compiled. The **regex** parser path is exercised mainly for compatibility; day-to-day parsing in the Swift API uses **FastFountainParser**.
 
 ## Installation
 
-1. Copy all the files in the Fountain group to your project.
-2. RegexKitLite requires the `-licucore` linker flag to be added to your project. See http://regexkit.sourceforge.net/RegexKitLite/#AddingRegexKitLitetoyourProject for help enabling RegexKitLite in your project.
+**Using this Xcode project**
 
-If you don't want to use RegexKitLite you can remove the references to it in FountainParser.m and FountainWriter.m. You shouldn't have to change much code outside those files to change the regex library. While the regular expressions should be compatible with most standard regex implementation, you might have to massage them to work with a different library. Good luck with that.
+1. Open **`Fountain.xcodeproj`** in Xcode (recommended **Xcode 15+**).
+2. Build the **Fountain** Swift sources into your own target, or copy the **`Fountain/`** Swift files into your app and add them to a target that also imports **Foundation** (and **AppKit** / **UIKit** where platform types are used).
+3. For **HTML output**, include **`ScriptCSS.css`** in your app target’s **Copy Bundle Resources** if you use **`FNHTMLScript`** the same way as the samples.
+
+**Legacy Objective-C only**
+
+If you build the older **FountainParser.m** / **FountainWriter.m** path, **RegexKitLite** expects the **`-licucore`** linker flag. See [RegexKitLite integration](http://regexkit.sourceforge.net/RegexKitLite/#AddingRegexKitLitetoyourProject). You can remove RegexKitLite only if you replace its string extensions in those `.m` files with another ICU-backed API.
 
 ## Usage
 
-See the sample project for a simple example of how the classes here can be used.
+See **Sample Project Mac** and **Sample Project iOS**: load a `.fountain` file into **`FNScript`**, wrap it in **`FNHTMLScript`**, and load the resulting HTML in a **`WKWebView`**. The Mac sample uses **`Application.nib`** for the window and web view; the iOS sample builds the web view in code.
 
 ## Testing
 
-The Xcode project includes unit tests, along with sample files to play around with. At the moment, the tests aren't great, and need to be much more comprehensive, but they're there.
+The **FountainTests** scheme runs a **macOS** XCTest bundle against the **Sample Project Mac** host app. Tests cover parsing, writer round-trips, and sample screenplays (including **Big Fish**). Run **Product → Test** or `xcodebuild -scheme FountainTests test`.
 
 ## License
 
