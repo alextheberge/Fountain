@@ -24,6 +24,10 @@
 
 import Foundation
 
+/// One structural unit in a parsed screenplay (legacy reference type).
+///
+/// The fast parser sets ``elementType`` to English labels matching ``FNElementType``.
+/// Prefer mapping through `FNScript.asFountainDocument()` for `Codable` export.
 public class FNElement: CustomStringConvertible {
     public var elementType: String = ""
     public var elementText: String = ""

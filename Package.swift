@@ -1,5 +1,6 @@
 // swift-tools-version: 5.9
 // Fountain Swift Package — core vs HTML split + umbrella `Fountain` (see docs/Fountain-1.1-Implementation-Roadmap.md).
+// Syntax target: `FountainSyntaxPin.targetVersionLabel` (currently 1.1).
 import PackageDescription
 
 // Package name must differ from the `Fountain` library target to avoid SPM test-runner build cycles.
@@ -49,6 +50,10 @@ let package = Package(
                 "FountainWriter.swift",
                 "FNScript.swift",
                 "FountainCodable.swift",
+                "FNElementType.swift",
+                "FountainTokenization.swift",
+                "FountainSyntaxPin.swift",
+                "FountainForcedPrefix.swift",
             ],
             sources: [
                 "FNHTMLScript.swift",
@@ -67,7 +72,10 @@ let package = Package(
         ),
         .testTarget(
             name: "FountainPackageTests",
-            dependencies: ["Fountain"]
+            dependencies: ["Fountain"],
+            resources: [
+                .process("Fixtures"),
+            ]
         ),
     ]
 )

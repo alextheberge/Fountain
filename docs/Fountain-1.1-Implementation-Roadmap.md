@@ -35,9 +35,9 @@ This document turns [Project Specification- Fountain Swift (Next-Gen).md](../Pro
 | Step | Action | Done when |
 |------|--------|-----------|
 | 0.1 | Inventory current parsers (`FastFountainParser`, `FountainParser`, legacy ObjC) and **list gaps vs Fountain 1.1** (forced rules, boneyard, notes, dual dialogue, etc.). | **Started:** [Fountain-1.1-Gap-Analysis.md](Fountain-1.1-Gap-Analysis.md) |
-| 0.2 | Inventory **all regex patterns** (`FountainRegexes.swift` / `.m`) and mark which are **spec-critical** vs **styling-only**. | Table + link to spec sections |
-| 0.3 | Decide **deprecation policy**: keep legacy targets for one release, feature-flag, or hard cut. | ADR or README section |
-| 0.4 | Add **pin** to Fountain syntax version you’re targeting (1.1 + any errata). | Comment in repo + link in README |
+| 0.2 | Inventory **all regex patterns** (`FountainRegexes.swift` / `.m`) and mark which are **spec-critical** vs **styling-only**. | **Done (Swift):** table in [Fountain-1.1-Gap-Analysis.md](Fountain-1.1-Gap-Analysis.md) § Regex pattern inventory |
+| 0.3 | Decide **deprecation policy**: keep legacy targets for one release, feature-flag, or hard cut. | **Started:** see README § Work in progress (legacy ObjC retained for reference; SwiftPM is the forward path) |
+| 0.4 | Add **pin** to Fountain syntax version you’re targeting (1.1 + any errata). | **Done:** `FountainSyntaxPin` + README link |
 
 **Deliverable:** `docs/Fountain-1.1-Gap-Analysis.md` (short, living document).
 
@@ -51,8 +51,8 @@ This document turns [Project Specification- Fountain Swift (Next-Gen).md](../Pro
 |------|--------|-----------|
 | 1.1 | Create `Package.swift` with **`FountainCore`** + **`FountainHTML`** + umbrella **`Fountain`** — core has **no** UI frameworks; HTML target holds AppKit/UIKit usage. | **Done (initial):** `swift build` + `swift test` at repo root; products `Fountain`, `FountainCore`, `FountainHTML` |
 | 1.2 | Move or duplicate **model + parse + write** into the package; keep sample apps consuming the package (or same sources via careful symlink — prefer package as source of truth). | Apps build against package |
-| 1.3 | Define **public API surface** (`FNScript`, element types, errors). Mark experimental APIs `@_spi` or nested `FountainCore.Experimental` if needed. | Doc comments on public types |
-| 1.4 | **CI:** `swift build` + `swift test` on macOS (Linux where possible; Wasm later). | Workflow green |
+| 1.3 | Define **public API surface** (`FNScript`, element types, errors). Mark experimental APIs `@_spi` or nested `FountainCore.Experimental` if needed. | **Started:** doc comments on `FNScript`, `FNElement`; `FNElementType`, `FountainDocument` API |
+| 1.4 | **CI:** `swift build` + `swift test` on macOS (Linux where possible; Wasm later). | **Done:** `.github/workflows/swift.yml` |
 
 ---
 
@@ -62,9 +62,9 @@ This document turns [Project Specification- Fountain Swift (Next-Gen).md](../Pro
 
 | Step | Action | Done when |
 |------|--------|-----------|
-| 2.1 | Introduce **`FNElementType`** `String` enum (or similar) covering **all** 1.1 structural kinds you need (including `pageBreak`, `boneyard`, `synopsis`, `section`, `general`, `note`, etc. — align names with spec vocabulary). | Enum documented + frozen naming policy |
-| 2.2 | Implement **`FNElement`** struct: `id`, `type`, `content`, **`attributes: [String: String]`** (or typed `Metadata` struct with `Codable`) for scene number, section depth, `dualDialogue`, `centered`, etc. | Golden JSON fixtures encode/decode |
-| 2.3 | Migration shim from **old** `FNElement` class / `elementType: String` if dual-stack period is required. | Tests prove equivalent documents for a corpus subset |
+| 2.1 | Introduce **`FNElementType`** `String` enum (or similar) covering **all** 1.1 structural kinds you need (including `pageBreak`, `boneyard`, `synopsis`, `section`, `general`, `note`, etc. — align names with spec vocabulary). | **Started:** `FNElementType` + map to `ScriptElementKind` |
+| 2.2 | Implement **`FNElement`** struct: `id`, `type`, `content`, **`attributes: [String: String]`** (or typed `Metadata` struct with `Codable`) for scene number, section depth, `dualDialogue`, `centered`, etc. | **Started:** `FountainMetadataKey` + `ScriptElement.metadata` + golden JSON (`Tests/FountainPackageTests/Fixtures/`) |
+| 2.3 | Migration shim from **old** `FNElement` class / `elementType: String` if dual-stack period is required. | **Started:** `LegacyInteropTests` (SPM) prove `asFountainDocument()` matches `FNElementType` for a slice |
 | 2.4 | Define **`FNScript`** (or `FountainDocument`) with `elements` + `titlePage` + version metadata. | Single type is “source of truth” for writers |
 
 ---
@@ -75,10 +75,10 @@ This document turns [Project Specification- Fountain Swift (Next-Gen).md](../Pro
 
 | Step | Action | Done when |
 |------|--------|-----------|
-| 3.1 | Specify **token kinds** (slug, action, character, dialogue, parenthetical, transition, lyrics, section, synopsis, pagebreak, boneyard open/close, title-page directive, blank, unknown…). | `TokenKind` enum + doc |
-| 3.2 | Implement **line splitter** honoring Fountain newline rules; normalize `\r\n` once at input. | Tests with mixed newlines |
-| 3.3 | Implement **title page pre-scan** (before body) consistent with 1.1; **do not** mis-classify body lines like `FADE IN:` as title keys (regression from current fast parser fixes). | Targeted tests |
-| 3.4 | Map **forced prefixes** to tokens: `.` scene, `!` action, `@` character, `~` lyrics, `>` transition (non-centered), etc. | Spec table ↔ tests |
+| 3.1 | Specify **token kinds** (slug, action, character, dialogue, parenthetical, transition, lyrics, section, synopsis, pagebreak, boneyard open/close, title-page directive, blank, unknown…). | **Started:** `FountainTokenKind` + tests |
+| 3.2 | Implement **line splitter** honoring Fountain newline rules; normalize `\r\n` once at input. | **Started:** `FountainLineEndingNormalizer` + tests (full splitter still TODO) |
+| 3.3 | Implement **title page pre-scan** (before body) consistent with 1.1; **do not** mis-classify body lines like `FADE IN:` as title keys (regression from current fast parser fixes). | **Started:** `TitlePageRegressionTests` |
+| 3.4 | Map **forced prefixes** to tokens: `.` scene, `!` action, `@` character, `~` lyrics, `>` transition (non-centered), etc. | **Started:** `FountainForcedPrefixScanner` + `ForcedPrefixScannerTests` |
 | 3.5 | Replace fragile regex-only checks with **scanner + Regex hybrid**: use `Regex` for **localized** patterns (e.g. scene heading stem), not whole-document substitution. | Performance snapshot on Big Fish |
 
 ---

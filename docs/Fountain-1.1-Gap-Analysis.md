@@ -1,6 +1,6 @@
 # Fountain 1.1 — Gap analysis (living document)
 
-**Spec pin:** [Fountain syntax](https://fountain.io/syntax/) — target **1.1** (verify section anchors when locking compliance).
+**Spec pin:** [Fountain syntax](https://fountain.io/syntax/) — target **1.1** (see also `FountainSyntaxPin` in code).
 
 **Purpose:** Track what the **current** Swift stack implements vs full 1.1, to drive [Fountain-1.1-Implementation-Roadmap.md](Fountain-1.1-Implementation-Roadmap.md).
 
@@ -15,6 +15,32 @@
 | `FastFountainParser.swift` | Default in `FNScript`; line-oriented scanner + `NSRegularExpression` |
 | `FountainParser.swift` | Legacy regex pipeline; `FNScript` `parser: .regex` |
 | `Fountain/Legacy/*.m` | Obj-C + RegexKitLite (not in SwiftPM target) |
+
+---
+
+## Regex pattern inventory (`Fountain/FountainRegexes.swift`)
+
+Roadmap Phase 0.2 — how patterns are used today. **Spec-critical** patterns participate in structure (sluglines, dialogue, breaks, title page). **Styling** affects inline emphasis for HTML/FDX-style export. **Pipeline** = internal to the legacy regex HTML pipeline (`FountainParser`), not the fast line parser.
+
+| Symbol | Classification | Used for |
+|--------|----------------|----------|
+| `UNIVERSAL_LINE_BREAKS_*` | Spec-critical (input) | Normalizing newlines before parse |
+| `SCENE_HEADER_*` | Spec-critical | Legacy regex pipeline scene detection |
+| `ACTION_*`, `MULTI_LINE_ACTION_*`, `FIRST_LINE_ACTION_*` | Spec-critical | Action blocks in regex pipeline |
+| `CHARACTER_CUE_*`, `DIALOGUE_*`, `PARENTHETICAL_*` | Spec-critical | Dialogue structure in regex pipeline |
+| `TRANSITION_*`, `FORCED_TRANSITION_*`, `FALSE_TRANSITION_*` | Spec-critical | Transitions vs false positives |
+| `PAGE_BREAK_*` | Spec-critical | `===` style breaks in regex pipeline |
+| `CLEANUP_*` | Pipeline | Empty action tag cleanup |
+| `SCENE_NUMBER_*` | Spec-critical | `#..#` on slugs |
+| `SECTION_HEADER_*` | Spec-critical | `#` section lines |
+| `BLOCK_COMMENT_*`, `BRACKET_COMMENT_*`, `SYNOPSIS_*` | Spec-critical | Boneyard, notes, synopses in regex pipeline |
+| `TITLE_PAGE_*`, `INLINE_DIRECTIVE_*`, `MULTI_LINE_DIRECTIVE_*`, `MULTI_LINE_DATA_*` | Spec-critical | Title page in regex pipeline |
+| `DUAL_DIALOGUE_*` | Spec-critical | `^` marker |
+| `CENTERED_TEXT_*` | Spec-critical | `> ... <` |
+| `BOLD_*`, `ITALIC_*`, `UNDERLINE_*` (and combos) | Styling | Inline emphasis → HTML (`FNHTMLScript`) |
+| `NEWLINE_REPLACEMENT` / `NEWLINE_RESTORE` | Pipeline | Temp newline encoding inside regex pipeline |
+
+`FastFountainParser` uses **separate** inline patterns (`FastFountainParser.swift`) for title-page heuristics plus line-first body rules; it does **not** use most of the table above directly.
 
 ---
 
@@ -52,12 +78,12 @@ Legend: **Y** = supported in practice, **P** = partial / edge-case risk, **N** =
 | Item | Status |
 |------|--------|
 | Xcode project | Y — primary |
-| SwiftPM `Package.swift` | **Started** — `swift build` from repo root; `Legacy/` excluded; `ScriptCSS.css` bundled |
+| SwiftPM `Package.swift` | **Started** — `swift build` / `swift test`; `FountainCore` / `FountainHTML` / umbrella `Fountain`; CI on `master` via GitHub Actions |
 
 ---
 
 ## Next steps (from roadmap)
 
-1. Expand this matrix with **test fixture IDs** per row.
-2. Add SPM **test target** (or keep Xcode-only tests until core is split).
-3. Phase 2+: new `Codable` model and tokenizer pipeline per roadmap.
+1. Expand this matrix with **test fixture IDs** per row (link to `Tests/FountainPackageTests/Fixtures/` and Xcode `FountainTests` corpora).
+2. Phase 2: replace legacy `FNElement` **class** with a `Codable` struct (or dual-stack with explicit migration).
+3. Phase 3–4: line tokenizer + block builder; retire regex-only body parse incrementally.

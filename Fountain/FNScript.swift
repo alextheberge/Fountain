@@ -24,11 +24,16 @@
 
 import Foundation
 
+/// Which parser implementation ``FNScript`` uses when you opt into the regex pipeline.
 public enum FNParserType {
     case fast
     case regex
 }
 
+/// Loaded Fountain screenplay: title page, body elements, and export helpers.
+///
+/// By default ``init(string:)`` and ``init(file:)`` use ``FastFountainParser``.
+/// Use `asFountainDocument()` for JSON/tooling via `FountainDocument`.
 public class FNScript: CustomStringConvertible {
     public var filename: String?
     public var elements: [FNElement] = []

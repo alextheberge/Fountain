@@ -1,0 +1,18 @@
+{
+  "titlePage": [],
+  "elements": [
+    {
+      "id": "550E8400-E29B-41D4-A716-446655440000",
+      "kind": "sceneHeading",
+      "text": "INT. ROOM - DAY",
+      "metadata": {}
+    },
+    {
+      "id": "550E8400-E29B-41D4-A716-446655440001",
+      "kind": "action",
+      "text": "She enters.",
+      "metadata": {}
+    }
+  ],
+  "fountainSyntaxVersion": "1.1"
+}

@@ -7,6 +7,14 @@
 
 import Foundation
 
+/// Keys used in ``ScriptElement.metadata`` when mapping from ``FNElement`` (Phase 2.2).
+public enum FountainMetadataKey: String, Sendable {
+    case sceneNumber
+    case centered
+    case dualDialogue
+    case sectionDepth
+}
+
 /// Stable element kinds for export and AI/tooling pipelines (Fountain 1.1–aligned naming).
 public enum ScriptElementKind: String, Codable, CaseIterable, Sendable {
     case sceneHeading
@@ -70,31 +78,21 @@ extension FNScript {
 extension FNElement {
     fileprivate func asScriptElement() -> ScriptElement {
         var meta: [String: String] = [:]
-        if let sn = sceneNumber { meta["sceneNumber"] = sn }
-        if isCentered { meta["centered"] = "true" }
-        if isDualDialogue { meta["dualDialogue"] = "true" }
-        if sectionDepth > 0 { meta["sectionDepth"] = String(sectionDepth) }
+        if let sn = sceneNumber { meta[FountainMetadataKey.sceneNumber.rawValue] = sn }
+        if isCentered { meta[FountainMetadataKey.centered.rawValue] = "true" }
+        if isDualDialogue { meta[FountainMetadataKey.dualDialogue.rawValue] = "true" }
+        if sectionDepth > 0 { meta[FountainMetadataKey.sectionDepth.rawValue] = String(sectionDepth) }
         return ScriptElement(kind: ScriptElementKind(legacyType: elementType), text: elementText, metadata: meta)
     }
 }
 
 extension ScriptElementKind {
-    init(legacyType: String) {
-        switch legacyType {
-        case "Scene Heading": self = .sceneHeading
-        case "Action": self = .action
-        case "Character": self = .character
-        case "Dialogue": self = .dialogue
-        case "Parenthetical": self = .parenthetical
-        case "Transition": self = .transition
-        case "Lyrics": self = .lyrics
-        case "Section Heading": self = .sectionHeading
-        case "Synopsis": self = .synopsis
-        case "Page Break": self = .pageBreak
-        case "Boneyard": self = .boneyard
-        case "Comment": self = .comment
-        case "General": self = .general
-        default: self = .unknown
+    /// Maps legacy `FNElement.elementType` strings; unknown labels become ``unknown``.
+    public init(legacyType: String) {
+        if let t = FNElementType(rawValue: legacyType) {
+            self = t.scriptElementKind
+        } else {
+            self = .unknown
         }
     }
 }
