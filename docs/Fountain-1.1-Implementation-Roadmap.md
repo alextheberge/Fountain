@@ -50,7 +50,7 @@ This document turns [Project Specification- Fountain Swift (Next-Gen).md](../Pro
 | Step | Action | Done when |
 |------|--------|-----------|
 | 1.1 | Create `Package.swift` with **`FountainCore`** + **`FountainHTML`** + umbrella **`Fountain`** — core has **no** UI frameworks; HTML target holds AppKit/UIKit usage. | **Done (initial):** `swift build` + `swift test` at repo root; products `Fountain`, `FountainCore`, `FountainHTML` |
-| 1.2 | Move or duplicate **model + parse + write** into the package; keep sample apps consuming the package (or same sources via careful symlink — prefer package as source of truth). | Apps build against package |
+| 1.2 | Move or duplicate **model + parse + write** into the package; keep sample apps consuming the package (or same sources via careful symlink — prefer package as source of truth). | **Started:** README explains dual path; `.xcodeproj` still compiles `Fountain/` inline (test host + `PRODUCT_MODULE_NAME`); `Package.swift` is source of truth for SPM |
 | 1.3 | Define **public API surface** (`FNScript`, element types, errors). Mark experimental APIs `@_spi` or nested `FountainCore.Experimental` if needed. | **Started:** doc comments on `FNScript`, `FNElement`; `FNElementType`, `FountainDocument` API |
 | 1.4 | **CI:** `swift build` + `swift test` on macOS (Linux where possible; Wasm later). | **Done:** `.github/workflows/swift.yml` |
 
@@ -65,7 +65,7 @@ This document turns [Project Specification- Fountain Swift (Next-Gen).md](../Pro
 | 2.1 | Introduce **`FNElementType`** `String` enum (or similar) covering **all** 1.1 structural kinds you need (including `pageBreak`, `boneyard`, `synopsis`, `section`, `general`, `note`, etc. — align names with spec vocabulary). | **Started:** `FNElementType` + map to `ScriptElementKind` |
 | 2.2 | Implement **`FNElement`** struct: `id`, `type`, `content`, **`attributes: [String: String]`** (or typed `Metadata` struct with `Codable`) for scene number, section depth, `dualDialogue`, `centered`, etc. | **Started:** `FountainMetadataKey` + `ScriptElement.metadata` + golden JSON (`Tests/FountainPackageTests/Fixtures/`) |
 | 2.3 | Migration shim from **old** `FNElement` class / `elementType: String` if dual-stack period is required. | **Started:** `LegacyInteropTests` (SPM) prove `asFountainDocument()` matches `FNElementType` for a slice |
-| 2.4 | Define **`FNScript`** (or `FountainDocument`) with `elements` + `titlePage` + version metadata. | Single type is “source of truth” for writers |
+| 2.4 | Define **`FNScript`** (or `FountainDocument`) with `elements` + `titlePage` + version metadata. | **Started:** `FountainDocument(script:)` + `FountainSyntaxPin` default on `asFountainDocument()`; runtime parse remains `FNScript` |
 
 ---
 
@@ -76,10 +76,10 @@ This document turns [Project Specification- Fountain Swift (Next-Gen).md](../Pro
 | Step | Action | Done when |
 |------|--------|-----------|
 | 3.1 | Specify **token kinds** (slug, action, character, dialogue, parenthetical, transition, lyrics, section, synopsis, pagebreak, boneyard open/close, title-page directive, blank, unknown…). | **Started:** `FountainTokenKind` + tests |
-| 3.2 | Implement **line splitter** honoring Fountain newline rules; normalize `\r\n` once at input. | **Started:** `FountainLineEndingNormalizer` + tests (full splitter still TODO) |
+| 3.2 | Implement **line splitter** honoring Fountain newline rules; normalize `\r\n` once at input. | **Done (initial):** `FountainLineSplitter.lines` + `LineSplitterTests` |
 | 3.3 | Implement **title page pre-scan** (before body) consistent with 1.1; **do not** mis-classify body lines like `FADE IN:` as title keys (regression from current fast parser fixes). | **Started:** `TitlePageRegressionTests` |
 | 3.4 | Map **forced prefixes** to tokens: `.` scene, `!` action, `@` character, `~` lyrics, `>` transition (non-centered), etc. | **Started:** `FountainForcedPrefixScanner` + `ForcedPrefixScannerTests` |
-| 3.5 | Replace fragile regex-only checks with **scanner + Regex hybrid**: use `Regex` for **localized** patterns (e.g. scene heading stem), not whole-document substitution. | Performance snapshot on Big Fish |
+| 3.5 | Replace fragile regex-only checks with **scanner + Regex hybrid**: use `Regex` for **localized** patterns (e.g. scene heading stem), not whole-document substitution. | **Started:** `FountainSceneHeadingMatcher` + `BigFishCorpusTests` element-count smoke |
 
 ---
 
@@ -89,10 +89,10 @@ This document turns [Project Specification- Fountain Swift (Next-Gen).md](../Pro
 
 | Step | Action | Done when |
 |------|--------|-----------|
-| 4.1 | **Dialogue block** state machine: Character → optional Parenthetical → Dialogue (multi-line rules per 1.1). | Unit tests from small fixtures |
+| 4.1 | **Dialogue block** state machine: Character → optional Parenthetical → Dialogue (multi-line rules per 1.1). | **Started:** `FountainDialogueBlockRecognizer` + `DialogueBlockRecognizerTests` |
 | 4.2 | **Dual dialogue** (`^`): pair detection and **column** metadata in `attributes`. | Dual-dialogue fixture passes |
 | 4.3 | **Action** merging rules (soft line breaks vs hard breaks) — explicitly match 1.1; **remove reliance on trailing spaces** for forcing; prefer **`!`**. | Tests + doc note |
-| 4.4 | **Centered text** `> ... <` vs **forced transition** `>` — disambiguation per spec. | Regression tests |
+| 4.4 | **Centered text** `> ... <` vs **forced transition** `>` — disambiguation per spec. | **Started:** `ParseStructureTests` |
 | 4.5 | Emit final **`[FNElement]`** list from token stream. | Round-trip: parse → canonical structure matches golden |
 
 ---
@@ -103,11 +103,11 @@ This document turns [Project Specification- Fountain Swift (Next-Gen).md](../Pro
 
 | Step | Action | Done when |
 |------|--------|-----------|
-| 5.1 | **Page breaks** (`===`…): distinct elements; interaction with pagination if you keep `FNPaginator`. | Tests |
-| 5.2 | **Scene numbers** (`#...#` on slugs): capture in attributes; optional `suppressSceneNumbers` flag. | Tests |
-| 5.3 | **Boneyard** `/* ... */`: strip or isolate for **word-count / timing** estimators; verify **not** counted as dialogue. | Tests |
-| 5.4 | **Notes** `[[ ... ]]` per 1.1: element type or annotation model; clarify vs boneyard for exporters. | Tests |
-| 5.5 | **Sections / synopses** (`#`, `##`, `=`): hierarchical depth in attributes. | Tests |
+| 5.1 | **Page breaks** (`===`…): distinct elements; interaction with pagination if you keep `FNPaginator`. | **Started:** `Phase5ProductionFeaturesTests.testPageBreakIsDistinctElement` |
+| 5.2 | **Scene numbers** (`#...#` on slugs): capture in attributes; optional `suppressSceneNumbers` flag. | **Started:** `Phase5ProductionFeaturesTests` (slug capture + `suppressSceneNumbers` export) |
+| 5.3 | **Boneyard** `/* ... */`: strip or isolate for **word-count / timing** estimators; verify **not** counted as dialogue. | **Started:** `FNScript.elementsExcludingBoneyard` + `Phase5ProductionFeaturesTests` |
+| 5.4 | **Notes** `[[ ... ]]` per 1.1: element type or annotation model; clarify vs boneyard for exporters. | **Started:** `Phase5ProductionFeaturesTests.testBracketNoteAfterBlankLine` (`Comment` element) |
+| 5.5 | **Sections / synopses** (`#`, `##`, `=`): hierarchical depth in attributes. | **Started:** `Phase5ProductionFeaturesTests` (depth + synopsis + Codable metadata) |
 
 ---
 
@@ -129,8 +129,8 @@ This document turns [Project Specification- Fountain Swift (Next-Gen).md](../Pro
 
 | Step | Action | Done when |
 |------|--------|-----------|
-| 7.1 | Curate **official-style fixture set**: minimal one-liners per rule + **Big Fish** + **Brick & Steel** + edge cases (forced lines, boneyard, dual). | `Tests/Fixtures/` |
-| 7.2 | Add **structured assertions**: expected `FNElementType` sequences + key attributes (not only string snapshots). | CI stable |
+| 7.1 | Curate **official-style fixture set**: minimal one-liners per rule + **Big Fish** + **Brick & Steel** + edge cases (forced lines, boneyard, dual). | **Started:** `FountainTests/Big Fish.fountain` exercised by `BigFishCorpusTests` (SPM); add `Tests/Fixtures/` mirror as needed |
+| 7.2 | Add **structured assertions**: expected `FNElementType` sequences + key attributes (not only string snapshots). | **Started:** `ParseAssertions` + `ParseStructureTests` |
 | 7.3 | Track **external suite** if one exists (community “standardized Fountain test suite” — integrate or vendor with license check). | Linked in README |
 | 7.4 | **Regression policy:** any parser bugfix adds a **minimal** new fixture. | Team agreement |
 
@@ -185,10 +185,11 @@ Fill as you implement. Link each row to tests.
 | Centered `> <` | 4 | (add) | ☐ |
 | Dual dialogue `^` | 4 | `DualDialogue.fountain` | ☐ |
 | Title page | 3 | `Simple.fountain` | ☐ |
-| Page breaks | 5 | `PageBreaks.fountain` | ☐ |
-| Boneyard | 5 | `Boneyard.fountain` | ☐ |
-| Notes `[[ ]]` | 5 | (add) | ☐ |
-| Sections / synopses | 5 | `SectionHeaders.fountain` | ☐ |
+| Scene numbers `#…#` (slug end) | 5 | `SceneNumbers.fountain`, `Phase5ProductionFeaturesTests` | ☑ |
+| Page breaks | 5 | `PageBreaks.fountain`, `Phase5ProductionFeaturesTests` | ☑ |
+| Boneyard | 5 | `Boneyard.fountain`, `Phase5ProductionFeaturesTests` | ☑ |
+| Notes `[[ ]]` | 5 | `Phase5ProductionFeaturesTests` | ☑ |
+| Sections / synopses | 5 | `SectionHeaders.fountain`, `Phase5ProductionFeaturesTests` | ☑ |
 
 ---
 

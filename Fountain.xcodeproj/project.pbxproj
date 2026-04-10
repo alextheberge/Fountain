@@ -55,6 +55,8 @@
 		AA100D000000000000000001 /* FountainTokenization.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000D000000000000000001 /* FountainTokenization.swift */; };
 		AA100E000000000000000001 /* FountainSyntaxPin.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000E000000000000000001 /* FountainSyntaxPin.swift */; };
 		AA100F000000000000000001 /* FountainForcedPrefix.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000F000000000000000001 /* FountainForcedPrefix.swift */; };
+		AA1020000000000000000001 /* FountainSceneHeadingMatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0020000000000000000001 /* FountainSceneHeadingMatcher.swift */; };
+		AA1021000000000000000001 /* FountainDialogueBlockRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0021000000000000000001 /* FountainDialogueBlockRecognizer.swift */; };
 		AA2001000000000000000001 /* Platform.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0001000000000000000001 /* Platform.swift */; };
 		AA2002000000000000000001 /* String+Regex.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0002000000000000000001 /* String+Regex.swift */; };
 		AA2003000000000000000001 /* FountainRegexes.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0003000000000000000001 /* FountainRegexes.swift */; };
@@ -70,6 +72,8 @@
 		AA200D000000000000000001 /* FountainTokenization.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000D000000000000000001 /* FountainTokenization.swift */; };
 		AA200E000000000000000001 /* FountainSyntaxPin.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000E000000000000000001 /* FountainSyntaxPin.swift */; };
 		AA200F000000000000000001 /* FountainForcedPrefix.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000F000000000000000001 /* FountainForcedPrefix.swift */; };
+		AA2020000000000000000001 /* FountainSceneHeadingMatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0020000000000000000001 /* FountainSceneHeadingMatcher.swift */; };
+		AA2021000000000000000001 /* FountainDialogueBlockRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0021000000000000000001 /* FountainDialogueBlockRecognizer.swift */; };
 		AA4001000000000000000001 /* BaseElementTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA3001000000000000000001 /* BaseElementTests.swift */; };
 		AA4002000000000000000001 /* SceneHeaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA3002000000000000000001 /* SceneHeaderTests.swift */; };
 		AA4003000000000000000001 /* SceneNumberTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA3003000000000000000001 /* SceneNumberTests.swift */; };
@@ -154,6 +158,8 @@
 		AA000D000000000000000001 /* FountainTokenization.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FountainTokenization.swift; sourceTree = "<group>"; };
 		AA000E000000000000000001 /* FountainSyntaxPin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FountainSyntaxPin.swift; sourceTree = "<group>"; };
 		AA000F000000000000000001 /* FountainForcedPrefix.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FountainForcedPrefix.swift; sourceTree = "<group>"; };
+		AA0020000000000000000001 /* FountainSceneHeadingMatcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FountainSceneHeadingMatcher.swift; sourceTree = "<group>"; };
+		AA0021000000000000000001 /* FountainDialogueBlockRecognizer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FountainDialogueBlockRecognizer.swift; sourceTree = "<group>"; };
 		AA0005000000000000000001 /* FastFountainParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FastFountainParser.swift; sourceTree = "<group>"; };
 		AA0006000000000000000001 /* FountainParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FountainParser.swift; sourceTree = "<group>"; };
 		AA0007000000000000000001 /* FountainWriter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FountainWriter.swift; sourceTree = "<group>"; };
@@ -358,6 +364,8 @@
 				AA0007000000000000000001 /* FountainWriter.swift */,
 				AA000B000000000000000001 /* FountainCodable.swift */,
 				AA000F000000000000000001 /* FountainForcedPrefix.swift */,
+				AA0020000000000000000001 /* FountainSceneHeadingMatcher.swift */,
+				AA0021000000000000000001 /* FountainDialogueBlockRecognizer.swift */,
 				AA000D000000000000000001 /* FountainTokenization.swift */,
 				AA0008000000000000000001 /* FNScript.swift */,
 				AA0009000000000000000001 /* FNPaginator.swift */,
@@ -579,6 +587,8 @@
 				AA1008000000000000000001 /* FNScript.swift in Sources */,
 				AA100B000000000000000001 /* FountainCodable.swift in Sources */,
 				AA100F000000000000000001 /* FountainForcedPrefix.swift in Sources */,
+				AA1020000000000000000001 /* FountainSceneHeadingMatcher.swift in Sources */,
+				AA1021000000000000000001 /* FountainDialogueBlockRecognizer.swift in Sources */,
 				AA100D000000000000000001 /* FountainTokenization.swift in Sources */,
 				AA1009000000000000000001 /* FNPaginator.swift in Sources */,
 				AA100A000000000000000001 /* FNHTMLScript.swift in Sources */,
@@ -603,6 +613,8 @@
 				AA2008000000000000000001 /* FNScript.swift in Sources */,
 				AA200B000000000000000001 /* FountainCodable.swift in Sources */,
 				AA200F000000000000000001 /* FountainForcedPrefix.swift in Sources */,
+				AA2020000000000000000001 /* FountainSceneHeadingMatcher.swift in Sources */,
+				AA2021000000000000000001 /* FountainDialogueBlockRecognizer.swift in Sources */,
 				AA200D000000000000000001 /* FountainTokenization.swift in Sources */,
 				AA2009000000000000000001 /* FNPaginator.swift in Sources */,
 				AA200A000000000000000001 /* FNHTMLScript.swift in Sources */,

@@ -84,6 +84,6 @@ Legend: **Y** = supported in practice, **P** = partial / edge-case risk, **N** =
 
 ## Next steps (from roadmap)
 
-1. Expand this matrix with **test fixture IDs** per row (link to `Tests/FountainPackageTests/Fixtures/` and Xcode `FountainTests` corpora).
+1. Expand this matrix with **test fixture IDs** per row (link to `Tests/FountainPackageTests/Fixtures/`, `Phase5ProductionFeaturesTests`, `BigFishCorpusTests`, and Xcode `FountainTests` corpora).
 2. Phase 2: replace legacy `FNElement` **class** with a `Codable` struct (or dual-stack with explicit migration).
 3. Phase 3–4: line tokenizer + block builder; retire regex-only body parse incrementally.

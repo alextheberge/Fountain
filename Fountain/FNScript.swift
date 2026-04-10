@@ -137,3 +137,10 @@ public class FNScript: CustomStringConvertible {
         }
     }
 }
+
+extension FNScript {
+    /// Body elements excluding boneyard (`/* … */`) regions — for word-count, timing, or dialogue metrics (Phase 5.3).
+    public var elementsExcludingBoneyard: [FNElement] {
+        elements.filter { $0.elementType != FNElementType.boneyard.rawValue }
+    }
+}

@@ -18,6 +18,15 @@ public enum FountainLineEndingNormalizer {
     }
 }
 
+/// Splits normalized Fountain source into lines (Phase 3.2).
+public enum FountainLineSplitter {
+    /// Returns lines separated by `\n`, preserving empty lines (Fountain blank lines matter).
+    public static func lines(from text: String, normalizeLineEndings: Bool = true) -> [String] {
+        let s = normalizeLineEndings ? FountainLineEndingNormalizer.normalize(text) : text
+        return s.split(separator: "\n", omittingEmptySubsequences: false).map(String.init)
+    }
+}
+
 // MARK: - Token vocabulary (Phase 3.1)
 
 /// Logical line classifications for a state-aware tokenizer (Phase 3 — universal parser).

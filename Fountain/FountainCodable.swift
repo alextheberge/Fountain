@@ -59,17 +59,22 @@ public struct FountainDocument: Codable, Sendable, Equatable {
     public init(
         titlePage: [[String: [String]]] = [],
         elements: [ScriptElement] = [],
-        fountainSyntaxVersion: String = "1.1"
+        fountainSyntaxVersion: String = FountainSyntaxPin.targetVersionLabel
     ) {
         self.titlePage = titlePage
         self.elements = elements
         self.fountainSyntaxVersion = fountainSyntaxVersion
     }
+
+    /// Interchange snapshot from a parsed screenplay (Phase 2.4 — prefer this for JSON / writers).
+    public init(script: FNScript, fountainSyntaxVersion: String = FountainSyntaxPin.targetVersionLabel) {
+        self = script.asFountainDocument(fountainSyntaxVersion: fountainSyntaxVersion)
+    }
 }
 
 extension FNScript {
     /// Snapshot of this script as a `Codable` document (for JSON, LLM context, etc.).
-    public func asFountainDocument(fountainSyntaxVersion: String = "1.1") -> FountainDocument {
+    public func asFountainDocument(fountainSyntaxVersion: String = FountainSyntaxPin.targetVersionLabel) -> FountainDocument {
         let mapped = elements.map { $0.asScriptElement() }
         return FountainDocument(titlePage: titlePage, elements: mapped, fountainSyntaxVersion: fountainSyntaxVersion)
     }
