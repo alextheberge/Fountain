@@ -1,8 +1,26 @@
-# Xcode
+# macOS
 .DS_Store
-*.swp
-*~.nib
-*/build/*
+.AppleDouble
+.LSOverride
+._*
+Thumbs.db
+
+# Xcode — user-specific & generated
+xcuserdata/
+*.xcuserstate
+*.xccheckout
+*.xcscmblueprint
+*.moved-aside
+DerivedData/
+*.hmap
+*.ipa
+*.dSYM
+*.dSYM.zip
+*.bcsymbolmap
+*.xcresult
+*.xcarchive
+
+# Xcode — legacy per-user project files (pre–xcuserdata layout)
 *.pbxuser
 !default.pbxuser
 *.mode1v3
@@ -11,12 +29,41 @@
 !default.mode2v3
 *.perspectivev3
 !default.perspectivev3
-xcuserdata
-profile
-*.moved-aside
-DerivedData
-.idea/
-*.hmap
 
-#CocoaPods
-Pods
+# Swift Package Manager
+.build/
+.swiftpm/configuration/
+.swiftpm/xcode/package.xcworkspace/contents.xcworkspacedata
+
+# CocoaPods
+Pods/
+
+# Carthage
+Carthage/Build/
+
+# fastlane
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots/**/*.png
+fastlane/test_output
+
+# Ruby / Bundler (tooling)
+vendor/bundle/
+
+# IDEs & editors
+.idea/
+*.swp
+*~
+*.swo
+
+# Environment & secrets (adjust if you commit non-secret env templates)
+.env
+.env.*.local
+
+# Profiling / instruments
+profile
+*.trace
+
+# Deprecated / local build folders
+*/build/
+build/
