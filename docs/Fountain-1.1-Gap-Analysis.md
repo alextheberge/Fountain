@@ -58,7 +58,7 @@ Legend: **Y** = supported in practice, **P** = partial / edge-case risk, **N** =
 | Character / dialogue | Y | |
 | Forced character `@` | P | Verify all spec cases |
 | Parenthetical | Y | |
-| Dual dialogue `^` | P | Verify pairing / HTML |
+| Dual dialogue `^` | P | Column `0`/`1` in metadata; verify pairing / HTML |
 | Lyrics `~` | P | |
 | Transition `TO:` | Y | |
 | Forced transition `>` | P | vs centered `> ... <` |

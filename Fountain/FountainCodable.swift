@@ -12,6 +12,8 @@ public enum FountainMetadataKey: String, Sendable {
     case sceneNumber
     case centered
     case dualDialogue
+    /// `0` = left column, `1` = right column (Fountain `^` cue).
+    case dualDialogueColumn
     case sectionDepth
 }
 
@@ -86,6 +88,7 @@ extension FNElement {
         if let sn = sceneNumber { meta[FountainMetadataKey.sceneNumber.rawValue] = sn }
         if isCentered { meta[FountainMetadataKey.centered.rawValue] = "true" }
         if isDualDialogue { meta[FountainMetadataKey.dualDialogue.rawValue] = "true" }
+        if let col = dualDialogueColumn { meta[FountainMetadataKey.dualDialogueColumn.rawValue] = String(col) }
         if sectionDepth > 0 { meta[FountainMetadataKey.sectionDepth.rawValue] = String(sectionDepth) }
         return ScriptElement(kind: ScriptElementKind(legacyType: elementType), text: elementText, metadata: meta)
     }

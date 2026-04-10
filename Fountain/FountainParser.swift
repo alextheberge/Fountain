@@ -137,6 +137,7 @@ public class FountainParser {
             // Dual dialogue: mark this and the previous Character element
             if i > 1 && element.elementType == "Character" && element.elementText.isMatchedByRegex(DUAL_DIALOGUE_PATTERN) {
                 element.isDualDialogue = true
+                element.dualDialogueColumn = 1
                 element.elementText = element.elementText.replacingOccurrencesOfRegex("\\s*\\^$", withString: "")
 
                 let dialogueBlockTypes: Set<String> = ["Dialogue", "Parenthetical"]
@@ -146,6 +147,7 @@ public class FountainParser {
                     previousElement = elementsArray[j]
                     if previousElement.elementType == "Character" {
                         previousElement.isDualDialogue = true
+                        previousElement.dualDialogueColumn = 0
                         previousElement.elementText = previousElement.elementText.replacingOccurrences(of: "^", with: "")
                     }
                     j -= 1

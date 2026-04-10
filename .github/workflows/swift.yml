@@ -15,3 +15,16 @@ jobs:
         run: swift build
       - name: Swift test
         run: swift test
+      - name: Parser core must not use UIKit/AppKit (Phase 10.2)
+        run: |
+          set -euo pipefail
+          cd Fountain
+          for f in *.swift; do
+            case "$f" in
+              Platform.swift|FNPaginator.swift|FNHTMLScript.swift) continue ;;
+            esac
+            if grep -E 'canImport\(UIKit\)|canImport\(AppKit\)' "$f"; then
+              echo "ERROR: $f must not reference UIKit/AppKit — keep UI in HTML/pagination sources only."
+              exit 1
+            fi
+          done

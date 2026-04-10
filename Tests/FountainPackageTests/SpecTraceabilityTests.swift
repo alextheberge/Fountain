@@ -52,11 +52,17 @@ final class SpecTraceabilityTests: XCTestCase {
         XCTAssertEqual(chars.count, 2)
         XCTAssertTrue(chars[0].isDualDialogue)
         XCTAssertTrue(chars[1].isDualDialogue)
+        XCTAssertEqual(chars[0].dualDialogueColumn, 0)
+        XCTAssertEqual(chars[1].dualDialogueColumn, 1)
         let doc = FountainDocument(script: script)
         let dualFlags = doc.elements.filter { $0.kind == .character }.map {
             $0.metadata[FountainMetadataKey.dualDialogue.rawValue] == "true"
         }
         XCTAssertEqual(dualFlags, [true, true])
+        let columns = doc.elements.filter { $0.kind == .character }.map {
+            $0.metadata[FountainMetadataKey.dualDialogueColumn.rawValue]
+        }
+        XCTAssertEqual(columns, ["0", "1"])
     }
 
     func testTitlePageKeyValueSmoke() {

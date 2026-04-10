@@ -90,7 +90,7 @@ This document turns [Project Specification- Fountain Swift (Next-Gen).md](../Pro
 | Step | Action | Done when |
 |------|--------|-----------|
 | 4.1 | **Dialogue block** state machine: Character → optional Parenthetical → Dialogue (multi-line rules per 1.1). | **Started:** `FountainDialogueBlockRecognizer` + `DialogueBlockRecognizerTests` |
-| 4.2 | **Dual dialogue** (`^`): pair detection and **column** metadata in `attributes`. | **Started:** `SpecTraceabilityTests.testDualDialogueCaretAndCodableMetadata` (`dualDialogue` in `FountainDocument`); column index TBD |
+| 4.2 | **Dual dialogue** (`^`): pair detection and **column** metadata in `attributes`. | **Started:** `SpecTraceabilityTests` (`dualDialogue` + `dualDialogueColumn` `0`/`1` on ``FNElement`` / ``FountainMetadataKey``) |
 | 4.3 | **Action** merging rules (soft line breaks vs hard breaks) — explicitly match 1.1; **remove reliance on trailing spaces** for forcing; prefer **`!`**. | **Started:** `ActionMergingTests` (soft merge + `!` continuation); prefer `!` over whitespace-only “forced” lines (parser still accepts legacy `^\\s{2,}$` action lines — document only) |
 | 4.4 | **Centered text** `> ... <` vs **forced transition** `>` — disambiguation per spec. | **Started:** `ParseStructureTests` |
 | 4.5 | Emit final **`[FNElement]`** list from token stream. | Round-trip: parse → canonical structure matches golden |
@@ -119,7 +119,7 @@ This document turns [Project Specification- Fountain Swift (Next-Gen).md](../Pro
 |------|--------|-----------|
 | 6.1 | Document **two modes**: `plain` (preserve markers in `content`) vs `rich` (parse to `AttributedString` segments). | **Started:** `FountainInlineRenderingMode` + doc comments in `FountainScriptRendering.swift` |
 | 6.2 | Implement **bold / italic / underline** (and `_` where spec applies) with **Fuzzili-safe** parsing (no catastrophic backtracking). | **Started:** `FountainInlineMarkup.htmlFragment` + `FountainInlineMarkupTests`; ``FNHTMLScript`` uses it for HTML |
-| 6.3 | Keep **regex/constants** in one module for **Wasm** reuse. | Same tests run on native target |
+| 6.3 | Keep **regex/constants** in one module for **Wasm** reuse. | **Started:** `FountainInlineDelimiterTable` + `FountainRoadmapExtensionsTests` |
 
 ---
 
@@ -145,7 +145,7 @@ This document turns [Project Specification- Fountain Swift (Next-Gen).md](../Pro
 | 8.1 | Define `FountainWriter` (or `ScriptRenderer`) protocol: `func render(_ document: FNScript) throws -> String` (or associated type for binary PDF). | **Started:** `FountainScriptRendering` + `FountainPlaintextWriter` (`FountainScriptRendering.swift`) |
 | 8.2 | **`HTMLWriter`**: migrate from `FNHTMLScript`; modern CSS (grid/flex); keep **CSS as resource** or string template. | **Started:** ``FNHTMLScript`` conforms to ``FountainScriptRendering`` (`render(_:)`) |
 | 8.3 | **`MarkdownWriter`**: useful for LLM/tooling pipelines. | **Started:** `FountainMarkdownWriter` + `FountainScriptRenderingTests` |
-| 8.4 | **`FDXWriter`** / **`PDFWriter`**: stub behind feature flags or separate products to avoid bloating core. | Roadmap issues filed |
+| 8.4 | **`FDXWriter`** / **`PDFWriter`**: stub behind feature flags or separate products to avoid bloating core. | **Started:** `FountainFDXWriter` / `FountainPDFWriter` + `FountainStubRendererError` |
 
 ---
 
@@ -156,7 +156,7 @@ This document turns [Project Specification- Fountain Swift (Next-Gen).md](../Pro
 | Step | Action | Done when |
 |------|--------|-----------|
 | 9.1 | **`parse(_:)` async**: offload full parse to `Task.detached` or custom executor; **synchronous** wrapper documented as “small docs only.” | **Started:** ``FNScript.parseStringAsync`` / ``parseFileAsync`` + `FNScriptAsyncTests` |
-| 9.2 | **Streaming API** (optional): `AsyncSequence` of elements for preview. | Prototype behind SPI |
+| 9.2 | **Streaming API** (optional): `AsyncSequence` of elements for preview. | **Started:** ``FNScript.scriptElementStream(from:)`` → `AsyncStream<ScriptElement>` (full parse, then yield) |
 | 9.3 | **Incremental parse** (advanced): diff by line map; **last** after baseline is solid. | Spike doc + go/no-go |
 
 ---
@@ -166,7 +166,7 @@ This document turns [Project Specification- Fountain Swift (Next-Gen).md](../Pro
 | Step | Action | Done when |
 |------|--------|-----------|
 | 10.1 | **SPM** is default distribution; tag semver. | Release doc |
-| 10.2 | **Conditional compilation:** `#if canImport(UIKit)` only in **render** or **sample** targets, not in parser. | Grep guard in CI |
+| 10.2 | **Conditional compilation:** `#if canImport(UIKit)` only in **render** or **sample** targets, not in parser. | **Started:** `.github/workflows/swift.yml` greps `Fountain/*.swift` excluding `Platform` / `FNPaginator` / `FNHTMLScript` |
 | 10.3 | **SwiftWasm** (stretch): build script + CI matrix entry; document unsupported APIs. | Issue or doc “experimental” |
 
 ---
@@ -183,7 +183,7 @@ Fill as you implement. Link each row to tests.
 | Forced transition `>` | 3–4 | `SpecTraceabilityTests` | ☑ |
 | Lyrics `~` | 3–4 | `SpecTraceabilityTests` | ☑ |
 | Centered `> <` | 4 | `SpecTraceabilityTests`, `ParseStructureTests` | ☑ |
-| Dual dialogue `^` | 4 | `DualDialogue.fountain`, `SpecTraceabilityTests` | ☑ |
+| Dual dialogue `^` + column metadata | 4 | `DualDialogue.fountain`, `SpecTraceabilityTests` | ☑ |
 | Title page | 3 | `Simple.fountain`, `SpecTraceabilityTests`, `TitlePageRegressionTests` | ☑ |
 | Scene numbers `#…#` (slug end) | 5 | `SceneNumbers.fountain`, `Phase5ProductionFeaturesTests` | ☑ |
 | Page breaks | 5 | `PageBreaks.fountain`, `Phase5ProductionFeaturesTests` | ☑ |

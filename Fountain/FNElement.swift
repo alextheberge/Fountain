@@ -36,6 +36,8 @@ public class FNElement: CustomStringConvertible {
     // Type-specific properties
     public var sceneNumber: String? = nil
     public var isDualDialogue: Bool = false
+    /// When ``isDualDialogue`` is true: `0` = left column (first cue), `1` = right column (cue with trailing `^`).
+    public var dualDialogueColumn: Int? = nil
     public var sectionDepth: Int = 0
 
     public init() {}

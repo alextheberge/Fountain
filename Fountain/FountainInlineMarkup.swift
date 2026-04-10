@@ -71,12 +71,7 @@ public enum FountainInlineMarkup {
         i: String.Index,
         end: String.Index
     ) -> String.Index? {
-        let rules: [(open: String, close: String, front: String, back: String)] = [
-            ("_***", "***_", "<strong><em><u>", "</u></em></strong>"),
-            ("_**", "**_", "<strong><u>", "</u></strong>"),
-            ("_*", "*_", "<em><u>", "</u></em>"),
-        ]
-        for rule in rules {
+        for rule in FountainInlineDelimiterTable.underscoreLedEmphasis {
             guard source[i...].hasPrefix(rule.open) else { continue }
             let innerStart = source.index(i, offsetBy: rule.open.count)
             guard let closeStart = findClosingDelimiter(in: source, from: innerStart, end: end, candidates: [rule.close]) else {
@@ -84,9 +79,9 @@ public enum FountainInlineMarkup {
             }
             let inner = source[innerStart..<closeStart]
             guard innerValidForLegacy(inner) else { continue }
-            out.append(rule.front)
+            out.append(rule.htmlOpen)
             out.append(escapeHtml(inner))
-            out.append(rule.back)
+            out.append(rule.htmlClose)
             return source.index(closeStart, offsetBy: rule.close.count)
         }
         return nil
@@ -100,13 +95,7 @@ public enum FountainInlineMarkup {
         i: String.Index,
         end: String.Index
     ) -> String.Index? {
-        let rules: [(open: String, close: String, front: String, back: String)] = [
-            ("***_", "_***", "<strong><em><u>", "</u></em></strong>"),
-            ("***", "***", "<strong><em>", "</em></strong>"),
-            ("**_", "_**", "<strong><u>", "</u></strong>"),
-            ("**", "**", "<strong>", "</strong>"),
-        ]
-        for rule in rules {
+        for rule in FountainInlineDelimiterTable.starLedEmphasis {
             guard source[i...].hasPrefix(rule.open) else { continue }
             let innerStart = source.index(i, offsetBy: rule.open.count)
             guard let closeStart = findClosingDelimiter(in: source, from: innerStart, end: end, candidates: [rule.close]) else {
@@ -114,9 +103,9 @@ public enum FountainInlineMarkup {
             }
             let inner = source[innerStart..<closeStart]
             guard innerValidForLegacy(inner) else { continue }
-            out.append(rule.front)
+            out.append(rule.htmlOpen)
             out.append(escapeHtml(inner))
-            out.append(rule.back)
+            out.append(rule.htmlClose)
             return source.index(closeStart, offsetBy: rule.close.count)
         }
         return nil
@@ -131,7 +120,8 @@ public enum FountainInlineMarkup {
         guard source[i] == "*" else { return nil }
         let innerStart = source.index(after: i)
         guard innerStart < end else { return nil }
-        guard let closeStart = findClosingDelimiter(in: source, from: innerStart, end: end, candidates: ["*"]) else {
+        let close = FountainInlineDelimiterTable.italicSingleAsteriskClose
+        guard let closeStart = findClosingDelimiter(in: source, from: innerStart, end: end, candidates: [close]) else {
             return nil
         }
         let inner = source[innerStart..<closeStart]

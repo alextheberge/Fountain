@@ -58,6 +58,8 @@ let package = Package(
                 "FountainDialogueBlockRecognizer.swift",
                 "FountainScriptRendering.swift",
                 "FountainInlineMarkup.swift",
+                "FountainInlineDelimiterTable.swift",
+                "FountainStubRenderers.swift",
             ],
             sources: [
                 "FNHTMLScript.swift",

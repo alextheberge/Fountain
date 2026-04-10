@@ -161,4 +161,19 @@ extension FNScript {
             FNScript(file: path)
         }.value
     }
+
+    // MARK: - Phase 9.2 (streaming / preview)
+
+    /// Async stream of ``ScriptElement`` after a **full** parse (handy for UI previews; not incremental).
+    public static func scriptElementStream(from string: String) -> AsyncStream<ScriptElement> {
+        AsyncStream { continuation in
+            Task {
+                let doc = FountainDocument(script: FNScript(string: string))
+                for el in doc.elements {
+                    continuation.yield(el)
+                }
+                continuation.finish()
+            }
+        }
+    }
 }

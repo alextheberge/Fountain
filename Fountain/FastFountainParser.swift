@@ -363,6 +363,7 @@ public class FastFountainParser {
 
                         if line.isMatchedByRegex("\\^\\s*$") {
                             element.isDualDialogue = true
+                            element.dualDialogueColumn = 1
                             element.elementText = element.elementText
                                 .replacingOccurrencesOfRegex("\\s*\\^\\s*$", withString: "")
                             // Walk back to find the previous Character and mark it dual dialogue
@@ -372,6 +373,7 @@ public class FastFountainParser {
                                 let previousElement = elements[searchIndex]
                                 if previousElement.elementType == "Character" {
                                     previousElement.isDualDialogue = true
+                                    previousElement.dualDialogueColumn = 0
                                     foundPreviousCharacter = true
                                 }
                                 searchIndex -= 1
