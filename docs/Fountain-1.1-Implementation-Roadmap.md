@@ -90,8 +90,8 @@ This document turns [Project Specification- Fountain Swift (Next-Gen).md](../Pro
 | Step | Action | Done when |
 |------|--------|-----------|
 | 4.1 | **Dialogue block** state machine: Character → optional Parenthetical → Dialogue (multi-line rules per 1.1). | **Started:** `FountainDialogueBlockRecognizer` + `DialogueBlockRecognizerTests` |
-| 4.2 | **Dual dialogue** (`^`): pair detection and **column** metadata in `attributes`. | Dual-dialogue fixture passes |
-| 4.3 | **Action** merging rules (soft line breaks vs hard breaks) — explicitly match 1.1; **remove reliance on trailing spaces** for forcing; prefer **`!`**. | Tests + doc note |
+| 4.2 | **Dual dialogue** (`^`): pair detection and **column** metadata in `attributes`. | **Started:** `SpecTraceabilityTests.testDualDialogueCaretAndCodableMetadata` (`dualDialogue` in `FountainDocument`); column index TBD |
+| 4.3 | **Action** merging rules (soft line breaks vs hard breaks) — explicitly match 1.1; **remove reliance on trailing spaces** for forcing; prefer **`!`**. | **Started:** `ActionMergingTests` (soft merge + `!` continuation); prefer `!` over whitespace-only “forced” lines (parser still accepts legacy `^\\s{2,}$` action lines — document only) |
 | 4.4 | **Centered text** `> ... <` vs **forced transition** `>` — disambiguation per spec. | **Started:** `ParseStructureTests` |
 | 4.5 | Emit final **`[FNElement]`** list from token stream. | Round-trip: parse → canonical structure matches golden |
 
@@ -117,8 +117,8 @@ This document turns [Project Specification- Fountain Swift (Next-Gen).md](../Pro
 
 | Step | Action | Done when |
 |------|--------|-----------|
-| 6.1 | Document **two modes**: `plain` (preserve markers in `content`) vs `rich` (parse to `AttributedString` segments). | Public API documented |
-| 6.2 | Implement **bold / italic / underline** (and `_` where spec applies) with **Fuzzili-safe** parsing (no catastrophic backtracking). | Golden strings |
+| 6.1 | Document **two modes**: `plain` (preserve markers in `content`) vs `rich` (parse to `AttributedString` segments). | **Started:** `FountainInlineRenderingMode` + doc comments in `FountainScriptRendering.swift` |
+| 6.2 | Implement **bold / italic / underline** (and `_` where spec applies) with **Fuzzili-safe** parsing (no catastrophic backtracking). | **Started:** `FountainInlineMarkup.htmlFragment` + `FountainInlineMarkupTests`; ``FNHTMLScript`` uses it for HTML |
 | 6.3 | Keep **regex/constants** in one module for **Wasm** reuse. | Same tests run on native target |
 
 ---
@@ -131,8 +131,8 @@ This document turns [Project Specification- Fountain Swift (Next-Gen).md](../Pro
 |------|--------|-----------|
 | 7.1 | Curate **official-style fixture set**: minimal one-liners per rule + **Big Fish** + **Brick & Steel** + edge cases (forced lines, boneyard, dual). | **Started:** `FountainTests/Big Fish.fountain` exercised by `BigFishCorpusTests` (SPM); add `Tests/Fixtures/` mirror as needed |
 | 7.2 | Add **structured assertions**: expected `FNElementType` sequences + key attributes (not only string snapshots). | **Started:** `ParseAssertions` + `ParseStructureTests` |
-| 7.3 | Track **external suite** if one exists (community “standardized Fountain test suite” — integrate or vendor with license check). | Linked in README |
-| 7.4 | **Regression policy:** any parser bugfix adds a **minimal** new fixture. | Team agreement |
+| 7.3 | Track **external suite** if one exists (community “standardized Fountain test suite” — integrate or vendor with license check). | **Started:** README § other implementations & fixtures |
+| 7.4 | **Regression policy:** any parser bugfix adds a **minimal** new fixture. | **Started:** [CONTRIBUTING.md](../CONTRIBUTING.md) |
 
 ---
 
@@ -142,9 +142,9 @@ This document turns [Project Specification- Fountain Swift (Next-Gen).md](../Pro
 
 | Step | Action | Done when |
 |------|--------|-----------|
-| 8.1 | Define `FountainWriter` (or `ScriptRenderer`) protocol: `func render(_ document: FNScript) throws -> String` (or associated type for binary PDF). | Protocol in core |
-| 8.2 | **`HTMLWriter`**: migrate from `FNHTMLScript`; modern CSS (grid/flex); keep **CSS as resource** or string template. | Visual/regression optional |
-| 8.3 | **`MarkdownWriter`**: useful for LLM/tooling pipelines. | Tests |
+| 8.1 | Define `FountainWriter` (or `ScriptRenderer`) protocol: `func render(_ document: FNScript) throws -> String` (or associated type for binary PDF). | **Started:** `FountainScriptRendering` + `FountainPlaintextWriter` (`FountainScriptRendering.swift`) |
+| 8.2 | **`HTMLWriter`**: migrate from `FNHTMLScript`; modern CSS (grid/flex); keep **CSS as resource** or string template. | **Started:** ``FNHTMLScript`` conforms to ``FountainScriptRendering`` (`render(_:)`) |
+| 8.3 | **`MarkdownWriter`**: useful for LLM/tooling pipelines. | **Started:** `FountainMarkdownWriter` + `FountainScriptRenderingTests` |
 | 8.4 | **`FDXWriter`** / **`PDFWriter`**: stub behind feature flags or separate products to avoid bloating core. | Roadmap issues filed |
 
 ---
@@ -155,7 +155,7 @@ This document turns [Project Specification- Fountain Swift (Next-Gen).md](../Pro
 
 | Step | Action | Done when |
 |------|--------|-----------|
-| 9.1 | **`parse(_:)` async**: offload full parse to `Task.detached` or custom executor; **synchronous** wrapper documented as “small docs only.” | UI test / benchmark on Big Fish |
+| 9.1 | **`parse(_:)` async**: offload full parse to `Task.detached` or custom executor; **synchronous** wrapper documented as “small docs only.” | **Started:** ``FNScript.parseStringAsync`` / ``parseFileAsync`` + `FNScriptAsyncTests` |
 | 9.2 | **Streaming API** (optional): `AsyncSequence` of elements for preview. | Prototype behind SPI |
 | 9.3 | **Incremental parse** (advanced): diff by line map; **last** after baseline is solid. | Spike doc + go/no-go |
 
@@ -177,14 +177,14 @@ Fill as you implement. Link each row to tests.
 
 | Fountain 1.1 topic | Phase(s) | Test fixture | Status |
 |--------------------|----------|--------------|--------|
-| Forced scene heading `.` | 3–4 | (add) | ☐ |
-| Forced action `!` | 3–4 | (add) | ☐ |
-| Forced character `@` | 3–4 | (add) | ☐ |
-| Forced transition `>` | 3–4 | (add) | ☐ |
-| Lyrics `~` | 3–4 | (add) | ☐ |
-| Centered `> <` | 4 | (add) | ☐ |
-| Dual dialogue `^` | 4 | `DualDialogue.fountain` | ☐ |
-| Title page | 3 | `Simple.fountain` | ☐ |
+| Forced scene heading `.` | 3–4 | `SpecTraceabilityTests` | ☑ |
+| Forced action `!` | 3–4 | `SpecTraceabilityTests` | ☑ |
+| Forced character `@` | 3–4 | `SpecTraceabilityTests` | ☑ |
+| Forced transition `>` | 3–4 | `SpecTraceabilityTests` | ☑ |
+| Lyrics `~` | 3–4 | `SpecTraceabilityTests` | ☑ |
+| Centered `> <` | 4 | `SpecTraceabilityTests`, `ParseStructureTests` | ☑ |
+| Dual dialogue `^` | 4 | `DualDialogue.fountain`, `SpecTraceabilityTests` | ☑ |
+| Title page | 3 | `Simple.fountain`, `SpecTraceabilityTests`, `TitlePageRegressionTests` | ☑ |
 | Scene numbers `#…#` (slug end) | 5 | `SceneNumbers.fountain`, `Phase5ProductionFeaturesTests` | ☑ |
 | Page breaks | 5 | `PageBreaks.fountain`, `Phase5ProductionFeaturesTests` | ☑ |
 | Boneyard | 5 | `Boneyard.fountain`, `Phase5ProductionFeaturesTests` | ☑ |

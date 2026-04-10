@@ -144,3 +144,21 @@ extension FNScript {
         elements.filter { $0.elementType != FNElementType.boneyard.rawValue }
     }
 }
+
+// MARK: - Phase 9.1 (async parse)
+
+extension FNScript {
+    /// Parses on a detached task so callers can `await` without blocking the caller’s executor. Prefer synchronous ``init(string:)`` for tiny snippets.
+    public static func parseStringAsync(_ string: String) async -> FNScript {
+        await Task.detached {
+            FNScript(string: string)
+        }.value
+    }
+
+    /// Async variant of ``init(file:)`` using the default fast parser.
+    public static func parseFileAsync(_ path: String) async -> FNScript {
+        await Task.detached {
+            FNScript(file: path)
+        }.value
+    }
+}

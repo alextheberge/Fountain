@@ -56,6 +56,8 @@ let package = Package(
                 "FountainForcedPrefix.swift",
                 "FountainSceneHeadingMatcher.swift",
                 "FountainDialogueBlockRecognizer.swift",
+                "FountainScriptRendering.swift",
+                "FountainInlineMarkup.swift",
             ],
             sources: [
                 "FNHTMLScript.swift",

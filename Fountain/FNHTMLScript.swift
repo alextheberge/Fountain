@@ -209,14 +209,8 @@ public class FNHTMLScript {
                     text = text.replacingOccurrencesOfRegex("^\\!", withString: "")
                 }
 
-                // Apply inline styling
-                text = text.replacingOccurrencesOfRegex(BOLD_ITALIC_UNDERLINE_PATTERN, withString: "<strong><em><u>$2</strong></em></u>")
-                text = text.replacingOccurrencesOfRegex(BOLD_ITALIC_PATTERN,           withString: "<strong><em>$2</strong></em>")
-                text = text.replacingOccurrencesOfRegex(BOLD_UNDERLINE_PATTERN,        withString: "<strong><u>$2</u></strong>")
-                text = text.replacingOccurrencesOfRegex(ITALIC_UNDERLINE_PATTERN,      withString: "<em><u>$2</em></u>")
-                text = text.replacingOccurrencesOfRegex(BOLD_PATTERN,                  withString: "<strong>$2</strong>")
-                text = text.replacingOccurrencesOfRegex(ITALIC_PATTERN,                withString: "<em>$2</em>")
-                text = text.replacingOccurrencesOfRegex(UNDERLINE_PATTERN,             withString: "<u>$2</u>")
+                // Apply inline styling (Phase 6.2 — linear scan shared with tests)
+                text = FountainInlineMarkup.htmlFragment(from: text)
 
                 // Strip inline comments
                 text = text.replacingOccurrencesOfRegex("\\[{2}(.*?)\\]{2}", withString: "")
@@ -230,5 +224,21 @@ public class FNHTMLScript {
         }
 
         return body
+    }
+}
+
+// MARK: - Phase 8.2 (FountainScriptRendering)
+
+extension FNHTMLScript: FountainScriptRendering {
+    /// Renders full HTML. When `script` matches this instance’s script, cached body text is reused; otherwise a sibling renderer is built with the same font.
+    public func render(_ script: FNScript) throws -> String {
+        let doc: FNHTMLScript
+        if script === self.script {
+            doc = self
+        } else {
+            doc = FNHTMLScript(script: script)
+            doc.font = font
+        }
+        return doc.html()
     }
 }

@@ -69,7 +69,7 @@ Legend: **Y** = supported in practice, **P** = partial / edge-case risk, **N** =
 | Boneyard `/* */` | P | Metrics/export semantics |
 | Notes `[[ ]]` | P | |
 | Scene numbers `#..#` on slug | P | |
-| Inline bold/italic/underline | P | Passed through; not `AttributedString` |
+| Inline bold/italic/underline | P | `FountainInlineMarkup.htmlFragment` for HTML (linear scan); still not `AttributedString` |
 
 ---
 
@@ -79,6 +79,7 @@ Legend: **Y** = supported in practice, **P** = partial / edge-case risk, **N** =
 |------|--------|
 | Xcode project | Y — primary |
 | SwiftPM `Package.swift` | **Started** — `swift build` / `swift test`; `FountainCore` / `FountainHTML` / umbrella `Fountain`; CI on `master` via GitHub Actions |
+| Contributor workflow | **Started** — [CONTRIBUTING.md](../CONTRIBUTING.md); `FountainScriptRendering` protocol for pluggable writers (Phase 8.1) |
 
 ---
 
