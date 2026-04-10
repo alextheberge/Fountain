@@ -28,6 +28,10 @@ import UIKit
 import AppKit
 #endif
 
+#if SWIFT_PACKAGE
+import FountainCore
+#endif
+
 public class FNHTMLScript {
     public var font: PlatformFont
     public let script: FNScript
@@ -66,8 +70,16 @@ public class FNHTMLScript {
 
     // MARK: - Private
 
+    private static var resourcesBundle: Bundle {
+        #if SWIFT_PACKAGE
+        return Bundle.module
+        #else
+        return Bundle.main
+        #endif
+    }
+
     private var cssText: String {
-        guard let path = Bundle.main.path(forResource: "ScriptCSS", ofType: "css"),
+        guard let path = Self.resourcesBundle.path(forResource: "ScriptCSS", ofType: "css"),
               let css = try? String(contentsOfFile: path, encoding: .utf8) else {
             print("Couldn't load CSS")
             return ""

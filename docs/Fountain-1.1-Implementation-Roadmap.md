@@ -34,7 +34,7 @@ This document turns [Project Specification- Fountain Swift (Next-Gen).md](../Pro
 
 | Step | Action | Done when |
 |------|--------|-----------|
-| 0.1 | Inventory current parsers (`FastFountainParser`, `FountainParser`, legacy ObjC) and **list gaps vs Fountain 1.1** (forced rules, boneyard, notes, dual dialogue, etc.). | Written matrix: *feature → file → supported?* |
+| 0.1 | Inventory current parsers (`FastFountainParser`, `FountainParser`, legacy ObjC) and **list gaps vs Fountain 1.1** (forced rules, boneyard, notes, dual dialogue, etc.). | **Started:** [Fountain-1.1-Gap-Analysis.md](Fountain-1.1-Gap-Analysis.md) |
 | 0.2 | Inventory **all regex patterns** (`FountainRegexes.swift` / `.m`) and mark which are **spec-critical** vs **styling-only**. | Table + link to spec sections |
 | 0.3 | Decide **deprecation policy**: keep legacy targets for one release, feature-flag, or hard cut. | ADR or README section |
 | 0.4 | Add **pin** to Fountain syntax version you’re targeting (1.1 + any errata). | Comment in repo + link in README |
@@ -49,7 +49,7 @@ This document turns [Project Specification- Fountain Swift (Next-Gen).md](../Pro
 
 | Step | Action | Done when |
 |------|--------|-----------|
-| 1.1 | Create `Package.swift` with a **`FountainCore`** (or `Fountain`) **library product** — pure Swift, **no** UI frameworks. | `swift build` succeeds on macOS |
+| 1.1 | Create `Package.swift` with **`FountainCore`** + **`FountainHTML`** + umbrella **`Fountain`** — core has **no** UI frameworks; HTML target holds AppKit/UIKit usage. | **Done (initial):** `swift build` + `swift test` at repo root; products `Fountain`, `FountainCore`, `FountainHTML` |
 | 1.2 | Move or duplicate **model + parse + write** into the package; keep sample apps consuming the package (or same sources via careful symlink — prefer package as source of truth). | Apps build against package |
 | 1.3 | Define **public API surface** (`FNScript`, element types, errors). Mark experimental APIs `@_spi` or nested `FountainCore.Experimental` if needed. | Doc comments on public types |
 | 1.4 | **CI:** `swift build` + `swift test` on macOS (Linux where possible; Wasm later). | Workflow green |

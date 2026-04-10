@@ -88,14 +88,15 @@ let DUAL_DIALOGUE_PATTERN  = "\\^\\s*$"
 let CENTERED_TEXT_PATTERN  = "^>[^<>\\n]+<"
 
 // MARK: - Styling patterns (for FDX / HTML)
+// Public so `FountainHTML` (separate SwiftPM target) can share the same patterns as the parser.
 
-let BOLD_ITALIC_UNDERLINE_PATTERN = "(_\\*{3}|\\*{3}_)([^<>]+)(_\\*{3}|\\*{3}_)"
-let BOLD_ITALIC_PATTERN           = "(\\*{3})([^<>]+)(\\*{3})"
-let BOLD_UNDERLINE_PATTERN        = "(_\\*{2}|\\*{2}_)([^<>]+)(_\\*{2}|\\*{2}_)"
-let ITALIC_UNDERLINE_PATTERN      = "(_\\*{1}|\\*{1}_)([^<>]+)(_\\*{1}|\\*{1}_)"
-let BOLD_PATTERN                  = "(\\*{2})([^<>]+)(\\*{2})"
-let ITALIC_PATTERN                = "(?<!\\\\)(\\*{1})([^<>]+)(\\*{1})"
-let UNDERLINE_PATTERN             = "(_)([^<>_]+)(_)"
+public let BOLD_ITALIC_UNDERLINE_PATTERN = "(_\\*{3}|\\*{3}_)([^<>]+)(_\\*{3}|\\*{3}_)"
+public let BOLD_ITALIC_PATTERN           = "(\\*{3})([^<>]+)(\\*{3})"
+public let BOLD_UNDERLINE_PATTERN        = "(_\\*{2}|\\*{2}_)([^<>]+)(_\\*{2}|\\*{2}_)"
+public let ITALIC_UNDERLINE_PATTERN      = "(_\\*{1}|\\*{1}_)([^<>]+)(_\\*{1}|\\*{1}_)"
+public let BOLD_PATTERN                  = "(\\*{2})([^<>]+)(\\*{2})"
+public let ITALIC_PATTERN                = "(?<!\\\\)(\\*{1})([^<>]+)(\\*{1})"
+public let UNDERLINE_PATTERN             = "(_)([^<>_]+)(_)"
 
 // MARK: - Styling templates
 

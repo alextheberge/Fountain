@@ -28,6 +28,10 @@ import UIKit
 import AppKit
 #endif
 
+#if SWIFT_PACKAGE
+import FountainCore
+#endif
+
 public class FNPaginator {
     private let script: FNScript
     private var pages: [[FNElement]] = []

@@ -16,8 +16,10 @@ A **planned** refresh targets **full Fountain 1.1** compliance, a **Swift-native
 
 - **Phased implementation plan:** [docs/Fountain-1.1-Implementation-Roadmap.md](docs/Fountain-1.1-Implementation-Roadmap.md) — actionable steps, acceptance criteria, and a spec traceability matrix.
 - **Design goals:** [Project Specification: Fountain Swift (Next-Gen)](Project%20Specification-%20Fountain%20Swift%20(Next-Gen).md).
+- **Gap analysis (WIP):** [docs/Fountain-1.1-Gap-Analysis.md](docs/Fountain-1.1-Gap-Analysis.md).
+- **SwiftPM (started):** `Package.swift` at the repo root defines **`FountainCore`** (parse/model/write, no UI), **`FountainHTML`** (`FNHTMLScript`, `FNPaginator`, `Platform`, CSS resource), and an umbrella **`Fountain`** product that re-exports both (import **`Fountain`** in apps). Objective-C `Legacy/` is excluded. The manifest package name is **`FountainSwiftPM`** so it does not collide with the `Fountain` library target under `swift test`. From the repository root run **`swift build`** and **`swift test`** (macOS 12+ / Swift 5.9+). `FNHTMLScript` loads `ScriptCSS.css` via `Bundle.module` when built as a package.
 
-Contributors: use the roadmap to scope issues and PRs; update the roadmap when phases complete or the spec pin changes.
+Contributors: use the roadmap to scope issues and PRs; update the roadmap and gap analysis when phases complete or the spec pin changes.
 
 ## Overview
 

@@ -32,7 +32,7 @@ extension String {
         return regex.firstMatch(in: self, options: [], range: range) != nil
     }
 
-    func replacingOccurrencesOfRegex(_ pattern: String, withString template: String, options: NSRegularExpression.Options = []) -> String {
+    public func replacingOccurrencesOfRegex(_ pattern: String, withString template: String, options: NSRegularExpression.Options = []) -> String {
         guard let regex = try? NSRegularExpression(pattern: pattern, options: options) else { return self }
         let range = NSRange(self.startIndex..., in: self)
         return regex.stringByReplacingMatches(in: self, options: [], range: range, withTemplate: template)
@@ -58,7 +58,7 @@ extension String {
     }
 
     // Returns the text of the specified capture group for every match.
-    func componentsMatchedByRegex(_ pattern: String, capture: Int) -> [String] {
+    public func componentsMatchedByRegex(_ pattern: String, capture: Int) -> [String] {
         guard let regex = try? NSRegularExpression(pattern: pattern) else { return [] }
         let nsRange = NSRange(self.startIndex..., in: self)
         let matches = regex.matches(in: self, options: [], range: nsRange)
