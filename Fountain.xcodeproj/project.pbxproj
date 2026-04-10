@@ -3,11 +3,10 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 46;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
-		/* Resource build files — unchanged */
 		146059FF17E8FE1B00B7B611 /* SceneHeaders.fountain in Resources */ = {isa = PBXBuildFile; fileRef = 146059FE17E8FE1B00B7B611 /* SceneHeaders.fountain */; };
 		14605A3017E900AF00B7B611 /* Boneyard.fountain in Resources */ = {isa = PBXBuildFile; fileRef = 14605A2417E900AF00B7B611 /* Boneyard.fountain */; };
 		14605A3117E900AF00B7B611 /* CenteredText.fountain in Resources */ = {isa = PBXBuildFile; fileRef = 14605A2517E900AF00B7B611 /* CenteredText.fountain */; };
@@ -21,33 +20,26 @@
 		14605A3917E900AF00B7B611 /* SectionHeaders.fountain in Resources */ = {isa = PBXBuildFile; fileRef = 14605A2D17E900AF00B7B611 /* SectionHeaders.fountain */; };
 		14605A3A17E900AF00B7B611 /* Synopses.fountain in Resources */ = {isa = PBXBuildFile; fileRef = 14605A2E17E900AF00B7B611 /* Synopses.fountain */; };
 		14605A3B17E900AF00B7B611 /* Transitions.fountain in Resources */ = {isa = PBXBuildFile; fileRef = 14605A2F17E900AF00B7B611 /* Transitions.fountain */; };
-		14AA1A54178F8FD400BAEED2 /* Sections-Complex.fountain in Resources */ = {isa = PBXBuildFile; fileRef = 14AA1A53178F8FD400BAEED2 /* Sections-Complex.fountain */; };
-		3C8CD0E314DF589E00F18DE6 /* Big Fish.fountain in Resources */ = {isa = PBXBuildFile; fileRef = 3C8CD0E214DF589E00F18DE6 /* Big Fish.fountain */; };
-		3C8CD10714DF7CCC00F18DE6 /* Brick And Steel.txt in Resources */ = {isa = PBXBuildFile; fileRef = 3C8CD10614DF7CCC00F18DE6 /* Brick And Steel.txt */; };
-		3C8CD10F14DFA9D700F18DE6 /* Simple.fountain in Resources */ = {isa = PBXBuildFile; fileRef = 3C8CD10E14DFA9D700F18DE6 /* Simple.fountain */; };
-		3CA5EE5818D3D7B400458AAF /* ForcedElements.fountain in Resources */ = {isa = PBXBuildFile; fileRef = 3CA5EE5718D3D7B400458AAF /* ForcedElements.fountain */; };
-		/* iOS app resources */
+		149D632E17EA93E200DA482C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 149D632D17EA93E200DA482C /* Foundation.framework */; };
+		149D633017EA93E200DA482C /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 149D632F17EA93E200DA482C /* CoreGraphics.framework */; };
+		149D633217EA93E200DA482C /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 149D633117EA93E200DA482C /* UIKit.framework */; };
 		149D633817EA93E200DA482C /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 149D633617EA93E200DA482C /* InfoPlist.strings */; };
 		149D634117EA93E200DA482C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 149D633F17EA93E200DA482C /* Main.storyboard */; };
 		149D634617EA93E200DA482C /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 149D634517EA93E200DA482C /* Images.xcassets */; };
 		149D636D17EA96A300DA482C /* ScriptCSS.css in Resources */ = {isa = PBXBuildFile; fileRef = 3CBFF74315940ACC005EC5BF /* ScriptCSS.css */; };
 		149D636E17EA96BB00DA482C /* Big Fish.fountain in Resources */ = {isa = PBXBuildFile; fileRef = 3C8CD0E214DF589E00F18DE6 /* Big Fish.fountain */; };
-		/* Mac app resources */
+		14AA1A54178F8FD400BAEED2 /* Sections-Complex.fountain in Resources */ = {isa = PBXBuildFile; fileRef = 14AA1A53178F8FD400BAEED2 /* Sections-Complex.fountain */; };
 		3C0BB02E14DF3D55004A90E8 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3C0BB02D14DF3D55004A90E8 /* Cocoa.framework */; };
 		3C0BB03814DF3D55004A90E8 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 3C0BB03614DF3D55004A90E8 /* InfoPlist.strings */; };
+		3C0BB05514DF3D56004A90E8 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 3C0BB05314DF3D56004A90E8 /* InfoPlist.strings */; };
+		3C8CD0E314DF589E00F18DE6 /* Big Fish.fountain in Resources */ = {isa = PBXBuildFile; fileRef = 3C8CD0E214DF589E00F18DE6 /* Big Fish.fountain */; };
+		3C8CD10714DF7CCC00F18DE6 /* Brick And Steel.txt in Resources */ = {isa = PBXBuildFile; fileRef = 3C8CD10614DF7CCC00F18DE6 /* Brick And Steel.txt */; };
+		3C8CD10F14DFA9D700F18DE6 /* Simple.fountain in Resources */ = {isa = PBXBuildFile; fileRef = 3C8CD10E14DFA9D700F18DE6 /* Simple.fountain */; };
+		3CA5EE5818D3D7B400458AAF /* ForcedElements.fountain in Resources */ = {isa = PBXBuildFile; fileRef = 3CA5EE5718D3D7B400458AAF /* ForcedElements.fountain */; };
 		3CBFF73C159407CC005EC5BF /* Application.xib in Resources */ = {isa = PBXBuildFile; fileRef = 3CBFF73B159407CC005EC5BF /* Application.xib */; };
 		3CBFF74115940860005EC5BF /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3CBFF74015940860005EC5BF /* WebKit.framework */; };
 		3CBFF74215940A40005EC5BF /* Big Fish.fountain in Resources */ = {isa = PBXBuildFile; fileRef = 3C8CD0E214DF589E00F18DE6 /* Big Fish.fountain */; };
 		3CBFF74415940ACC005EC5BF /* ScriptCSS.css in Resources */ = {isa = PBXBuildFile; fileRef = 3CBFF74315940ACC005EC5BF /* ScriptCSS.css */; };
-		/* Tests resources */
-		3C0BB05514DF3D56004A90E8 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 3C0BB05314DF3D56004A90E8 /* InfoPlist.strings */; };
-		/* iOS frameworks */
-		149D632E17EA93E200DA482C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 149D632D17EA93E200DA482C /* Foundation.framework */; };
-		149D633017EA93E200DA482C /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 149D632F17EA93E200DA482C /* CoreGraphics.framework */; };
-		149D633217EA93E200DA482C /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 149D633117EA93E200DA482C /* UIKit.framework */; };
-		/* XCTest for FountainTests */
-		AA9001000000000000000001 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 149D634C17EA93E200DA482C /* XCTest.framework */; };
-		/* Fountain Swift sources — iOS target */
 		AA1001000000000000000001 /* Platform.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0001000000000000000001 /* Platform.swift */; };
 		AA1002000000000000000001 /* String+Regex.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0002000000000000000001 /* String+Regex.swift */; };
 		AA1003000000000000000001 /* FountainRegexes.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0003000000000000000001 /* FountainRegexes.swift */; };
@@ -58,7 +50,6 @@
 		AA1008000000000000000001 /* FNScript.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0008000000000000000001 /* FNScript.swift */; };
 		AA1009000000000000000001 /* FNPaginator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0009000000000000000001 /* FNPaginator.swift */; };
 		AA100A000000000000000001 /* FNHTMLScript.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000A000000000000000001 /* FNHTMLScript.swift */; };
-		/* Fountain Swift sources — Mac target */
 		AA2001000000000000000001 /* Platform.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0001000000000000000001 /* Platform.swift */; };
 		AA2002000000000000000001 /* String+Regex.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0002000000000000000001 /* String+Regex.swift */; };
 		AA2003000000000000000001 /* FountainRegexes.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0003000000000000000001 /* FountainRegexes.swift */; };
@@ -69,12 +60,6 @@
 		AA2008000000000000000001 /* FNScript.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0008000000000000000001 /* FNScript.swift */; };
 		AA2009000000000000000001 /* FNPaginator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0009000000000000000001 /* FNPaginator.swift */; };
 		AA200A000000000000000001 /* FNHTMLScript.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA000A000000000000000001 /* FNHTMLScript.swift */; };
-		/* iOS app Swift sources */
-		AA6001000000000000000001 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA5001000000000000000001 /* AppDelegate.swift */; };
-		AA6002000000000000000001 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA5002000000000000000001 /* ViewController.swift */; };
-		/* Mac app Swift source */
-		AA8001000000000000000001 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA7001000000000000000001 /* AppDelegate.swift */; };
-		/* FountainTests Swift sources */
 		AA4001000000000000000001 /* BaseElementTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA3001000000000000000001 /* BaseElementTests.swift */; };
 		AA4002000000000000000001 /* SceneHeaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA3002000000000000000001 /* SceneHeaderTests.swift */; };
 		AA4003000000000000000001 /* SceneNumberTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA3003000000000000000001 /* SceneNumberTests.swift */; };
@@ -94,6 +79,10 @@
 		AA4011000000000000000001 /* BrickAndSteelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA3011000000000000000001 /* BrickAndSteelTests.swift */; };
 		AA4012000000000000000001 /* FNScriptTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA3012000000000000000001 /* FNScriptTests.swift */; };
 		AA4013000000000000000001 /* FountainWriterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA3013000000000000000001 /* FountainWriterTests.swift */; };
+		AA6001000000000000000001 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA5001000000000000000001 /* AppDelegate.swift */; };
+		AA6002000000000000000001 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA5002000000000000000001 /* ViewController.swift */; };
+		AA8001000000000000000001 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA7001000000000000000001 /* AppDelegate.swift */; };
+		AA9001000000000000000001 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 149D634C17EA93E200DA482C /* XCTest.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -107,7 +96,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		/* Test fixture fountain/text files */
 		146059FE17E8FE1B00B7B611 /* SceneHeaders.fountain */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = SceneHeaders.fountain; sourceTree = "<group>"; };
 		14605A2417E900AF00B7B611 /* Boneyard.fountain */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Boneyard.fountain; sourceTree = "<group>"; };
 		14605A2517E900AF00B7B611 /* CenteredText.fountain */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = CenteredText.fountain; sourceTree = "<group>"; };
@@ -121,43 +109,33 @@
 		14605A2D17E900AF00B7B611 /* SectionHeaders.fountain */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = SectionHeaders.fountain; sourceTree = "<group>"; };
 		14605A2E17E900AF00B7B611 /* Synopses.fountain */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Synopses.fountain; sourceTree = "<group>"; };
 		14605A2F17E900AF00B7B611 /* Transitions.fountain */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Transitions.fountain; sourceTree = "<group>"; };
-		14AA1A53178F8FD400BAEED2 /* Sections-Complex.fountain */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "Sections-Complex.fountain"; sourceTree = "<group>"; };
-		3C8CD0E214DF589E00F18DE6 /* Big Fish.fountain */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "Big Fish.fountain"; sourceTree = "<group>"; };
-		3C8CD10614DF7CCC00F18DE6 /* Brick And Steel.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "Brick And Steel.txt"; sourceTree = "<group>"; };
-		3C8CD10E14DFA9D700F18DE6 /* Simple.fountain */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Simple.fountain; sourceTree = "<group>"; };
-		3CA5EE5718D3D7B400458AAF /* ForcedElements.fountain */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ForcedElements.fountain; sourceTree = "<group>"; };
-		/* Frameworks */
+		149D632C17EA93E100DA482C /* Sample Project iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Sample Project iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		149D632D17EA93E200DA482C /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		149D632F17EA93E200DA482C /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		149D633117EA93E200DA482C /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = Library/Frameworks/UIKit.framework; sourceTree = DEVELOPER_DIR; };
+		149D633517EA93E200DA482C /* Sample Project iOS-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Sample Project iOS-Info.plist"; sourceTree = "<group>"; };
+		149D633717EA93E200DA482C /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		149D634017EA93E200DA482C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		149D634517EA93E200DA482C /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		149D634C17EA93E200DA482C /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
+		14AA1A53178F8FD400BAEED2 /* Sections-Complex.fountain */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "Sections-Complex.fountain"; sourceTree = "<group>"; };
+		3C0BB02914DF3D55004A90E8 /* Sample Project Mac.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Sample Project Mac.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		3C0BB02D14DF3D55004A90E8 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		3C0BB03014DF3D55004A90E8 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
 		3C0BB03114DF3D55004A90E8 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		3C0BB03214DF3D55004A90E8 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
-		3CBFF74015940860005EC5BF /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
-		/* Products */
-		149D632C17EA93E100DA482C /* Sample Project iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Sample Project iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		3C0BB02914DF3D55004A90E8 /* Sample Project Mac.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Sample Project Mac.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		3C0BB04A14DF3D56004A90E8 /* FountainTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FountainTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		/* iOS app resources */
-		149D633517EA93E200DA482C /* Sample Project iOS-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Sample Project iOS-Info.plist"; sourceTree = "<group>"; };
-		149D633617EA93E200DA482C /* InfoPlist.strings */ = {isa = PBXVariantGroup; children = (149D633717EA93E200DA482C /* en */,); name = InfoPlist.strings; sourceTree = "<group>"; };
-		149D633717EA93E200DA482C /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		149D633F17EA93E200DA482C /* Main.storyboard */ = {isa = PBXVariantGroup; children = (149D634017EA93E200DA482C /* Base */,); name = Main.storyboard; sourceTree = "<group>"; };
-		149D634017EA93E200DA482C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		149D634517EA93E200DA482C /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
-		/* Mac app resources */
 		3C0BB03514DF3D55004A90E8 /* Fountain-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "Fountain-Info.plist"; path = "../Sample Project Mac/Fountain-Info.plist"; sourceTree = "<group>"; };
-		3C0BB03614DF3D55004A90E8 /* InfoPlist.strings */ = {isa = PBXVariantGroup; children = (3C0BB03714DF3D55004A90E8 /* en */,); name = InfoPlist.strings; path = "../Sample Project Mac"; sourceTree = "<group>"; };
 		3C0BB03714DF3D55004A90E8 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		3CBFF73B159407CC005EC5BF /* Application.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = Application.xib; path = "../Sample Project Mac/Application.xib"; sourceTree = "<group>"; };
-		3CBFF74315940ACC005EC5BF /* ScriptCSS.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = ScriptCSS.css; sourceTree = "<group>"; };
-		/* Tests resources */
+		3C0BB04A14DF3D56004A90E8 /* FountainTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FountainTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3C0BB05214DF3D56004A90E8 /* FountainTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "FountainTests-Info.plist"; sourceTree = "<group>"; };
-		3C0BB05314DF3D56004A90E8 /* InfoPlist.strings */ = {isa = PBXVariantGroup; children = (3C0BB05414DF3D56004A90E8 /* en */,); name = InfoPlist.strings; sourceTree = "<group>"; };
 		3C0BB05414DF3D56004A90E8 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		/* Fountain Swift source files */
+		3C8CD0E214DF589E00F18DE6 /* Big Fish.fountain */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "Big Fish.fountain"; sourceTree = "<group>"; };
+		3C8CD10614DF7CCC00F18DE6 /* Brick And Steel.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "Brick And Steel.txt"; sourceTree = "<group>"; };
+		3C8CD10E14DFA9D700F18DE6 /* Simple.fountain */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Simple.fountain; sourceTree = "<group>"; };
+		3CA5EE5718D3D7B400458AAF /* ForcedElements.fountain */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ForcedElements.fountain; sourceTree = "<group>"; };
+		3CBFF73B159407CC005EC5BF /* Application.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = Application.xib; path = "../Sample Project Mac/Application.xib"; sourceTree = "<group>"; };
+		3CBFF74015940860005EC5BF /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
+		3CBFF74315940ACC005EC5BF /* ScriptCSS.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = ScriptCSS.css; sourceTree = "<group>"; };
 		AA0001000000000000000001 /* Platform.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Platform.swift; sourceTree = "<group>"; };
 		AA0002000000000000000001 /* String+Regex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+Regex.swift"; sourceTree = "<group>"; };
 		AA0003000000000000000001 /* FountainRegexes.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FountainRegexes.swift; sourceTree = "<group>"; };
@@ -168,12 +146,6 @@
 		AA0008000000000000000001 /* FNScript.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FNScript.swift; sourceTree = "<group>"; };
 		AA0009000000000000000001 /* FNPaginator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FNPaginator.swift; sourceTree = "<group>"; };
 		AA000A000000000000000001 /* FNHTMLScript.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FNHTMLScript.swift; sourceTree = "<group>"; };
-		/* iOS app Swift source files */
-		AA5001000000000000000001 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		AA5002000000000000000001 /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		/* Mac app Swift source file */
-		AA7001000000000000000001 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = "../Sample Project Mac/AppDelegate.swift"; sourceTree = "<group>"; };
-		/* FountainTests Swift source files */
 		AA3001000000000000000001 /* BaseElementTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BaseElementTests.swift; sourceTree = "<group>"; };
 		AA3002000000000000000001 /* SceneHeaderTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SceneHeaderTests.swift; sourceTree = "<group>"; };
 		AA3003000000000000000001 /* SceneNumberTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SceneNumberTests.swift; sourceTree = "<group>"; };
@@ -193,6 +165,9 @@
 		AA3011000000000000000001 /* BrickAndSteelTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BrickAndSteelTests.swift; sourceTree = "<group>"; };
 		AA3012000000000000000001 /* FNScriptTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FNScriptTests.swift; sourceTree = "<group>"; };
 		AA3013000000000000000001 /* FountainWriterTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FountainWriterTests.swift; sourceTree = "<group>"; };
+		AA5001000000000000000001 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		AA5002000000000000000001 /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		AA7001000000000000000001 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = "../Sample Project Mac/AppDelegate.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -372,6 +347,15 @@
 			path = Fountain;
 			sourceTree = "<group>";
 		};
+		3C0BB03414DF3D55004A90E8 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				3C0BB03514DF3D55004A90E8 /* Fountain-Info.plist */,
+				3C0BB03614DF3D55004A90E8 /* InfoPlist.strings */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
 		3C0BB05014DF3D56004A90E8 /* FountainTests */ = {
 			isa = PBXGroup;
 			children = (
@@ -414,15 +398,6 @@
 			);
 			name = "Sample Project Mac";
 			path = Fountain;
-			sourceTree = "<group>";
-		};
-		3C0BB03414DF3D55004A90E8 /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				3C0BB03514DF3D55004A90E8 /* Fountain-Info.plist */,
-				3C0BB03614DF3D55004A90E8 /* InfoPlist.strings */,
-			);
-			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -486,7 +461,8 @@
 		3C0BB02014DF3D55004A90E8 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 1700;
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 2610;
 				ORGANIZATIONNAME = "Nima Yousefi";
 				TargetAttributes = {
 					3C0BB04914DF3D56004A90E8 = {
@@ -640,6 +616,42 @@
 		};
 /* End PBXTargetDependency section */
 
+/* Begin PBXVariantGroup section */
+		149D633617EA93E200DA482C /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				149D633717EA93E200DA482C /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		149D633F17EA93E200DA482C /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				149D634017EA93E200DA482C /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		3C0BB03614DF3D55004A90E8 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				3C0BB03714DF3D55004A90E8 /* en */,
+			);
+			name = InfoPlist.strings;
+			path = "../Sample Project Mac";
+			sourceTree = "<group>";
+		};
+		3C0BB05314DF3D56004A90E8 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				3C0BB05414DF3D56004A90E8 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
 /* Begin XCBuildConfiguration section */
 		149D635A17EA93E200DA482C /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -647,6 +659,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = "Sample Project iOS/Sample Project iOS-Info.plist";
@@ -665,6 +678,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				CODE_SIGN_IDENTITY = "";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				ENABLE_NS_ASSERTIONS = NO;
@@ -683,14 +697,31 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
@@ -706,6 +737,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 12.0;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_VERSION = 5.9;
 			};
 			name = Debug;
@@ -714,14 +746,30 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = YES;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
@@ -730,6 +778,8 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 12.0;
 				SDKROOT = macosx;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_VERSION = 5.9;
 			};
 			name = Release;
@@ -737,7 +787,9 @@
 		3C0BB05C14DF3D56004A90E8 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				COMBINE_HIDPI_IMAGES = YES;
+				DEAD_CODE_STRIPPING = YES;
 				ENABLE_TESTABILITY = YES;
 				INFOPLIST_FILE = "$(SRCROOT)/Sample Project Mac/Fountain-Info.plist";
 				MACOSX_DEPLOYMENT_TARGET = 12.0;
@@ -752,7 +804,9 @@
 		3C0BB05D14DF3D56004A90E8 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				COMBINE_HIDPI_IMAGES = YES;
+				DEAD_CODE_STRIPPING = YES;
 				INFOPLIST_FILE = "$(SRCROOT)/Sample Project Mac/Fountain-Info.plist";
 				MACOSX_DEPLOYMENT_TARGET = 12.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.yourcompany.Sample-Project-Mac";
@@ -767,7 +821,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Sample Project Mac.app/Contents/MacOS/Sample Project Mac";
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				COMBINE_HIDPI_IMAGES = YES;
+				DEAD_CODE_STRIPPING = YES;
 				FRAMEWORK_SEARCH_PATHS = "$(DEVELOPER_LIBRARY_DIR)/Frameworks";
 				INFOPLIST_FILE = "FountainTests/FountainTests-Info.plist";
 				MACOSX_DEPLOYMENT_TARGET = 12.0;
@@ -783,7 +839,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/Sample Project Mac.app/Contents/MacOS/Sample Project Mac";
+				CLANG_ENABLE_OBJC_WEAK = YES;
 				COMBINE_HIDPI_IMAGES = YES;
+				DEAD_CODE_STRIPPING = YES;
 				FRAMEWORK_SEARCH_PATHS = "$(DEVELOPER_LIBRARY_DIR)/Frameworks";
 				INFOPLIST_FILE = "FountainTests/FountainTests-Info.plist";
 				MACOSX_DEPLOYMENT_TARGET = 12.0;
