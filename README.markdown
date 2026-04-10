@@ -10,6 +10,15 @@ Fountain is also a good format for archiving screenplays without worry of file-f
 
 For more details on Fountain see [fountain.io](https://fountain.io).
 
+## Work in progress: Fountain 1.1 (Swift next-gen)
+
+A **planned** refresh targets **full Fountain 1.1** compliance, a **Swift-native** parser (no RegexKitLite), a **Codable** element model, **protocol-based** writers (HTML and beyond), and **Swift Package Manager** distribution. This is **not** the behavior of the library today; the current Xcode target remains the supported path until that work lands.
+
+- **Phased implementation plan:** [docs/Fountain-1.1-Implementation-Roadmap.md](docs/Fountain-1.1-Implementation-Roadmap.md) — actionable steps, acceptance criteria, and a spec traceability matrix.
+- **Design goals:** [Project Specification: Fountain Swift (Next-Gen)](Project%20Specification-%20Fountain%20Swift%20(Next-Gen).md).
+
+Contributors: use the roadmap to scope issues and PRs; update the roadmap when phases complete or the spec pin changes.
+
 ## Overview
 
 To encourage and ease integration of Fountain into your own apps we're making our own Fountain code available to you under a permissive MIT license. The code was designed for our own use, so your mileage may vary, but we're hoping this will at least help you get going with Fountain.
