@@ -1,12 +1,17 @@
 // swift-tools-version: 5.9
 // Fountain Swift Package — core vs HTML split + umbrella `Fountain` (see docs/Fountain-1.1-Implementation-Roadmap.md, Phase 10 distribution).
 // Syntax target: `FountainSyntaxPin.targetVersionLabel` (currently 1.1).
+//
+// Phase 10.4: **FountainCore** excludes UI pagination/HTML sources; CoreGraphics/CoreText appear only in
+// `FountainPDFWriter.swift` behind `#if canImport` + wasm32 stub (see ADR-008). **FountainHTML** holds
+// AppKit/UIKit. CI in `.github/workflows/swift.yml` greps both boundaries.
 import PackageDescription
 
 // Package name must differ from the `Fountain` library target to avoid SPM test-runner build cycles.
 let package = Package(
     name: "FountainSwiftPM",
     platforms: [
+        // Apple-only today; Wasm cross-compile uses a Swift SDK (Phase 10.3) without adding `.wasi` here yet.
         .macOS(.v12),
         .iOS(.v15),
     ],

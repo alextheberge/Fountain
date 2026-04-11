@@ -35,7 +35,14 @@ Uses **`swift:6.0.3-noble`** + **`swiftwasm/setup-swiftwasm@v2`** + the script a
 
 ## Parser / UI boundary (Phase 10.2)
 
-Core sources under `Fountain/*.swift` **must not** use `canImport(UIKit|AppKit)` or `import UIKit` / `import AppKit` except in **`Platform.swift`**, **`FNPaginator.swift`**, and **`FNHTMLScript.swift`**. This is enforced in **`.github/workflows/swift.yml`** on every push/PR.
+Core sources under `Fountain/*.swift` **must not** use `canImport(UIKit|AppKit)` or `import UIKit` / `import AppKit` except in **`Platform.swift`**, **`FNPaginator.swift`**, **`FNHTMLScript.swift`**, and **`AppKitFountainTextMeasurer.swift`** (compiled only as **FountainHTML**). This is enforced in **`.github/workflows/swift.yml`** on every push/PR.
+
+## CoreGraphics / CoreText boundary (Phase 10.4)
+
+**FountainCore** must remain buildable for **wasm32** (stub) and any future host **without** linking Apple graphics stacks from random sources.
+
+- The **only** `Fountain/*.swift` file that may use `import CoreGraphics`, `import CoreText`, or `canImport(CoreGraphics|CoreText)` is **`FountainPDFWriter.swift`**, which already gates the real PDF implementation and throws ``FountainStubRendererError`` on Wasm or when CG/CT are unavailable — see [ADR-008-PDF-CoreGraphics-availability.md](ADR-008-PDF-CoreGraphics-availability.md).
+- **`.github/workflows/swift.yml`** runs a second grep (after Phase 10.2) so new Core-only sources cannot accidentally pull CG/CT. If you split PDF into another file, extend that workflow allowlist **and** this section together.
 
 ## Status
 

@@ -21,7 +21,7 @@ jobs:
           cd Fountain
           for f in *.swift; do
             case "$f" in
-              Platform.swift|FNPaginator.swift|FNHTMLScript.swift) continue ;;
+              Platform.swift|FNPaginator.swift|FNHTMLScript.swift|AppKitFountainTextMeasurer.swift) continue ;;
             esac
             if grep -E 'canImport\(UIKit\)|canImport\(AppKit\)' "$f"; then
               echo "ERROR: $f must not reference UIKit/AppKit — keep UI in HTML/pagination sources only."
@@ -29,6 +29,23 @@ jobs:
             fi
             if grep -E '^[[:space:]]*import[[:space:]]+(UIKit|AppKit)[[:space:]]*$' "$f"; then
               echo "ERROR: $f must not import UIKit/AppKit at file scope — keep UI in HTML/pagination sources only."
+              exit 1
+            fi
+          done
+      - name: FountainCore — CoreGraphics / CoreText only in PDF writer (Phase 10.4)
+        run: |
+          set -euo pipefail
+          cd Fountain
+          for f in *.swift; do
+            case "$f" in
+              FountainPDFWriter.swift) continue ;;
+            esac
+            if grep -E 'canImport\(CoreGraphics\)|canImport\(CoreText\)' "$f"; then
+              echo "ERROR: $f must not use canImport(CoreGraphics|CoreText) — isolate CG/CT in FountainPDFWriter.swift (stub on Wasm / missing SDK)."
+              exit 1
+            fi
+            if grep -E '^[[:space:]]*import[[:space:]]+(CoreGraphics|CoreText)[[:space:]]*$' "$f"; then
+              echo "ERROR: $f must not import CoreGraphics/CoreText — keep real PDF drawing in FountainPDFWriter.swift only."
               exit 1
             fi
           done

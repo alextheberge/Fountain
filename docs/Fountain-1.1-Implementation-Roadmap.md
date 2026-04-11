@@ -190,12 +190,14 @@ This document turns [Project Specification- Fountain Swift (Next-Gen).md](../Pro
 
 **Goal:** **SPM-first** distribution, CI guardrails on parser vs UI boundaries, and **Wasm** experiments without blocking **FountainCore** consumers on **Linux** or the browser.
 
+**Status:** **Complete (initial)** — **10.1–10.3** as before; **10.4** closes the **CoreGraphics / CoreText** policy in **FountainCore** (CI grep + `Package.swift` notes + [SwiftWasm-Experimental.md](SwiftWasm-Experimental.md) § **10.4**). **Stretch:** optional **`FountainApple`** product; **Linux** / **wasi** in `Package.swift` when CI adopts those hosts.
+
 | Step | Action | Done when |
 |------|--------|-----------|
 | 10.1 | **SPM** is default distribution; tag semver. | **Done:** [SPM-Release-Checklist.md](SPM-Release-Checklist.md) (default distribution, products table, tagging flow); consumers use package URL + **`import Fountain`** / **`FountainCore`** |
-| 10.2 | **Conditional compilation:** `#if canImport(UIKit)` only in **render** or **sample** targets, not in parser. | **Done:** `.github/workflows/swift.yml` greps `Fountain/*.swift` (excluding `Platform` / `FNPaginator` / `FNHTMLScript`) for `canImport(UIKit\|AppKit)` **and** stray `import UIKit` / `import AppKit` |
+| 10.2 | **Conditional compilation:** `#if canImport(UIKit)` only in **render** or **sample** targets, not in parser. | **Done:** `.github/workflows/swift.yml` greps `Fountain/*.swift` (excluding `Platform` / `FNPaginator` / `FNHTMLScript` / `AppKitFountainTextMeasurer`) for `canImport(UIKit\|AppKit)` **and** stray `import UIKit` / `import AppKit` |
 | 10.3 | **SwiftWasm** (stretch): build script + CI matrix entry; document unsupported APIs. | **Done:** `scripts/build-fountaincore-wasm.sh` + [SwiftWasm-Experimental.md](SwiftWasm-Experimental.md) + manual workflow [`.github/workflows/fountaincore-wasm.yml`](../.github/workflows/fountaincore-wasm.yml) (Actions → **Wasm: FountainCore**) |
-| 10.4 | **Products vs platform APIs:** when **8.5** / **8.6** land, keep **`FountainCore`** buildable on **Wasm/Linux** without linking **CoreGraphics** / UI font stacks unless explicitly opted in — e.g. optional **`FountainApple`** product, **`#if canImport`**, or **SPM** `exclude` rules updated; extend **CI grep** allowlists if new Apple-only files are introduced. | `- [ ]` `Package.swift` + workflow allowlists + [SwiftWasm-Experimental.md](SwiftWasm-Experimental.md) updated in the same PR as **8.5** / **8.6**; no regression on **macOS** `swift test`. |
+| 10.4 | **Products vs platform APIs:** when **8.5** / **8.6** land, keep **`FountainCore`** buildable on **Wasm/Linux** without linking **CoreGraphics** / UI font stacks unless explicitly opted in — e.g. optional **`FountainApple`** product, **`#if canImport`**, or **SPM** `exclude` rules updated; extend **CI grep** allowlists if new Apple-only files are introduced. | **Done:** `Package.swift` documents Core vs HTML / CG split; **`.github/workflows/swift.yml`** Phase **10.4** grep (CG/CT imports and `canImport` only in ``FountainPDFWriter.swift``); [SwiftWasm-Experimental.md](SwiftWasm-Experimental.md) § **10.4**; **macOS** `swift test` green. **Stretch:** **`FountainApple`**; **Linux** / **wasi** platforms when CI commits. |
 
 ---
 
@@ -302,6 +304,7 @@ Fill as you implement. Link each row to tests.
 | SPM distribution + semver tagging | 10 | [SPM-Release-Checklist.md](SPM-Release-Checklist.md) | ☑ |
 | Parser free of UIKit/AppKit (core sources) | 10 | `.github/workflows/swift.yml` (Phase 10.2 grep) | ☑ |
 | Wasm **FountainCore** (optional CI) | 10 | `scripts/build-fountaincore-wasm.sh`, [SwiftWasm-Experimental.md](SwiftWasm-Experimental.md), `fountaincore-wasm.yml` | ☑ |
+| **FountainCore** CoreGraphics / CoreText only in PDF writer (CI) | 10.4 | `.github/workflows/swift.yml` (Phase 10.4 grep); ``FountainPDFWriter.swift`` + [SwiftWasm-Experimental.md](SwiftWasm-Experimental.md) § **10.4** | ☑ |
 | Swift **`Regex` / `RegexBuilder`** + no `NSRegularExpression` in **`String+Regex.swift`** | 11 | [§ Phase 11](#phase-11-regex-modernization-swift-native); `FountainRegexes.swift`, `String+Regex.swift`, Wasm script + [SwiftWasm-Experimental.md](SwiftWasm-Experimental.md) | ☐ |
 | **State-aware default parse** (`FountainParsePipeline`); **`FastFountainParser`** deprecated off default | 12 | [§ Phase 12](#phase-12-canonical-state-aware-parser-default-fnscript); `TokenPipelineFNScriptTests`, `FNScript`, [Public-API-Surface.md](Public-API-Surface.md) | ☐ |
 | **Fast vs tokenPipeline** parity (exhaustive, pre-default-flip) | 12 / 7 | `TokenPipelineFNScriptTests` (incl. Big Fish + **Brick & Steel** file parity), corpus tests, [External-Fountain-Test-References.md](External-Fountain-Test-References.md) | ☐ |
@@ -324,7 +327,7 @@ Fill as you implement. Link each row to tests.
 6. **Phase 6** — Rich text when core parse is stable.  
 7. **Phase 8** — Writers / ``FountainScriptRendering`` (**initial complete** — **8.5–8.8** shipped per Phase 8 table; optional HTML/CSS + Linux PDF backend remain polish).  
 8. **Phase 9** — Async + perf.  
-9. **Phase 10** — SPM / Wasm distribution and parser–UI boundary (roadmap complete; optional Wasm CI is manual); **10.4** when landing **8.5** / **8.6**.  
+9. **Phase 10** — SPM / Wasm distribution, parser–UI boundary (**10.2**), Wasm script + manual CI (**10.3**), and **CoreGraphics/CoreText** containment in **FountainCore** (**10.4**).  
 10. **Phase 11** — Regex modernization (**`FountainRegexes.swift`**, **`String+Regex.swift`**) when raising the Swift/os floor or doing a focused perf/Wasm pass.  
 11. **Phase 12** — **Parity-complete** token pipeline, then **default `FNScript`** on **`FountainParsePipeline`** and **deprecate `FastFountainParser`** from the default path (aligns with the Project Specification *State-Aware Scanner*).  
 12. **Phase 13** — **`FountainUI`** SwiftUI surface (`FountainView`, optional **AttributedString** inline path) when you want native in-app screenplay preview beyond **HTML** / **WKWebView**.  
