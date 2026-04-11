@@ -64,12 +64,14 @@ This document turns [Project Specification- Fountain Swift (Next-Gen).md](../Pro
 
 **Goal:** **Codable**, **Identifiable**, **stable round-trip** to JSON for tooling.
 
+**Status:** **Complete (initial)** — `FNElement` is a **`struct`** with **`Codable`**, **`Identifiable`**, and stable **`id`** carried into ``ScriptElement``; typed metadata remains on ``ScriptElement.metadata`` / ``FountainMetadataKey``. Legacy **Objective-C** `FNElement` in `Fountain/Legacy/` is unchanged for old targets.
+
 | Step | Action | Done when |
 |------|--------|-----------|
-| 2.1 | Introduce **`FNElementType`** `String` enum (or similar) covering **all** 1.1 structural kinds you need (including `pageBreak`, `boneyard`, `synopsis`, `section`, `general`, `note`, etc. — align names with spec vocabulary). | **Started:** `FNElementType` + map to `ScriptElementKind` |
-| 2.2 | Implement **`FNElement`** struct: `id`, `type`, `content`, **`attributes: [String: String]`** (or typed `Metadata` struct with `Codable`) for scene number, section depth, `dualDialogue`, `centered`, etc. | **Started:** `FountainMetadataKey` + `ScriptElement.metadata` + golden JSON (`Tests/FountainPackageTests/Fixtures/`) |
-| 2.3 | Migration shim from **old** `FNElement` class / `elementType: String` if dual-stack period is required. | **Started:** `LegacyInteropTests` (SPM) prove `asFountainDocument()` matches `FNElementType` for a slice |
-| 2.4 | Define **`FNScript`** (or `FountainDocument`) with `elements` + `titlePage` + version metadata. | **Started:** `FountainDocument(script:)` + ``FNScript.fountainDocument`` / ``fountainDocumentJSONData(prettyPrinted:)`` (single ``asFountainDocument()`` snapshot per encode) + `FountainSyntaxPin` |
+| 2.1 | Introduce **`FNElementType`** `String` enum (or similar) covering **all** 1.1 structural kinds you need (including `pageBreak`, `boneyard`, `synopsis`, `section`, `general`, `note`, etc. — align names with spec vocabulary). | **Done:** `FNElementType` + map to `ScriptElementKind` |
+| 2.2 | Implement **`FNElement`** struct: `id`, `type`, `content`, **`attributes: [String: String]`** (or typed `Metadata` struct with `Codable`) for scene number, section depth, `dualDialogue`, `centered`, etc. | **Done (Swift):** `FNElement` struct with `id` + legacy field names (`elementType`, `elementText`, …); scene/section/dual/centered via fields + **also** in ``ScriptElement.metadata`` / ``FountainMetadataKey``; golden JSON in `Tests/FountainPackageTests/Fixtures/` |
+| 2.3 | Migration shim from **old** `FNElement` class / `elementType: String` if dual-stack period is required. | **Done (Swift):** no dual Swift stack; ``LegacyInteropTests`` cover kind alignment, ``FNElement`` JSON round-trip, and **ID parity** ``FNElement`` ↔ ``ScriptElement`` |
+| 2.4 | Define **`FNScript`** (or `FountainDocument`) with `elements` + `titlePage` + version metadata. | **Done:** `FountainDocument(script:)` + ``FNScript.fountainDocument`` / ``fountainDocumentJSONData(prettyPrinted:)`` + ``asFountainDocument()`` + `FountainSyntaxPin` |
 
 ---
 

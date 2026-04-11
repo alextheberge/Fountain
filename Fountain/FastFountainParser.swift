@@ -171,9 +171,10 @@ public class FastFountainParser {
             if line.isMatchedByRegex("^\\s{2}$") && isInsideDialogueBlock {
                 newlinesBefore = 0
                 let lastIndex = elements.count - 1
-                let previousElement = elements[lastIndex]
+                var previousElement = elements[lastIndex]
                 if previousElement.elementType == "Dialogue" {
                     previousElement.elementText = "\(previousElement.elementText)\n\(line)"
+                    elements[lastIndex] = previousElement
                 } else {
                     elements.append(FNElement.element(ofType: "Dialogue", text: line))
                 }
@@ -272,7 +273,7 @@ public class FastFountainParser {
                         print("Error in the Section Heading")
                         continue
                     }
-                    let element = FNElement.element(ofType: "Section Heading", text: text)
+                    var element = FNElement.element(ofType: "Section Heading", text: text)
                     element.sectionDepth = depth
                     elements.append(element)
                 }
@@ -291,7 +292,7 @@ public class FastFountainParser {
                 } else {
                     text = String(line.dropFirst()).trimmingCharacters(in: .whitespaces)
                 }
-                let element = FNElement.element(ofType: "Scene Heading", text: text)
+                var element = FNElement.element(ofType: "Scene Heading", text: text)
                 element.sceneNumber = sceneNumber
                 elements.append(element)
                 continue
@@ -311,7 +312,7 @@ public class FastFountainParser {
                 } else {
                     text = line
                 }
-                let element = FNElement.element(ofType: "Scene Heading", text: text)
+                var element = FNElement.element(ofType: "Scene Heading", text: text)
                 element.sceneNumber = sceneNumber
                 elements.append(element)
                 continue
@@ -339,7 +340,7 @@ public class FastFountainParser {
                     // Centered text: > text <
                     var text = String(line.dropFirst()).trimmingCharacters(in: .whitespaces)
                     text = String(text.dropLast()).trimmingCharacters(in: .whitespaces)
-                    let element = FNElement.element(ofType: "Action", text: text)
+                    var element = FNElement.element(ofType: "Action", text: text)
                     element.isCentered = true
                     elements.append(element)
                     newlinesBefore = 0
@@ -359,7 +360,7 @@ public class FastFountainParser {
                     let nextLine = lines[nextIndex]
                     if !nextLine.isEmpty {
                         newlinesBefore = 0
-                        let element = FNElement.element(ofType: "Character", text: line)
+                        var element = FNElement.element(ofType: "Character", text: line)
 
                         if line.isMatchedByRegex("\\^\\s*$") {
                             element.isDualDialogue = true
@@ -370,10 +371,11 @@ public class FastFountainParser {
                             var foundPreviousCharacter = false
                             var searchIndex = elements.count - 1
                             while searchIndex >= 0 && !foundPreviousCharacter {
-                                let previousElement = elements[searchIndex]
+                                var previousElement = elements[searchIndex]
                                 if previousElement.elementType == "Character" {
                                     previousElement.isDualDialogue = true
                                     previousElement.dualDialogueColumn = 0
+                                    elements[searchIndex] = previousElement
                                     foundPreviousCharacter = true
                                 }
                                 searchIndex -= 1
@@ -394,9 +396,10 @@ public class FastFountainParser {
                     continue
                 } else {
                     let lastIndex = elements.count - 1
-                    let previousElement = elements[lastIndex]
+                    var previousElement = elements[lastIndex]
                     if previousElement.elementType == "Dialogue" {
                         previousElement.elementText = "\(previousElement.elementText)\n\(line)"
+                        elements[lastIndex] = previousElement
                     } else {
                         elements.append(FNElement.element(ofType: "Dialogue", text: line))
                     }
@@ -407,12 +410,13 @@ public class FastFountainParser {
             // Lines not separated by blank lines are merged with the previous element
             if newlinesBefore == 0 && !elements.isEmpty {
                 let lastIndex = elements.count - 1
-                let previousElement = elements[lastIndex]
+                var previousElement = elements[lastIndex]
                 // Scene Heading must be surrounded by blank lines
                 if previousElement.elementType == "Scene Heading" {
                     previousElement.elementType = "Action"
                 }
                 previousElement.elementText = "\(previousElement.elementText)\n\(line)"
+                elements[lastIndex] = previousElement
                 newlinesBefore = 0
                 continue
             } else {

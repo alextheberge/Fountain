@@ -95,7 +95,7 @@ public class FountainParser {
         var elementsArray: [FNElement] = []
 
         for i in 0..<elementTexts.count {
-            let element = FNElement()
+            var element = FNElement()
 
             var cleanedText = elementTexts[i]
                 .replacingOccurrences(of: "&lt;", with: "<", options: .caseInsensitive)
@@ -149,6 +149,7 @@ public class FountainParser {
                         previousElement.isDualDialogue = true
                         previousElement.dualDialogueColumn = 0
                         previousElement.elementText = previousElement.elementText.replacingOccurrences(of: "^", with: "")
+                        elementsArray[j] = previousElement
                     }
                     j -= 1
                 } while j >= 0 && dialogueBlockTypes.contains(previousElement.elementType)

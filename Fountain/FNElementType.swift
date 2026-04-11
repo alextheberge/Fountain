@@ -7,7 +7,7 @@
 
 import Foundation
 
-/// Structural element labels matching the legacy `FNElement.elementType` property.
+/// Structural element labels matching the `FNElement.elementType` strings from parsers.
 ///
 /// Naming follows the parser’s English display strings for stable round-trip with existing documents.
 /// For JSON and tooling, map through ``scriptElementKind`` to ``ScriptElementKind``.

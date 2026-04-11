@@ -144,7 +144,7 @@ extension FNScript {
         elements.filter { $0.elementType != FNElementType.boneyard.rawValue }
     }
 
-    /// Codable snapshot for JSON / tooling (Phase 2.4). Same content as ``asFountainDocument()``; each access builds a fresh ``ScriptElement/id``.
+    /// Codable snapshot for JSON / tooling (Phase 2.4). Same content as ``asFountainDocument()``; ``ScriptElement/id`` matches each parsed ``FNElement/id``.
     public var fountainDocument: FountainDocument {
         asFountainDocument()
     }

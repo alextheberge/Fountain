@@ -38,4 +38,23 @@ final class LegacyInteropTests: XCTestCase {
         XCTAssertEqual(doc.elements[0].kind, .action)
         XCTAssertEqual(doc.elements[0].metadata[FountainMetadataKey.centered.rawValue], "true")
     }
+
+    func testFNElementJSONRoundTripPreservesId() throws {
+        let original = FNElement.element(ofType: "Action", text: "Line")
+        let data = try JSONEncoder().encode([original])
+        let decoded = try JSONDecoder().decode([FNElement].self, from: data)
+        XCTAssertEqual(decoded.count, 1)
+        XCTAssertEqual(decoded[0].id, original.id)
+        XCTAssertEqual(decoded[0].elementType, "Action")
+        XCTAssertEqual(decoded[0].elementText, "Line")
+    }
+
+    func testFountainDocumentScriptElementIdsMatchParsedElements() {
+        let script = FNScript(string: "INT. ROOM - DAY\n\nPlain action.\n")
+        let doc = script.asFountainDocument()
+        XCTAssertEqual(doc.elements.count, script.elements.count)
+        for i in script.elements.indices {
+            XCTAssertEqual(script.elements[i].id, doc.elements[i].id, "row \(i)")
+        }
+    }
 }

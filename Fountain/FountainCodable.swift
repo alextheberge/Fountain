@@ -1,8 +1,8 @@
 //
 //  FountainCodable.swift
 //
-//  Next-gen interchange model (Phase 2 starter). Maps the legacy FNElement graph to
-//  Codable structs for JSON and tooling. The runtime parser still uses FNElement.
+//  Next-gen interchange model (Phase 2). Maps parsed ``FNElement`` values to
+//  ``ScriptElement`` / ``FountainDocument`` for JSON and tooling.
 //
 
 import Foundation
@@ -90,7 +90,7 @@ extension FNElement {
         if isDualDialogue { meta[FountainMetadataKey.dualDialogue.rawValue] = "true" }
         if let col = dualDialogueColumn { meta[FountainMetadataKey.dualDialogueColumn.rawValue] = String(col) }
         if sectionDepth > 0 { meta[FountainMetadataKey.sectionDepth.rawValue] = String(sectionDepth) }
-        return ScriptElement(kind: ScriptElementKind(legacyType: elementType), text: elementText, metadata: meta)
+        return ScriptElement(id: id, kind: ScriptElementKind(legacyType: elementType), text: elementText, metadata: meta)
     }
 }
 

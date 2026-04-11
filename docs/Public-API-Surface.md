@@ -8,7 +8,7 @@ This is a **map** of supported entry points, not a substitute for Xcode DocC. Pr
 
 | Tier | Treat as | Examples |
 |------|-----------|----------|
-| **Stable intent** | Avoid breaking changes in patch releases; deprecate before removal. | `FNScript` default initializers, `FNElement` / `elementType` strings, `FountainWriter`, `FastFountainParser` as used by `FNScript` |
+| **Stable intent** | Avoid breaking changes in patch releases; deprecate before removal. | `FNScript` default initializers, `FNElement` (value type: `id` + `elementType` / `elementText` fields), `FountainWriter`, `FastFountainParser` as used by `FNScript` |
 | **Preferred interchange** | Additive fields/keys OK in minor releases. | `FountainDocument`, `ScriptElement`, `ScriptElementKind`, `FountainMetadataKey` |
 | **Evolving** | May change more freely; document in release notes. | `FountainScriptMetrics` fields, new `FountainScriptRendering` conformers |
 | **Experimental** | Not semver-stable; may change or be removed. | Streaming APIs, `FountainMarkdownWriter`, stub `FountainFDXWriter` / `FountainPDFWriter` |
@@ -17,13 +17,13 @@ This is a **map** of supported entry points, not a substitute for Xcode DocC. Pr
 
 | Module | Contents |
 |--------|----------|
-| **FountainCore** | Parse (`FNScript`, `FastFountainParser`, `FountainParser`), model (`FNElement`, `FNElementType`), Codable export (`FountainDocument`, `ScriptElement`, `FountainMetadataKey`), write (`FountainWriter`), metrics (`FountainScriptMetrics` / `FNScript.metrics`: word counts, element counts, scene/transition counts, **character-cue count**, **dialogue-element count**), inline markup (`FountainInlineMarkup`, `FountainInlineDelimiterTable`), rendering protocol (`FountainScriptRendering`, plaintext/Markdown/JSON/stub writers), tokens/scanners, async helpers (`parseStringAsync`, `parseFileAsync`, `scriptElementStream(from:)`, `scriptElementStream(fromFile:)`). **No** UIKit/AppKit. |
+| **FountainCore** | Parse (`FNScript`, `FastFountainParser`, `FountainParser`), model (`FNElement`: `Codable`, `Identifiable`, UUID `id`; `FNElementType`), Codable export (`FountainDocument`, `ScriptElement`, `FountainMetadataKey`), write (`FountainWriter`), metrics (`FountainScriptMetrics` / `FNScript.metrics`: word counts, element counts, scene/transition counts, **character-cue count**, **dialogue-element count**), inline markup (`FountainInlineMarkup`, `FountainInlineDelimiterTable`), rendering protocol (`FountainScriptRendering`, plaintext/Markdown/JSON/stub writers), tokens/scanners, async helpers (`parseStringAsync`, `parseFileAsync`, `scriptElementStream(from:)`, `scriptElementStream(fromFile:)`). **No** UIKit/AppKit. |
 | **FountainHTML** | `FNHTMLScript`, `FNPaginator`, `Platform` (font typealias), `ScriptCSS.css` resource. |
 | **Fountain** | Re-exports Core + HTML for one import. |
 
 ## Stability expectations
 
-- **`fountainDocument`** / **`asFountainDocument()`** build a **new** snapshot each time (new ``ScriptElement`` UUIDs). For stable JSON, call ``fountainDocumentJSONData(prettyPrinted:)`` once, or hold a single ``FountainDocument`` value if you need to compare exports.
+- **`fountainDocument`** / **`asFountainDocument()`** build a **new** snapshot each time; each ``ScriptElement`` reuses the corresponding parsed ``FNElement/id`` so IDs stay aligned across repeated snapshots of the same ``FNScript``. For stable JSON bytes, call ``fountainDocumentJSONData(prettyPrinted:)`` once, or hold a single ``FountainDocument`` value while comparing exports.
 - **`FNScript`** / **`FNElement`** / **`FountainWriter`** string labels (`elementType`) are **legacy-stable** for existing documents.
 - **`FountainDocument`** / **`ScriptElement`** / **`ScriptElementKind`** are the **preferred** interchange shape for JSON and tooling; additive metadata keys may appear in minor releases.
 - **`FountainScriptRendering`** conformers may grow; throwing stubs (**`FountainFDXWriter`**, **`FountainPDFWriter`**) are explicitly incomplete.

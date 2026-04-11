@@ -107,7 +107,7 @@ public class FNPaginator {
                 let nextElementHeight = FNPaginator.heightForString(nextElement.elementText, font: font, maxWidth: nextElementWidth, lineHeight: lineHeight)
 
                 if (CGFloat(blockHeight + currentY + nextElementHeight) >= maxPageHeight) && nextElementHeight >= lineHeight {
-                    let forcedBreak = FNElement()
+                    var forcedBreak = FNElement()
                     forcedBreak.elementType = "Page Break"
                     forcedBreak.elementText = ""
                     tmpElements.append(forcedBreak)
@@ -181,7 +181,7 @@ public class FNPaginator {
                         if spiller.elementType == "Parenthetical" {
                             if blockIndex > 1 {
                                 currentPage.append(contentsOf: tmpElements[0..<blockIndex])
-                                let more = FNElement()
+                                var more = FNElement()
                                 more.elementType = "Character"
                                 more.elementText = "(MORE)"
                                 currentPage.append(more)
@@ -189,7 +189,7 @@ public class FNPaginator {
                                 currentPage = []
                                 blockHeight = 0
 
-                                let characterCue = tmpElements[0]
+                                var characterCue = tmpElements[0]
                                 characterCue.elementText = "\(characterCue.elementText) (CONT'D)"
                                 blockHeight += FNPaginator.heightForString(characterCue.elementText, font: font, maxWidth: FNPaginator.widthForElement(characterCue), lineHeight: lineHeight)
                                 currentPage.append(characterCue)
@@ -235,14 +235,14 @@ public class FNPaginator {
                                 }
                             }
 
-                            let preBreakDialogue = FNElement()
+                            var preBreakDialogue = FNElement()
                             preBreakDialogue.elementType = "Dialogue"
                             preBreakDialogue.elementText = dialogueBeforeBreak
 
                             if !preBreakDialogue.elementText.isEmpty {
                                 currentPage.append(contentsOf: tmpElements[0..<blockIndex])
                                 currentPage.append(preBreakDialogue)
-                                let more = FNElement()
+                                var more = FNElement()
                                 more.elementType = "Character"
                                 more.elementText = "(MORE)"
                                 currentPage.append(more)
@@ -258,7 +258,7 @@ public class FNPaginator {
 
                             blockHeight = 0
 
-                            let characterCue = FNElement()
+                            var characterCue = FNElement()
                             characterCue.elementType = "Character"
                             characterCue.elementText = tmpElements[0].elementText
                             blockHeight += FNPaginator.heightForString(characterCue.elementText, font: font, maxWidth: FNPaginator.widthForElement(characterCue), lineHeight: lineHeight)
@@ -270,7 +270,7 @@ public class FNPaginator {
                                 dialogueAfterBreak += sentences[z]
                             }
 
-                            let postBreakDialogue = FNElement()
+                            var postBreakDialogue = FNElement()
                             postBreakDialogue.elementType = "Dialogue"
                             postBreakDialogue.elementText = dialogueAfterBreak
                             blockHeight += FNPaginator.heightForString(postBreakDialogue.elementText, font: font, maxWidth: FNPaginator.widthForElement(postBreakDialogue), lineHeight: lineHeight)

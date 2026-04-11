@@ -24,29 +24,48 @@
 
 import Foundation
 
-/// One structural unit in a parsed screenplay (legacy reference type).
+/// One structural unit in a parsed screenplay (value type; Phase 2).
 ///
 /// The fast parser sets ``elementType`` to English labels matching ``FNElementType``.
-/// Prefer mapping through `FNScript.asFountainDocument()` for `Codable` export.
-public class FNElement: CustomStringConvertible {
-    public var elementType: String = ""
-    public var elementText: String = ""
-    public var isCentered: Bool = false
+/// Each element has a stable ``id`` that is carried into ``ScriptElement`` via
+/// ``FNScript/asFountainDocument()`` for JSON round-trips. Prefer that path for
+/// `Codable` interchange; ``FNElement`` itself is also `Codable` for diagnostics
+/// or local persistence.
+public struct FNElement: Codable, Identifiable, Sendable, CustomStringConvertible {
+    public var id: UUID
+    public var elementType: String
+    public var elementText: String
+    public var isCentered: Bool
 
     // Type-specific properties
-    public var sceneNumber: String? = nil
-    public var isDualDialogue: Bool = false
+    public var sceneNumber: String?
+    public var isDualDialogue: Bool
     /// When ``isDualDialogue`` is true: `0` = left column (first cue), `1` = right column (cue with trailing `^`).
-    public var dualDialogueColumn: Int? = nil
-    public var sectionDepth: Int = 0
+    public var dualDialogueColumn: Int?
+    public var sectionDepth: Int
 
-    public init() {}
+    public init(
+        id: UUID = UUID(),
+        elementType: String = "",
+        elementText: String = "",
+        isCentered: Bool = false,
+        sceneNumber: String? = nil,
+        isDualDialogue: Bool = false,
+        dualDialogueColumn: Int? = nil,
+        sectionDepth: Int = 0
+    ) {
+        self.id = id
+        self.elementType = elementType
+        self.elementText = elementText
+        self.isCentered = isCentered
+        self.sceneNumber = sceneNumber
+        self.isDualDialogue = isDualDialogue
+        self.dualDialogueColumn = dualDialogueColumn
+        self.sectionDepth = sectionDepth
+    }
 
     public static func element(ofType type: String, text: String) -> FNElement {
-        let element = FNElement()
-        element.elementType = type
-        element.elementText = text
-        return element
+        FNElement(id: UUID(), elementType: type, elementText: text)
     }
 
     public var description: String {
