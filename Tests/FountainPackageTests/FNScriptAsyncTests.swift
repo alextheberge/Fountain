@@ -11,6 +11,21 @@ final class FNScriptAsyncTests: XCTestCase {
         XCTAssertEqual(asyncScript.elements.map(\.elementType), syncScript.elements.map(\.elementType))
     }
 
+    func testParseStringAsyncTokenPipelineMatchesSyncTokenPipeline() async {
+        let source = "\nINT. ASYNC TP - DAY\n\nCAROL\nHi.\n"
+        let asyncScript = await FNScript.parseStringAsync(source, parser: .tokenPipeline)
+        let syncScript = FNScript(string: source, parser: .tokenPipeline)
+        XCTAssertEqual(asyncScript.elements.map(\.elementType), syncScript.elements.map(\.elementType))
+        XCTAssertEqual(asyncScript.elements.map(\.elementText), syncScript.elements.map(\.elementText))
+    }
+
+    func testParseFileAsyncTokenPipelineMatchesSyncTokenPipeline() async throws {
+        let url = try XCTUnwrap(Bundle.module.url(forResource: "package-roundtrip-sample", withExtension: "fountain"))
+        let asyncScript = await FNScript.parseFileAsync(url.path, parser: .tokenPipeline)
+        let syncScript = FNScript(file: url.path, parser: .tokenPipeline)
+        XCTAssertEqual(asyncScript.elements.map(\.elementType), syncScript.elements.map(\.elementType))
+    }
+
     /// ``scriptElementStream(from:)`` must match a ``FountainDocument`` built from the same ``parseStringAsync`` parse (Phase 9.2 + detached parse path).
     func testScriptElementStreamFromMatchesParseStringAsyncDocument() async {
         let source = "\nINT. STREAM - DAY\n\nALICE\nOne.\n\nBOB\nTwo.\n"
@@ -18,6 +33,22 @@ final class FNScriptAsyncTests: XCTestCase {
         let expected = FountainDocument(script: script).elements.map { ($0.kind, $0.text, $0.metadata) }
         var got: [(ScriptElementKind, String, [String: String])] = []
         for await el in FNScript.scriptElementStream(from: source) {
+            got.append((el.kind, el.text, el.metadata))
+        }
+        XCTAssertEqual(got.count, expected.count)
+        for i in 0 ..< got.count {
+            XCTAssertEqual(got[i].0, expected[i].0, "index \(i)")
+            XCTAssertEqual(got[i].1, expected[i].1, "index \(i)")
+            XCTAssertEqual(got[i].2, expected[i].2, "index \(i)")
+        }
+    }
+
+    func testScriptElementStreamTokenPipelineMatchesDocument() async {
+        let source = "\nINT. STREAM TP - DAY\n\nALICE\nOne.\n"
+        let script = await FNScript.parseStringAsync(source, parser: .tokenPipeline)
+        let expected = FountainDocument(script: script).elements.map { ($0.kind, $0.text, $0.metadata) }
+        var got: [(ScriptElementKind, String, [String: String])] = []
+        for await el in FNScript.scriptElementStream(from: source, parser: .tokenPipeline) {
             got.append((el.kind, el.text, el.metadata))
         }
         XCTAssertEqual(got.count, expected.count)

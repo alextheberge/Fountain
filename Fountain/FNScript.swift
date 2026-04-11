@@ -40,7 +40,7 @@ public enum FNParserType: Sendable, Equatable {
 /// Use ``init(string:parser:)`` with ``FNParserType/tokenPipeline`` to exercise the tokenizer-first architecture (same tests target parity with ``fast``).
 /// That is appropriate for **small** documents, unit tests, and tooling that already runs off the main thread.
 /// For **large** screenplays—or any full parse from the main thread—prefer ``parseStringAsync(_:)`` / ``parseFileAsync(_:)``
-/// (Phase 9.1: parse work runs in a detached task). Use ``asFountainDocument()`` for JSON/tooling via `FountainDocument`.
+/// (Phase 9.1: parse work runs in a detached task). Use ``parseStringAsync(_:parser:)`` / ``parseFileAsync(_:parser:)`` to run the same async path with **`.tokenPipeline`** or **`.regex`**. Use ``asFountainDocument()`` for JSON/tooling via `FountainDocument`.
 public class FNScript: CustomStringConvertible {
     public var filename: String?
     public var elements: [FNElement] = []
@@ -183,15 +183,25 @@ extension FNScript {
     /// Parses on a detached task so callers can `await` without blocking the caller’s executor.
     /// Prefer synchronous ``init(string:)`` only for small snippets or when the caller is already on a background executor.
     public static func parseStringAsync(_ string: String) async -> FNScript {
+        await parseStringAsync(string, parser: .fast)
+    }
+
+    /// Async parse with an explicit parser engine (e.g. ``FNParserType/tokenPipeline`` for migration testing).
+    public static func parseStringAsync(_ string: String, parser: FNParserType) async -> FNScript {
         await Task.detached {
-            FNScript(string: string)
+            FNScript(string: string, parser: parser)
         }.value
     }
 
     /// Async variant of ``init(file:)`` using the default fast parser; work runs in a detached task (Phase 9.1).
     public static func parseFileAsync(_ path: String) async -> FNScript {
+        await parseFileAsync(path, parser: .fast)
+    }
+
+    /// Async file parse with an explicit parser engine.
+    public static func parseFileAsync(_ path: String, parser: FNParserType) async -> FNScript {
         await Task.detached {
-            FNScript(file: path)
+            FNScript(file: path, parser: parser)
         }.value
     }
 
@@ -200,9 +210,14 @@ extension FNScript {
     /// Async stream of ``ScriptElement`` after a **full** parse (handy for UI previews; not incremental).
     /// Uses ``parseStringAsync(_:)`` so the heavy parse does not run synchronously on the caller.
     public static func scriptElementStream(from string: String) -> AsyncStream<ScriptElement> {
+        scriptElementStream(from: string, parser: .fast)
+    }
+
+    /// Like ``scriptElementStream(from:)``, but selects the parser engine (e.g. ``FNParserType/tokenPipeline``).
+    public static func scriptElementStream(from string: String, parser: FNParserType) -> AsyncStream<ScriptElement> {
         AsyncStream { continuation in
             Task {
-                let script = await parseStringAsync(string)
+                let script = await parseStringAsync(string, parser: parser)
                 let doc = FountainDocument(script: script)
                 for el in doc.elements {
                     continuation.yield(el)
@@ -214,9 +229,14 @@ extension FNScript {
 
     /// Like ``scriptElementStream(from:)``, but reads the screenplay from disk (uses ``parseFileAsync`` + one ``FountainDocument`` snapshot).
     public static func scriptElementStream(fromFile path: String) -> AsyncStream<ScriptElement> {
+        scriptElementStream(fromFile: path, parser: .fast)
+    }
+
+    /// File-backed stream with an explicit parser engine.
+    public static func scriptElementStream(fromFile path: String, parser: FNParserType) -> AsyncStream<ScriptElement> {
         AsyncStream { continuation in
             Task {
-                let script = await parseFileAsync(path)
+                let script = await parseFileAsync(path, parser: parser)
                 let doc = FountainDocument(script: script)
                 for el in doc.elements {
                     continuation.yield(el)

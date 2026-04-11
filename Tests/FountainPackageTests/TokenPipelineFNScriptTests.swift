@@ -64,4 +64,46 @@ final class TokenPipelineFNScriptTests: XCTestCase {
         XCTAssertEqual(viaPipeline.elements.map(\.elementType), viaBuilder.map(\.elementType))
         XCTAssertEqual(viaPipeline.elements.map(\.elementText), viaBuilder.map(\.elementText))
     }
+
+    /// Every bundled `.fountain` under `Fixtures/` must keep **fast** vs **tokenPipeline** parity.
+    func testTokenPipelineParityAllBundledFountainFixtures() throws {
+        let names = [
+            "package-boneyard-sandwich",
+            "package-dual-dialogue",
+            "package-forced-block",
+            "package-mixed-production",
+            "package-roundtrip-sample",
+            "package-scene-pagebreak",
+            "export-golden-minimal",
+        ]
+        for base in names {
+            let url = try XCTUnwrap(
+                Bundle.module.url(forResource: base, withExtension: "fountain"),
+                "Missing fixture \(base).fountain"
+            )
+            let raw = try String(contentsOf: url, encoding: .utf8)
+            assertFastAndTokenPipelineMatch(raw, file: #filePath, line: #line)
+        }
+    }
+
+    /// Full-script **fast** vs **tokenPipeline** element sequences still diverge on Big Fish (merging / boundary heuristics).
+    /// Keep a **scale** check so the tokenizer path survives feature-length input; tighten to full parity when the pipeline catches up.
+    func testBigFishTokenPipelineParsesWithManyElements() throws {
+        let url = try XCTUnwrap(bigFishFountainURL(), "Big Fish.fountain not found (run swift test from repo root)")
+        let script = FNScript(file: url.path, parser: .tokenPipeline)
+        XCTAssertGreaterThan(script.elements.count, 500, "Sanity: Big Fish on tokenPipeline should yield hundreds of elements")
+    }
+
+    private func bigFishFountainURL() -> URL? {
+        var fromFile = URL(fileURLWithPath: "\(#filePath)")
+        for _ in 0 ..< 3 {
+            fromFile.deleteLastPathComponent()
+        }
+        let fromFileCandidate = fromFile.appendingPathComponent("FountainTests/Big Fish.fountain")
+        let cwdCandidate = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
+            .appendingPathComponent("FountainTests/Big Fish.fountain")
+        if FileManager.default.fileExists(atPath: fromFileCandidate.path) { return fromFileCandidate }
+        if FileManager.default.fileExists(atPath: cwdCandidate.path) { return cwdCandidate }
+        return nil
+    }
 }
