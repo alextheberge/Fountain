@@ -2,7 +2,7 @@
 //  FountainParsePipeline.swift
 //
 //  Tokenizer-first parse path (Phase 3–4): title prescan → line tokens → ``FNElement`` assembly.
-//  Opt-in via ``FNParserType/tokenPipeline`` on ``FNScript``; production default remains ``FastFountainParser``.
+//  Default for ``FNScript`` (``FNParserType/tokenPipeline``); ``FastFountainParser`` is ``FNParserType/fast``.
 //
 
 import Foundation

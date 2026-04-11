@@ -28,7 +28,7 @@ final class FountainLineToElementIndexMapTests: XCTestCase {
     }
 
     func testSyntheticBodyJoinsElementsAndUTF16RangesRoundTrip() {
-        let script = FNScript(string: "\nINT. X - DAY\n\nLine one.\nLine two.\n", parser: .fast)
+        let script = FNScript(string: "\nINT. X - DAY\n\nLine one.\nLine two.\n", parser: .tokenPipeline)
         let map = FountainLineToElementIndexMap(elements: script.elements)
         let synthetic = map.syntheticBodyLineText
         let lines = synthetic.components(separatedBy: "\n")

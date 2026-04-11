@@ -12,7 +12,7 @@ For more details on Fountain see [fountain.io](https://fountain.io).
 
 ## Fountain 1.1 (Swift next-gen)
 
-The **default development path** is **`Package.swift`**: **`swift build`** / **`swift test`** on macOS define CI truth. The library ships a **Swift-native** fast parser (**no RegexKitLite** in SwiftPM), a **`Codable`** model (`FNElement`, `FountainDocument` / `ScriptElement`), **async** parse helpers, **protocol-based** writers (HTML, Markdown, JSON, plaintext, **minimal FDX**, **PDF**), and an umbrella **`Fountain`** product. **Xcode** (`Fountain.xcodeproj`) links the **same local package** for sample apps and **`FountainTests`** — see [docs/Phase-1-Xcode-SPM-Integration.md](docs/Phase-1-Xcode-SPM-Integration.md). Ongoing work is **polish and depth** (export fidelity vs Final Draft, optional incremental parse, stricter spec edges), not “waiting for a first SwiftPM drop.”
+The **default development path** is **`Package.swift`**: **`swift build`** / **`swift test`** on macOS define CI truth. The library ships a **Swift-native** tokenizer-first parser (**``FountainParsePipeline``**; **no RegexKitLite** in SwiftPM), optional **line-first** **`FastFountainParser`** via **`parser: .fast`**, a **`Codable`** model (`FNElement`, `FountainDocument` / `ScriptElement`), **async** parse helpers, **protocol-based** writers (HTML, Markdown, JSON, plaintext, **minimal FDX**, **PDF**), and an umbrella **`Fountain`** product. **Xcode** (`Fountain.xcodeproj`) links the **same local package** for sample apps and **`FountainTests`** — see [docs/Phase-1-Xcode-SPM-Integration.md](docs/Phase-1-Xcode-SPM-Integration.md). Ongoing work is **polish and depth** (export fidelity vs Final Draft, optional incremental parse, stricter spec edges), not “waiting for a first SwiftPM drop.”
 
 - **Phased implementation plan:** [docs/Fountain-1.1-Implementation-Roadmap.md](docs/Fountain-1.1-Implementation-Roadmap.md) — actionable steps, acceptance criteria, and a spec traceability matrix.
 - **Syntax pin:** code declares **`FountainSyntaxPin`** (`FountainSyntaxPin.swift`) pointing at [fountain.io/syntax](https://fountain.io/syntax/) and label **1.1**; lock a revision in release notes when you ship compliance.
@@ -41,13 +41,15 @@ One important note: we do not deal with text styling (bold, italic, underline, e
 - **Sample Project iOS** does the same in code with `WKWebView` (`ViewController.swift`).
 - **FountainTests** is a macOS unit-test bundle; the scheme runs tests hosted in the Mac sample app. Set **`PRODUCT_BUNDLE_IDENTIFIER`** in the target that owns each `Info.plist` so it matches **`$(PRODUCT_BUNDLE_IDENTIFIER)`** in the plist (avoids Xcode warnings and signing issues).
 
-### Parser notes (FastFountainParser)
+### Parser notes (default vs line-first vs regex)
 
-Recent maintenance aligned **FastFountainParser** with practical Fountain documents:
+**Default:** **`FNScript(string:)`** / **`init(file:)`** and async/stream overloads without **`parser:`** use **`FountainParsePipeline`** (**`.tokenPipeline`** — Phases **3–4** on the roadmap). **`parser: .fast`** selects **FastFountainParser** (line-first) for parity or migration.
 
-- **Scene headings**: the scene-heading regular expression uses a character class written so **`NSRegularExpression` compiles** (dot, hyphen, and whitespace are explicit; a buggy class caused every scene line to fall through as action).
+Recent maintenance aligned **FastFountainParser** and the shared tokenizer stack with practical Fountain documents:
+
+- **Scene headings**: slug detection uses patterns and scans that behave correctly across engines (see **`FountainSceneHeadingMatcher`** and roadmap Phase **3.5**).
 - **Title page**: a lone directive-only line before the first blank line (for example **`FADE IN:`** with nothing after the colon) is **not** treated as a title-page field, so sluglines are not stripped from the body.
-- **Regex modernization (planned):** [docs/Fountain-1.1-Implementation-Roadmap.md](docs/Fountain-1.1-Implementation-Roadmap.md#phase-11-regex-modernization-swift-native) **Phase 11** — migrate **`FountainRegexes.swift`** to Swift **`Regex` / `RegexBuilder`** and remove **`NSRegularExpression`** from **`String+Regex.swift`** for Wasm/Linux performance and typing.
+- **Regex modernization:** [docs/Fountain-1.1-Implementation-Roadmap.md](docs/Fountain-1.1-Implementation-Roadmap.md#phase-11-regex-modernization-swift-native) **Phase 11** — Swift **`Regex`** in **`String+Regex.swift`** with a small **`NSRegularExpression`** fallback only when Swift cannot compile a pattern; **`FountainRegexes`** tuned for Swift **`Regex`** where possible.
 
 If you rely on the older **FountainParser** / **RegexKitLite** Objective-C path, those files remain under `Fountain/Legacy/`.
 
@@ -63,7 +65,7 @@ This is the data model for the script elements (Objective-C **`FNElement`**, Swi
 
 ### FastFountainParser
 
-FastFountainParser is a redesigned line-by-line parser. The advantages to this parser over the previously used FountainParser are 1) less reliance on regular expressions (it should be much easier to change now) and 2) greatly improved performance. FastFountainParser is roughly 10 times faster than FountainParser. It is the default in **Swift** `FNScript` initializers; pass **`parser: .regex`** if you need the older **`FountainParser`** pipeline.
+FastFountainParser is a redesigned line-by-line parser. The advantages to this parser over the previously used FountainParser are 1) less reliance on regular expressions (it should be much easier to change now) and 2) greatly improved performance. FastFountainParser is roughly 10 times faster than FountainParser. **Swift** `FNScript` defaults to the **tokenizer pipeline** (**`.tokenPipeline`**); pass **`parser: .fast`** for this engine or **`parser: .regex`** for the older **`FountainParser`** pipeline.
 
 ### FountainWriter
 
@@ -79,7 +81,7 @@ FountainParser provides class methods to read a Fountain script's title page and
 
 ### FountainRegexes
 
-Shared regular-expression constants used by **FountainParser** and related code. The **Swift** implementation uses **`NSRegularExpression`** (no RegexKitLite). The legacy **Objective-C** stack still links **RegexKitLite** where those files are compiled. The **regex** parser path is exercised mainly for compatibility; day-to-day parsing in the Swift API uses **FastFountainParser**.
+Shared regular-expression constants used by **FountainParser** and related code. Matching helpers in **`String+Regex.swift`** prefer Swift **`Regex`** (no RegexKitLite). The legacy **Objective-C** stack still links **RegexKitLite** where those files are compiled. The **regex** parser path is exercised mainly for compatibility; day-to-day parsing in the Swift API uses the **default tokenizer pipeline** (**`.tokenPipeline`**).
 
 ## Installation
 

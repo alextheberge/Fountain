@@ -24,23 +24,22 @@
 
 import Foundation
 
-/// Which parser engine ``FNScript`` uses when not taking the default ``init(string:)`` / ``init(file:)`` path.
+/// Parser backend for ``FNScript`` initializers, ``loadString`` / ``loadFile``, async parse, streaming, and incremental parse.
 public enum FNParserType: Sendable, Equatable {
-    /// Production **line-first** parser (``FastFountainParser``).
+    /// **Line-first** parser (``FastFountainParser``). Explicit opt-in for parity tests or migration from pre–Phase 12 defaults.
     case fast
     /// Legacy **regex** pipeline (``FountainParser``).
     case regex
-    /// **Tokenizer-first** path: ``FountainTitlePagePrescan`` + ``FountainBodyLineTokenizer`` + ``FountainScriptElementsBuilder`` (Phase 3–4). Parity-tested against ``fast``; opt-in until promoted to default.
+    /// **Tokenizer-first** canonical path: ``FountainTitlePagePrescan`` + ``FountainBodyLineTokenizer`` + ``FountainScriptElementsBuilder`` (Phases 3–4). **Default** for ``init(string:)`` / ``init(file:)`` and async/stream entry points (Phase 12).
     case tokenPipeline
 }
 
 /// Loaded Fountain screenplay: title page, body elements, and export helpers.
 ///
-/// By default ``init(string:)`` and ``init(file:)`` use ``FastFountainParser`` (``FNParserType/fast``) and run **synchronously** on the caller’s thread.
-/// Use ``init(string:parser:)`` with ``FNParserType/tokenPipeline`` to exercise the tokenizer-first architecture (same tests target parity with ``fast``).
-/// That is appropriate for **small** documents, unit tests, and tooling that already runs off the main thread.
+/// By default ``init(string:)`` and ``init(file:)`` use ``FountainParsePipeline`` (``FNParserType/tokenPipeline``) and run **synchronously** on the caller’s thread.
+/// Use ``init(string:parser:)`` with ``FNParserType/fast`` or ``FNParserType/regex`` only when you need those engines explicitly (parity, migration, or legacy apps).
 /// For **large** screenplays—or any full parse from the main thread—prefer ``parseStringAsync(_:)`` / ``parseFileAsync(_:)``
-/// (Phase 9.1: parse work runs in a detached task). Use ``parseStringAsync(_:parser:)`` / ``parseFileAsync(_:parser:)`` to run the same async path with **`.tokenPipeline`** or **`.regex`**. Use ``asFountainDocument()`` for JSON/tooling via `FountainDocument`.
+/// (Phase 9.1: parse work runs in a detached task). Overloads with **`parser:`** default to **`.tokenPipeline`**; pass **`.fast`** or **`.regex`** when required. Use ``asFountainDocument()`` for JSON/tooling via `FountainDocument`.
 /// After edits, ``parseIncremental(newText:editedUTF16Range:parser:)`` (Phase 9.5) performs a **full** re-parse while preserving matching prefix/suffix ``FNElement/id`` values and returning an expanded invalidation UTF-16 span (see ``FountainEditRangeExpansion``).
 public class FNScript: CustomStringConvertible {
     public var filename: String?
@@ -59,17 +58,11 @@ public class FNScript: CustomStringConvertible {
     }
 
     public func loadFile(_ path: String) {
-        filename = (path as NSString).lastPathComponent
-        let parser = FastFountainParser(file: path)
-        elements = parser.elements
-        titlePage = parser.titlePage
+        loadFile(path, parser: .tokenPipeline)
     }
 
     public func loadString(_ string: String) {
-        filename = nil
-        let parser = FastFountainParser(string: string)
-        elements = parser.elements
-        titlePage = parser.titlePage
+        loadString(string, parser: .tokenPipeline)
     }
 
     public func stringFromDocument() -> String {
@@ -110,8 +103,8 @@ public class FNScript: CustomStringConvertible {
         return FountainWriter.documentFromScript(self)
     }
 
-    // MARK: - Legacy parser methods
-    // These methods exist for backwards compatibility. Prefer the default (fast) parser.
+    // MARK: - Parser selection (`FNParserType`)
+    // Default ``loadString`` / ``loadFile`` use ``FNParserType/tokenPipeline`` (Phase 12).
 
     public init(file path: String, parser parserType: FNParserType) {
         loadFile(path, parser: parserType)
@@ -184,7 +177,7 @@ extension FNScript {
     /// Parses on a detached task so callers can `await` without blocking the caller’s executor.
     /// Prefer synchronous ``init(string:)`` only for small snippets or when the caller is already on a background executor.
     public static func parseStringAsync(_ string: String) async -> FNScript {
-        await parseStringAsync(string, parser: .fast)
+        await parseStringAsync(string, parser: .tokenPipeline)
     }
 
     /// Async parse with an explicit parser engine (e.g. ``FNParserType/tokenPipeline`` for migration testing).
@@ -194,9 +187,9 @@ extension FNScript {
         }.value
     }
 
-    /// Async variant of ``init(file:)`` using the default fast parser; work runs in a detached task (Phase 9.1).
+    /// Async variant of ``init(file:)`` using the default tokenizer pipeline; work runs in a detached task (Phase 9.1).
     public static func parseFileAsync(_ path: String) async -> FNScript {
-        await parseFileAsync(path, parser: .fast)
+        await parseFileAsync(path, parser: .tokenPipeline)
     }
 
     /// Async file parse with an explicit parser engine.
@@ -211,7 +204,7 @@ extension FNScript {
     /// Async stream of ``ScriptElement`` after a **full** parse (handy for UI previews; not incremental).
     /// Uses ``parseStringAsync(_:)`` so the heavy parse does not run synchronously on the caller.
     public static func scriptElementStream(from string: String) -> AsyncStream<ScriptElement> {
-        scriptElementStream(from: string, parser: .fast)
+        scriptElementStream(from: string, parser: .tokenPipeline)
     }
 
     /// Like ``scriptElementStream(from:)``, but selects the parser engine (e.g. ``FNParserType/tokenPipeline``).
@@ -230,7 +223,7 @@ extension FNScript {
 
     /// Like ``scriptElementStream(from:)``, but reads the screenplay from disk (uses ``parseFileAsync`` + one ``FountainDocument`` snapshot).
     public static func scriptElementStream(fromFile path: String) -> AsyncStream<ScriptElement> {
-        scriptElementStream(fromFile: path, parser: .fast)
+        scriptElementStream(fromFile: path, parser: .tokenPipeline)
     }
 
     /// File-backed stream with an explicit parser engine.

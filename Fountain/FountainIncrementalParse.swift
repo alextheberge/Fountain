@@ -39,7 +39,7 @@ extension FNScript {
     public func parseIncremental(
         newText: String,
         editedUTF16Range: Range<Int>,
-        parser: FNParserType = .fast
+        parser: FNParserType = .tokenPipeline
     ) -> FountainIncrementalParseOutcome {
         let expanded = FountainEditRangeExpansion.expandToStructuralAnchorUTF16Range(
             editedUTF16Range,

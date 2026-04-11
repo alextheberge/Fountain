@@ -2,6 +2,8 @@
 
 Living checklist of corpora and suites where **`.fast`** and **`.tokenPipeline`** are asserted equivalent (or intentionally exempt). Expand this file as you add rows to the roadmap matrix.
 
+**Default (Phase 12):** **`FNScript`** without **`parser:`** uses **`.tokenPipeline`**; parity tests still construct both engines explicitly.
+
 | Corpus / fixture | Suite | Notes |
 |------------------|-------|--------|
 | Bundled `Tests/FountainPackageTests/Fixtures/*.fountain` | `TokenPipelineFNScriptTests.testTokenPipelineParityAllBundledFountainFixtures` | Package fixtures |

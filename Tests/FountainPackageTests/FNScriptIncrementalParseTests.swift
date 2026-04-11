@@ -5,16 +5,16 @@ final class FNScriptIncrementalParseTests: XCTestCase {
     func testParseIncrementalMatchesFullParseElementShape() {
         let before = "\nINT. ROOM - DAY\n\nBOB\nHello.\n"
         let after = "\nINT. ROOM - DAY\n\nBOB\nHello there.\n"
-        let old = FNScript(string: before, parser: .fast)
+        let old = FNScript(string: before, parser: .tokenPipeline)
         guard let r = after.range(of: "there") else {
             XCTFail("range")
             return
         }
         let lo = r.lowerBound.utf16Offset(in: after)
         let hi = r.upperBound.utf16Offset(in: after)
-        let outcome = old.parseIncremental(newText: after, editedUTF16Range: lo..<hi, parser: .fast)
+        let outcome = old.parseIncremental(newText: after, editedUTF16Range: lo..<hi, parser: .tokenPipeline)
         XCTAssertEqual(outcome.reparseStrategy, .fullDocument)
-        let full = FNScript(string: after, parser: .fast)
+        let full = FNScript(string: after, parser: .tokenPipeline)
         XCTAssertEqual(outcome.script.elements.count, full.elements.count)
         for (a, b) in zip(outcome.script.elements, full.elements) {
             XCTAssertEqual(a.elementType, b.elementType)

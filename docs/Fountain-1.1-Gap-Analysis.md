@@ -32,7 +32,8 @@ This document **remains living**: when parser, model, or export behavior changes
 
 | Component | Entry point | Role | SwiftPM |
 |-----------|-------------|------|---------|
-| **Fast parser** | `FNScript(string:)` / `init(file:)` (default) | `FastFountainParser` — line-first body, title page heuristics; primary target for 1.1 work | Yes |
+| **Tokenizer pipeline (default)** | `FNScript(string:)` / `init(file:)` (no `parser:`) | `FountainParsePipeline` — state-aware tokenizer + element builder; primary target for 1.1 work | Yes |
+| **Fast parser (explicit)** | `FNScript(..., parser: .fast)` | `FastFountainParser` — line-first body, title page heuristics; parity / migration | Yes |
 | **Regex parser (Swift)** | `FNScript(..., parser: .regex)` | `FountainParser` — legacy `NSRegularExpression` pipeline; parity for older integrations | Yes |
 | **Legacy Objective-C** | Not exposed in package API | `Fountain/Legacy/*.m` — RegexKitLite-era implementation | **Excluded** |
 
@@ -44,7 +45,8 @@ This document **remains living**: when parser, model, or export behavior changes
 
 | Path | Role |
 |------|------|
-| `FastFountainParser.swift` | Default in `FNScript`; line-oriented scanner + `NSRegularExpression` |
+| `FountainParsePipeline.swift` (via `FNParserType.tokenPipeline`) | Default in `FNScript`; tokenizer-first path |
+| `FastFountainParser.swift` | Explicit `FNScript(..., parser: .fast)`; line-oriented scanner + `NSRegularExpression` where needed |
 | `FountainParser.swift` | Legacy regex pipeline; `FNScript` `parser: .regex` |
 | `Fountain/Legacy/*.m` | Obj-C + RegexKitLite (not in SwiftPM target) |
 
@@ -137,6 +139,6 @@ Legend: **Y** = supported in practice with **SPM regression tests** named below;
 
 1. **Fixtures and tests** — When adding `Tests/FountainPackageTests/Fixtures/*.fountain` or corpus tests, extend **`Phase7ComplianceTests`** (fixture inventory) where applicable and keep § Fixture / test map above aligned.
 2. **Export regressions** — If you change ``FountainFDXWriter`` output shape, update **`export-golden-minimal.fdx`** and run **`ExportGoldenFixtureTests`**. PDF: prefer ``FountainPDFWriter/renderPDFData(_:)`` for files; contract is documented in [Public-API-Surface.md](Public-API-Surface.md) § FDX and PDF export.
-3. **Parser architecture** — Production default remains **`FastFountainParser`**. Opt in with **`FNScript(string:parser: .tokenPipeline)`** (``FountainParsePipeline``) for the tokenizer-first stack; see **`TokenPipelineFNScriptTests`**. Promoting **tokenPipeline** to the default initializer is a deliberate migration once parity coverage matches your product risk.
+3. **Parser architecture** — Production default is **`FountainParsePipeline`** (**`FNScript`**, **`FNParserType.tokenPipeline`**). Use **`FNScript(..., parser: .fast)`** for **`FastFountainParser`**; see **`TokenPipelineFNScriptTests`** and [TokenPipeline-Parity-Coverage.md](TokenPipeline-Parity-Coverage.md). Expand the fast vs token parity matrix for exhaustive Phase 7.3 coverage as risk allows.
 4. **Incremental parse** — Still **deferred** until [Fountain-Incremental-Parse-Spike.md](Fountain-Incremental-Parse-Spike.md) preconditions are met.
 5. **Spec edge policy** — Fountain 1.1 **`!` forced action** vs legacy whitespace-only “action” lines: **Phase 4.6 partial** — ``FastFountainParser`` / tokenizer no longer emit a **standalone Action** for whitespace-only body lines **outside** dialogue (see ``Phase46WhitespaceActionTests``). **Migration** text: [Deprecation-And-Distribution.md](Deprecation-And-Distribution.md) § Parser classification — Phase 4.6. Remaining semver sign-off is tracked in the roadmap Phase 4 table.
