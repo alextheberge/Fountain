@@ -51,7 +51,7 @@ This document turns [Project Specification- Fountain Swift (Next-Gen).md](../Pro
 
 **Goal:** A **SwiftPM library** that can be used by macOS/iOS apps **and** future tooling without Xcode-only coupling.
 
-**Status:** **Complete** for library distribution, CI, module split, documented public API, and **Phase 1.2** — Xcode sample apps and **`FountainTests`** link the **local** Swift package (no duplicate `Fountain/*.swift` compile in those targets). Details: [Phase-1-Xcode-SPM-Integration.md](Phase-1-Xcode-SPM-Integration.md). Closing Phase **1** does **not** require linking **FountainUI**; that product is optional and lives in **`FountainUI/`** (see [Phase 13](#phase-13-swiftui-and-fountainui)). **Future:** dropping **`Fountain.xcodeproj`** for **SPM-only** workflows is **[Phase 15.1](#phase-15)** (polish epic).
+**Status:** **Complete** for library distribution, CI, module split, documented public API, and **Phase 1.2** / **15.1** — **SPM-only** tree (**`Fountain.xcodeproj`** removed; **`FountainTests`** + **`Samples/FountainSampleMac/`**). Details: [Phase-1-Xcode-SPM-Integration.md](Phase-1-Xcode-SPM-Integration.md). Closing Phase **1** does **not** require linking **FountainUI**; that product is optional and lives in **`FountainUI/`** (see [Phase 13](#phase-13-swiftui-and-fountainui)).
 
 | Step | Action | Done when |
 |------|--------|-----------|
@@ -261,7 +261,7 @@ This document turns [Project Specification- Fountain Swift (Next-Gen).md](../Pro
 |------|--------|-----------|
 | 14.1 | **Swift package SemVer `2.0.0`** (Next-Gen line): changelog, ``FountainPackageVersion``, checklist, README / public-API docs — **without** changing **Fountain syntax** pin **1.1**. | **Done:** [CHANGELOG.md](../CHANGELOG.md) **`[2.0.0]`**; ``FountainPackageVersion.librarySemanticVersion``; docs/tests that assert package version ≠ syntax pin. **Optional:** `git tag -a 2.0.0` when publishing. |
 | 14.2 | **Delete `Fountain/Legacy/`** entirely (Objective-C + **RegexKitLite**-era **`.m`** reference tree). Remove any Xcode target references, docs, and scripts that still pointed at those paths. | **Done:** Directory removed; **`Package.swift`** no longer excludes **`Legacy/`**; docs + gap analysis updated; **`swift test`** green. **`FountainTests/Legacy/`** (ObjC **tests**) may remain until **[Phase 15.1](#phase-15)** migrates Xcode-hosted tests. |
-| 14.3 | **Delete `FountainParser.swift`** (legacy **regex** pipeline) and remove **`FNParserType.regex`** / **`FNScript(…, parser: .regex)`** / **`loadString(…, parser: .regex)`** and all call sites, tests, and roadmap references that depended on it. **Retain** **`FountainRegexes.swift`** while **FNHTMLScript** / styling still need it (until [Phase 11](#phase-11-regex-modernization-swift-native)). | **Done:** No `FountainParser` Swift symbol; **`Fountain.xcodeproj`** file refs cleaned; **`swift test`** green. |
+| 14.3 | **Delete `FountainParser.swift`** (legacy **regex** pipeline) and remove **`FNParserType.regex`** / **`FNScript(…, parser: .regex)`** / **`loadString(…, parser: .regex)`** and all call sites, tests, and roadmap references that depended on it. **Retain** **`FountainRegexes.swift`** while **FNHTMLScript** / styling still need it (until [Phase 11](#phase-11-regex-modernization-swift-native)). | **Done:** No `FountainParser` Swift symbol; **`swift test`** green. |
 
 **Release sequencing:** **14.2** + **14.3** landed before the **`[2.0.0]`** changelog cut. Tagging does **not** change the **Fountain syntax** pin.
 
@@ -269,15 +269,15 @@ This document turns [Project Specification- Fountain Swift (Next-Gen).md](../Pro
 
 <a id="phase-15"></a>
 
-## Phase 15 — Polish (post-2.0)
+## Phase 15 — Polish (post-2.0) (**complete**)
 
 **Goal:** Incremental **quality, ergonomics, and fidelity** after the **2.0.0** line — **without** requiring a new Fountain **syntax** generation unless you explicitly scope one.
 
-**Status:** **Open** for **15.1** only at the repo level — **15.2–15.4** polish shipped in **[CHANGELOG.md](../CHANGELOG.md) `[2.0.1]`** (tests + docs + export/parser fidelity). **15.1** (remove **`Fountain.xcodeproj`**, SPM-native samples/tests) is the remaining structural migration.
+**Status:** **Complete** — **15.2–15.4** in **`[2.0.1]`**; **15.1** SPM-only repository in **`[2.0.2]`** (see [CHANGELOG.md](../CHANGELOG.md)).
 
 | Step | Action | Done when |
 |------|--------|-----------|
-| 15.1 | **SPM-native repository:** remove **`Fountain.xcodeproj`** (and committed **`.xcworkspace`** if any); migrate **Sample Project Mac/iOS** and **`FountainTests`** to SwiftPM-native app / test targets (or document a split repo). Update **CI** if jobs used **`xcodebuild`** on the removed project; refresh [Phase-1-Xcode-SPM-Integration.md](Phase-1-Xcode-SPM-Integration.md), **README**, and **CONTRIBUTING**. | No `.xcodeproj` in tree (or archived per policy); **`swift build`** / **`swift test`** remain CI truth; contributor docs describe **File → Open** on **`Package.swift`**. |
+| 15.1 | **SPM-native repository:** remove **`Fountain.xcodeproj`** (and committed **`.xcworkspace`** if any); migrate **Sample Project Mac/iOS** and **`FountainTests`** to SwiftPM-native app / test targets (or document a split repo). Update **CI** if jobs used **`xcodebuild`** on the removed project; refresh [Phase-1-Xcode-SPM-Integration.md](Phase-1-Xcode-SPM-Integration.md), **README**, and **CONTRIBUTING**. | **Done:** No **`Fountain.xcodeproj`**; **`FountainTests`** SPM target + **`FountainTests/Resources/`**; nested **`Samples/FountainSampleMac/`**; CI **`swift test`** + nested **`swift build`**; docs updated. |
 | 15.2 | **Parser / spec polish:** expand **``.fast``** vs **``.tokenPipeline``** parity toward exhaustive Phase **7.3** coverage; tighten **Phase 4.6** migration notes if any consumer relied on removed edge behavior. | **Shipped in 2.0.1:** shared fixture catalog; **Phase 4** builder parity over all bundled **`.fountain`**; **4.6** migration blurb in deprecation + gap docs. **Stretch:** Big Fish / Brick & Steel exhaustive matrix (traceability row). |
 | 15.3 | **Writers & preview polish:** **FDX** / **HTML** fidelity stretches; **`FountainUI`** layout, **Dynamic Type**, snapshot tests ([Phase 13](#phase-13-swiftui-and-fountainui) stretches). | **Shipped in 2.0.1:** **export-golden-minimal** **FDX**/**HTML**/**``FountainDocument``** parity across parsers; narrow **``FountainView``** **ImageRenderer** test; golden minimal corpus kinds. **Stretch:** snapshots / Dynamic Type. |
 | 15.4 | **Docs & API hygiene:** DocC or expanded symbol docs where high-traffic types need it; [Public-API-Surface.md](Public-API-Surface.md) stays aligned with semver reality. | **Shipped in 2.0.1:** README SwiftPM–first + integration section; **Public-API-Surface** application checklist + fixture notes; checklist step **8**; project spec §8. **Stretch:** DocC / expanded symbol docs. |
@@ -332,8 +332,8 @@ Fill as you implement. Link each row to tests.
 | **Bonus:** Inline markup → **`AttributedString`** for SwiftUI | 13.3 / 6 | ``FountainInlineMarkup``, ``FountainUIScriptElementLineContent``, `FountainUI` | ☑ *(initial — underline / snapshot stretch)* |
 | **`2.0.0`** package release (breaking) | 14.1 | [SPM-Release-Checklist.md](SPM-Release-Checklist.md), [CHANGELOG.md](../CHANGELOG.md) | ☑ *(in tree; tag when publishing)* |
 | **`Fountain/Legacy/`** removed | 14.2 | [CHANGELOG.md](../CHANGELOG.md) | ☑ |
-| **`FountainParser`** / **`.regex`** removed | 14.3 | `FNScript`, `Fountain.xcodeproj`, [CHANGELOG.md](../CHANGELOG.md) | ☑ |
-| **SPM-only** repo (no **`Fountain.xcodeproj`**) | 15.1 | [Phase-1-Xcode-SPM-Integration.md](Phase-1-Xcode-SPM-Integration.md), CI | ☐ |
+| **`FountainParser`** / **`.regex`** removed | 14.3 | `FNScript`, [CHANGELOG.md](../CHANGELOG.md) | ☑ |
+| **SPM-only** repo (no **`Fountain.xcodeproj`**) | 15.1 | [Phase-1-Xcode-SPM-Integration.md](Phase-1-Xcode-SPM-Integration.md), CI | ☑ |
 
 ---
 
@@ -352,7 +352,7 @@ Fill as you implement. Link each row to tests.
 11. **Phase 12** — **Default `FNScript`** on **`FountainParsePipeline`** (**initial-complete**); expand **fast vs tokenPipeline** matrix for exhaustive Phase 7.3 coverage; **`FastFountainParser`** remains **`.fast`** (Project Specification *State-Aware Scanner*).  
 12. **Phase 13** — **`FountainUI`** SwiftUI surface (**initial-complete:** `FountainView`, typography, **13.3** inline **`AttributedString`**) when you want native in-app screenplay preview beyond **HTML** / **WKWebView**.  
 13. **Phase 14** — **complete:** **`[2.0.0]`** changelog + legacy removals (**14.1–14.3**); optional **`git tag 2.0.0`** when publishing.  
-14. **Phase 15** — **polish:** **15.1** SPM-only repo; **15.2–15.4** parser, writers/UI, and docs hygiene — [§ Phase 15](#phase-15).
+14. **Phase 15** — **complete** (polish **15.2–15.4** + SPM-only **15.1**) — [§ Phase 15](#phase-15).
 
 ---
 
@@ -366,7 +366,7 @@ Small, continuous improvements after numbered phases are **initial-complete**:
 |------|--------|
 | **Phase 3.5** | Prefer Swift ``Regex`` for **localized** slug checks — **done:** ``FountainSceneHeadingMatcher`` is Swift `Regex` only; package floor is **macOS 13 / iOS 16** (Phase **11**). |
 | **Phase 4.3 / 4.6** | **4.3 done:** soft breaks + ``!`` preference. **4.6 started:** whitespace-only lines no longer emit standalone **Action** (see Phase 4 table); full semver/migration polish **open**. |
-| **Phase 1** | **Polish:** [Phase-1-Xcode-SPM-Integration.md](Phase-1-Xcode-SPM-Integration.md) — verification, rollback, and contributor notes (local package wiring **done** in `Fountain.xcodeproj` **today**). **Superseded by [Phase 15.1](#phase-15)** when the project goes **SPM-only**. |
+| **Phase 1** | **Complete:** SPM-only — [Phase-1-Xcode-SPM-Integration.md](Phase-1-Xcode-SPM-Integration.md). |
 | **Phase 8** | Deeper HTML/CSS refactor if desired. **Polish:** ``FountainStubRendererError`` retained; conforms to ``LocalizedError``. **8.5–8.8** **initial-complete** per Phase 8 table (PDF pagination + ADR-008); stretch: second PDF backend, richer headers. |
 | **Phase 9.3–9.5** | **9.3** planning done — [Fountain-Incremental-Parse-Spike.md](Fountain-Incremental-Parse-Spike.md). **Implementation:** **9.4** line→element map; **9.5** `parseIncremental(newText:range:)` (safe boundaries, chunk re-tokenize, merge into ``FountainDocument``) — see Phase 9 table. |
 | **Gap analysis** | **Closed (matrix):** feature matrix all **Y** with SPM regression pointers — ``GapMatrixClosureTests`` + prior tests; see [Fountain-1.1-Gap-Analysis.md](Fountain-1.1-Gap-Analysis.md). |
@@ -375,7 +375,7 @@ Small, continuous improvements after numbered phases are **initial-complete**:
 | **Phase 12** | **Initial-complete:** **default** **`FNScript`** / async / stream on **`FountainParsePipeline`**; **`.fast`** explicit; expand parity matrix vs Phase 7.3 — [§ Phase 12](#phase-12-canonical-state-aware-parser-default-fnscript). |
 | **Phase 13** | **Complete (initial):** **`FountainUI`**, **`FountainView`**, typography, **13.3** inline markup — layout / snapshot polish stretch — [§ Phase 13](#phase-13-swiftui-and-fountainui). |
 | **Phase 14** | **Complete:** package **`2.0.0`** line in tree (**14.1–14.3**); Fountain **syntax** pin unchanged — [§ Phase 14](#phase-14). |
-| **Phase 15** | **Open:** **15.1** SPM-only migration. **15.2–15.4** closed in **`[2.0.1]`** (tests, export fidelity, README / Public-API / spec §8) — [§ Phase 15](#phase-15). |
+| **Phase 15** | **Complete** — **`[2.0.1]`** + **`[2.0.2]`** — [§ Phase 15](#phase-15). |
 
 ---
 
@@ -388,7 +388,7 @@ Small, continuous improvements after numbered phases are **initial-complete**:
 - [SPM-Release-Checklist.md](SPM-Release-Checklist.md) — Phase 10.1 tagging / semver  
 - [SwiftWasm-Experimental.md](SwiftWasm-Experimental.md) — Phase 10.3 Wasm notes  
 - [`.github/workflows/fountaincore-wasm.yml`](../.github/workflows/fountaincore-wasm.yml) — manual **Wasm: FountainCore** CI  
-- [CHANGELOG.md](../CHANGELOG.md) — **2.0.0** breaking release (**Phase 14**); **2.0.1** integrator polish; **[Unreleased]** tracks **Phase 15.1** only  
+- [CHANGELOG.md](../CHANGELOG.md) — **2.0.0** (**Phase 14**); **2.0.1** polish; **2.0.2** SPM-only (**Phase 15.1**)  
 - [Deprecation-And-Distribution.md](Deprecation-And-Distribution.md) — Phases 0.3 & 1.2  
 - [Public-API-Surface.md](Public-API-Surface.md) — Phase 1.3  
 - [External-Fountain-Test-References.md](External-Fountain-Test-References.md) — Phase 7.3 external parsers / vendoring notes  

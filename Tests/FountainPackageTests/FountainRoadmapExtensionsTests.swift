@@ -23,9 +23,9 @@ final class FountainRoadmapExtensionsTests: XCTestCase {
         for _ in 0 ..< 3 {
             fromFile.deleteLastPathComponent()
         }
-        let candidate = fromFile.appendingPathComponent("FountainTests/Brick And Steel.txt")
+        let candidate = fromFile.appendingPathComponent("FountainTests/Resources/Brick And Steel.txt")
         let cwdCandidate = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
-            .appendingPathComponent("FountainTests/Brick And Steel.txt")
+            .appendingPathComponent("FountainTests/Resources/Brick And Steel.txt")
         let url: URL
         if FileManager.default.fileExists(atPath: candidate.path) {
             url = candidate

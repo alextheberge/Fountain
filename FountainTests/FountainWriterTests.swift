@@ -18,12 +18,13 @@ class FountainWriterTests: XCTestCase {
     }
 
     func testSimpleReadWrite() {
-        guard let path = Bundle(for: type(of: self)).path(forResource: "Simple", ofType: "fountain") else {
+        guard let path = FountainTestResources.path(forFixture: "Simple", extension: "fountain") else {
             XCTFail("Could not find Simple.fountain")
             return
         }
-        script.loadFile(path)
-        let input  = (try? String(contentsOfFile: path, encoding: .utf8)) ?? ""
+        // Use `.fast` so round-trip matches the legacy **Simple.fountain** fixture (token pipeline may re-emit `>` on `CUT TO:`).
+        script.loadFile(path, parser: .fast)
+        let input = (try? String(contentsOfFile: path, encoding: .utf8)) ?? ""
         let output = script.stringFromDocument()
         XCTAssertEqual(output, input, "\nElements: \(script.elements)")
     }

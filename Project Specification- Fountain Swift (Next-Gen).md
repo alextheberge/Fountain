@@ -1,6 +1,6 @@
 Project Specification: Fountain Swift (Next-Gen)
 
-**Versioning (two axes):** This specification describes compliance with **Fountain markup / syntax** generation **1.1** ([fountain.io/syntax](https://fountain.io/syntax/)). The **Swift package** in this repository uses **its own SemVer** (e.g. **2.0.0** for the breaking next-gen line, **2.0.1+** for integrator polish and fixes). Library version numbers are **not** Fountain syntax version numbers.
+**Versioning (two axes):** This specification describes compliance with **Fountain markup / syntax** generation **1.1** ([fountain.io/syntax](https://fountain.io/syntax/)). The **Swift package** in this repository uses **its own SemVer** (e.g. **2.0.0** for the breaking next-gen line, **2.0.1+** for polish and **2.0.2** for SPM-only layout). Library version numbers are **not** Fountain syntax version numbers.
 
 1. Core Objectives
 
@@ -94,13 +94,13 @@ Conditional Compilation: Use #if canImport(UIKit) or #if os(macOS) only for the 
 
 Wasm Support: Ensure the library compiles with SwiftWasm for browser-based tool integration.
 
-**Note (Phase 14):** The **`Fountain/Legacy/`** Objective-C + RegexKitLite reference tree and the Swift **`FountainParser`** / **`FNParserType.regex`** pipeline have been **removed** from the repository; see **[CHANGELOG.md](CHANGELOG.md)**. **Phase 14** is **closed**; **Phase 15** tracks post-2.0 polish (including optional removal of **`Fountain.xcodeproj`** in favor of SwiftPM-only workflows).
+**Note (Phase 14–15):** The **`Fountain/Legacy/`** Objective-C + RegexKitLite reference tree and the Swift **`FountainParser`** / **`FNParserType.regex`** pipeline have been **removed**; **`Fountain.xcodeproj`** was removed in **Phase 15.1** (**`[2.0.2]`**). See **[CHANGELOG.md](CHANGELOG.md)**.
 
 Swift Regex stack: Refactor `FountainRegexes.swift` to Swift 5.7+ `Regex` / `RegexBuilder` (including `/…/` literals where helpful) and remove `NSRegularExpression` from `String+Regex.swift` entirely — native `Regex` is faster, strictly typed at capture boundaries, and avoids `NSString`/`NSRange` bridging, which matters for Wasm and Linux. Phased as **Phase 11** in [docs/Fountain-1.1-Implementation-Roadmap.md](docs/Fountain-1.1-Implementation-Roadmap.md#phase-11-regex-modernization-swift-native).
 
 8. Application integration (next-gen readiness)
 
-The **SwiftPM** products (**`Fountain`**, **`FountainCore`**, **`FountainHTML`**, **`FountainUI`**) are the supported way to ship Fountain in **macOS** and **iOS** applications: add the package dependency, **`import`** the narrowest product you need, parse with **`FNScript`**, export with **`FountainScriptRendering`** conformers or **`FountainDocument`** JSON, and follow **[docs/Public-API-Surface.md](docs/Public-API-Surface.md)** for **FDX/PDF** consumer contracts. **CI** and semver truth live at **`swift test`** on **`Package.swift`**; the Xcode project remains optional for samples until **Phase 15.1** (SPM-only migration).
+The **SwiftPM** products (**`Fountain`**, **`FountainCore`**, **`FountainHTML`**, **`FountainUI`**) are the supported way to ship Fountain in **macOS** and **iOS** applications: add the package dependency, **`import`** the narrowest product you need, parse with **`FNScript`**, export with **`FountainScriptRendering`** conformers or **`FountainDocument`** JSON, and follow **[docs/Public-API-Surface.md](docs/Public-API-Surface.md)** for **FDX/PDF** consumer contracts. **CI** and semver truth live at **`swift test`** on **`Package.swift`** (**Phase 15.1** complete — no **`Fountain.xcodeproj`**).
 
 ---
 

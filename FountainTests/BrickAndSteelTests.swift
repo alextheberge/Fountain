@@ -14,7 +14,7 @@ class BrickAndSteelTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
-        guard let path = Bundle(for: type(of: self)).path(forResource: "Brick And Steel", ofType: "txt") else {
+        guard let path = FountainTestResources.path(forFixture: "Brick And Steel", extension: "txt") else {
             XCTFail("Could not find Brick And Steel.txt")
             return
         }

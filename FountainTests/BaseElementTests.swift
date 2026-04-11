@@ -29,7 +29,7 @@ class BaseElementTests: XCTestCase {
     var elements: [FNElement] = []
 
     func path(forFile filename: String) -> String? {
-        return Bundle(for: type(of: self)).path(forResource: filename, ofType: "fountain")
+        FountainTestResources.path(forFixture: filename, extension: "fountain")
     }
 
     func loadTestFile(_ filename: String) {

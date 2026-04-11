@@ -8,9 +8,9 @@ final class BigFishCorpusTests: XCTestCase {
         for _ in 0 ..< 3 {
             fromFile.deleteLastPathComponent()
         }
-        let fromFileCandidate = fromFile.appendingPathComponent("FountainTests/Big Fish.fountain")
+        let fromFileCandidate = fromFile.appendingPathComponent("FountainTests/Resources/Big Fish.fountain")
         let cwdCandidate = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
-            .appendingPathComponent("FountainTests/Big Fish.fountain")
+            .appendingPathComponent("FountainTests/Resources/Big Fish.fountain")
         if FileManager.default.fileExists(atPath: fromFileCandidate.path) { return fromFileCandidate }
         if FileManager.default.fileExists(atPath: cwdCandidate.path) { return cwdCandidate }
         return nil

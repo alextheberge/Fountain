@@ -74,9 +74,9 @@ final class FNScriptAsyncTests: XCTestCase {
         for _ in 0 ..< 3 {
             fromFile.deleteLastPathComponent()
         }
-        let fromFileCandidate = fromFile.appendingPathComponent("FountainTests/Brick And Steel.txt")
+        let fromFileCandidate = fromFile.appendingPathComponent("FountainTests/Resources/Brick And Steel.txt")
         let cwdCandidate = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
-            .appendingPathComponent("FountainTests/Brick And Steel.txt")
+            .appendingPathComponent("FountainTests/Resources/Brick And Steel.txt")
         if FileManager.default.fileExists(atPath: fromFileCandidate.path) { return fromFileCandidate }
         if FileManager.default.fileExists(atPath: cwdCandidate.path) { return cwdCandidate }
         return nil

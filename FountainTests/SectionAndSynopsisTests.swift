@@ -14,7 +14,7 @@ class SectionAndSynopsisTests: BaseElementTests {
 
     override func setUp() {
         super.setUp()
-        guard let path = Bundle(for: type(of: self)).path(forResource: "Sections-Complex", ofType: "fountain") else {
+        guard let path = FountainTestResources.path(forFixture: "Sections-Complex", extension: "fountain") else {
             XCTFail("Could not find Sections-Complex.fountain")
             return
         }

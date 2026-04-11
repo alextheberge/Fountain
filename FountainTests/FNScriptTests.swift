@@ -23,7 +23,7 @@ class FNScriptTests: XCTestCase {
     }
 
     func testLoadFile() {
-        guard let path = Bundle(for: type(of: self)).path(forResource: "Big Fish", ofType: "fountain") else {
+        guard let path = FountainTestResources.path(forFixture: "Big Fish", extension: "fountain") else {
             XCTFail("Could not find Big Fish.fountain")
             return
         }
@@ -38,7 +38,7 @@ class FNScriptTests: XCTestCase {
 
     func testStringFromTitlePage() {
         let expected = "Title: A Simple Script\nAuthor: Nima Yousefi\nDraft date: 2/1/2012\n"
-        guard let path = Bundle(for: type(of: self)).path(forResource: "Simple", ofType: "fountain") else {
+        guard let path = FountainTestResources.path(forFixture: "Simple", extension: "fountain") else {
             XCTFail("Could not find Simple.fountain")
             return
         }

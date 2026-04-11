@@ -15,6 +15,29 @@ A **package** bump (e.g. to **2.0.0**) does **not** by itself change the Fountai
 
 ---
 
+## [2.0.2] — 2026-04-11
+
+**Phase 15.1 — SPM-only repository:** **`Fountain.xcodeproj`** and **Sample Project Mac/iOS** removed; **`FountainTests`** is a first-class **`swift test`** target with fixtures under **`FountainTests/Resources/`**; nested **macOS** **`WKWebView`** sample at **`Samples/FountainSampleMac/`** (`swift build` / `swift run FountainSampleMac`). CI builds the nested sample. Fountain **syntax** pin remains **1.1**.
+
+### Removed
+
+- **`Fountain.xcodeproj`** (and workspace metadata).
+- **Sample Project Mac** / **Sample Project iOS** (replaced by **`Samples/FountainSampleMac`** + documentation for iOS integration).
+
+### Added
+
+- **`FountainTests`** test target in root **`Package.swift`** (alongside **`FountainPackageTests`**).
+- **`FountainTests/FountainTestResources.swift`** — **`Bundle.module`** fixture lookup.
+- **`Samples/FountainSampleMac/`** — nested Swift package depending on **`../..`**.
+
+### Changed
+
+- **`FountainPackageVersion.librarySemanticVersion`** → **`2.0.2`**.
+- **`FountainWriterTests`** — load **Simple.fountain** with **`parser: .fast`** so round-trip matches the legacy fixture.
+- **Docs:** [Phase-1-Xcode-SPM-Integration.md](docs/Phase-1-Xcode-SPM-Integration.md), **README**, **CONTRIBUTING**, **Deprecation**, **Gap analysis**, **Roadmap** — SPM-only workflow.
+
+---
+
 ## [2.0.1] — 2026-04-11
 
 **Integrator readiness:** documentation, **README** SwiftPM–first guidance, and automated checks for **export** and **parser** consistency. **No intentional public API removals** (patch). Fountain **markup** target remains **1.1** (`FountainSyntaxPin.targetVersionLabel`).
@@ -47,4 +70,4 @@ SwiftPM **library** release **2.0.0**. Fountain **markup** target remains **1.1*
 
 ## [Unreleased]
 
-**Planned:** **Phase 15.1** — SPM-native repository (remove **`Fountain.xcodeproj`**, migrate samples / **`FountainTests`**) — [Fountain-1.1-Implementation-Roadmap.md](docs/Fountain-1.1-Implementation-Roadmap.md#phase-15).
+_No open release items — next work is normal semver / roadmap slices._

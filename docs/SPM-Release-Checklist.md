@@ -1,6 +1,6 @@
 # Swift Package release checklist (Phase 10.1)
 
-**Phase 10.1 (distribution):** SwiftPM is the **default** distribution surface for the next-gen stack. The **`Fountain.xcodeproj`** sample apps and **`FountainTests`** link the **local** package for demos and Xcode-hosted tests — **library consumers should still depend on this package by URL** (or a fork) and prefer **semver tags** (`X.Y.Z`) for reproducible builds.
+**Phase 10.1 (distribution):** SwiftPM is the **only** supported surface (**Phase 15.1** removed **`Fountain.xcodeproj`**). **Library consumers** should depend on this package by **URL** (or a fork) and prefer **semver tags** (`X.Y.Z`) for reproducible builds.
 
 The manifest **package name** is **`FountainSwiftPM`** so the umbrella **library** product can be named `Fountain` without SPM resolver cycles. Apps still **`import Fountain`** when using the umbrella product.
 
@@ -18,7 +18,7 @@ The manifest **package name** is **`FountainSwiftPM`** so the umbrella **library
 1. Run **`swift build`** and **`swift test`** on the oldest supported Xcode / Swift toolchain you claim.
 2. Update **[CHANGELOG.md](../CHANGELOG.md)** (move **Unreleased** into a versioned section for **major** bumps).
 3. If the **Swift package** SemVer changes, bump **`FountainPackageVersion.librarySemanticVersion`** in `Fountain/FountainPackageVersion.swift` to match the tag — **independently** of **`FountainSyntaxPin.targetVersionLabel`** (Fountain **markup** generation, e.g. **1.1**).
-4. Confirm **`FountainSyntaxPin.targetVersionLabel`** matches the **Fountain syntax** level documented in the README (do **not** bump this when only the **package** SemVer advances, e.g. **2.0.0** → **2.0.1**).
+4. Confirm **`FountainSyntaxPin.targetVersionLabel`** matches the **Fountain syntax** level documented in the README (do **not** bump this when only the **package** SemVer advances, e.g. **2.0.0** → **2.0.2**).
 5. Review **SemVer** impact:
    - **Major:** breaking public API or behavior changes to parse output.
    - **Minor:** additive API, new element metadata keys, new optional writers.

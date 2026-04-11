@@ -14,7 +14,7 @@
 
 ## Phase 1 — SwiftPM and boundaries complete
 
-**Phase 1** is **complete**: `Package.swift` defines **FountainCore** / **FountainHTML** / umbrella **Fountain**; GitHub Actions runs **`swift build`** / **`swift test`** on macOS; [Public-API-Surface.md](Public-API-Surface.md) documents stability tiers. The Xcode project links the **local** Swift package for sample apps and **`FountainTests`** (Phase **1.2**): [Phase-1-Xcode-SPM-Integration.md](Phase-1-Xcode-SPM-Integration.md).
+**Phase 1** is **complete**: `Package.swift` defines **FountainCore** / **FountainHTML** / umbrella **Fountain**; GitHub Actions runs **`swift build`** / **`swift test`** on macOS; [Public-API-Surface.md](Public-API-Surface.md) documents stability tiers. **Phase 15.1** removed **`Fountain.xcodeproj`**; **`FountainTests`** + samples are SPM-native: [Phase-1-Xcode-SPM-Integration.md](Phase-1-Xcode-SPM-Integration.md).
 
 ---
 
@@ -115,7 +115,7 @@ Legend: **Y** = supported in practice with **SPM regression tests** named below;
 
 | Item | Status |
 |------|--------|
-| Xcode project | Y — sample apps + `FountainTests`; **local** `Package.swift` linked (Phase **1.2**); [Phase-1-Xcode-SPM-Integration.md](Phase-1-Xcode-SPM-Integration.md) |
+| SPM-only tree | Y — no **`Fountain.xcodeproj`**; **`FountainTests`** + **`Samples/FountainSampleMac/`**; [Phase-1-Xcode-SPM-Integration.md](Phase-1-Xcode-SPM-Integration.md) |
 | SwiftPM `Package.swift` | Y — **authoritative for CI** (`swift build` / `swift test` on `master`); products `FountainCore` / `FountainHTML` / `Fountain`; Phase **1** closed; [SPM-Release-Checklist.md](SPM-Release-Checklist.md) |
 | Contributor workflow | Y — [CONTRIBUTING.md](../CONTRIBUTING.md); [Public-API-Surface.md](Public-API-Surface.md); Xcode uses same package: [Phase-1-Xcode-SPM-Integration.md](Phase-1-Xcode-SPM-Integration.md) |
 

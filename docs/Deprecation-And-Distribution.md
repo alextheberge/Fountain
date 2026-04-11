@@ -2,11 +2,11 @@
 
 **Version axes:** **Fountain syntax 1.1** (``FountainSyntaxPin``, JSON ``fountainSyntaxVersion``) is independent of **Swift package SemVer** (``FountainPackageVersion``, git tags, [CHANGELOG.md](../CHANGELOG.md)). A **2.0.0** library release does not imply Fountain **2.0** markup.
 
-## Phase 1.2 — Package vs Xcode (complete)
+## Phase 1.2 — SwiftPM canonical (Phase **15.1** complete)
 
 - **SwiftPM (`Package.swift`)** defines **FountainCore**, **FountainHTML**, and umbrella **Fountain**; CI at the repo root is authoritative.
 - **Library sources** live only under **`Fountain/`** (and **`Sources/Fountain/`** for the umbrella shim). There is no forked second codebase for the Swift library.
-- **Xcode (`Fountain.xcodeproj`)** links the **local** Swift package for **Sample Project Mac**, **Sample Project iOS**, and **`FountainTests`** — those targets **do not** list `Fountain/*.swift` in **Compile Sources**. Library code is built once through SwiftPM. Details and rollback: [Phase-1-Xcode-SPM-Integration.md](Phase-1-Xcode-SPM-Integration.md).
+- **`Fountain.xcodeproj`** was **removed** in **Phase 15.1**; **`FountainTests`** is a normal **`swift test`** target. **macOS** **WKWebView** sample: **`Samples/FountainSampleMac/`**. Details: [Phase-1-Xcode-SPM-Integration.md](Phase-1-Xcode-SPM-Integration.md).
 
 ---
 
@@ -18,7 +18,7 @@ This is the **baseline policy** for the Swift next-gen roadmap. Breaking removal
 |-------|--------|------|
 | **`FountainParsePipeline`** / **``.tokenPipeline``** | **Default** | **``FNScript``** sync, async, and stream entry points without an explicit **`parser:`** use the tokenizer-first pipeline (Phases **3–4**). New Fountain 1.1 behavior and parity tests target this path first. |
 | **`FastFountainParser`** (**``.fast``**) | **Explicit opt-in** | Line-first engine for regression, benchmarks, or apps that still depend on its exact behavior. Not the default initializer path. |
-| **Xcode vs SwiftPM** | **Single library graph (Phase 1.2)** | **CI and API truth** follow **`swift build` / `swift test`** on `Package.swift`. Xcode sample + test targets consume the **Fountain** package product from the same repo — [Phase-1-Xcode-SPM-Integration.md](Phase-1-Xcode-SPM-Integration.md). |
+| **Xcode vs SwiftPM** | **SPM-only (Phase 15.1)** | **CI and API truth** are **`swift build` / `swift test`** on `Package.swift` only — [Phase-1-Xcode-SPM-Integration.md](Phase-1-Xcode-SPM-Integration.md). |
 
 **Removed (Phase 14.2–14.3, pre-`2.0.0` tag):** **`Fountain/Legacy/`** (Objective-C + RegexKitLite reference tree) and the Swift **`FountainParser`** pipeline / **`FNParserType.regex`**. Consumers that still need RegexKitLite-era sources must vendor them from git history.
 
@@ -38,13 +38,13 @@ This is the **baseline policy** for the Swift next-gen roadmap. Breaking removal
 | Path | Use when |
 |------|----------|
 | **SwiftPM** (`Package.swift`) | Libraries, CI, package-first development (`swift build`, `swift test`). **Canonical** module graph for **`FountainCore`** / **`FountainHTML`** / umbrella **`Fountain`**. |
-| **Xcode `Fountain.xcodeproj`** | Sample apps (**Sample Project Mac/iOS**) and **`FountainTests`**. Targets link the **local** **Fountain** product (see [Phase-1-Xcode-SPM-Integration.md](Phase-1-Xcode-SPM-Integration.md)); app/test host sources live outside the package tree paths above. |
+| **Samples** | **`Samples/FountainSampleMac/`** nested package (macOS **WKWebView** demo). **iOS:** integrate **`Fountain`** into your own app target. |
 
-### Xcode + local package (done)
+### Opening in Xcode
 
-See **[Phase-1-Xcode-SPM-Integration.md](Phase-1-Xcode-SPM-Integration.md)** for verification steps, `@testable import` notes, and rollback if package wiring must be reverted.
+**File → Open** the repo’s **`Package.swift`**. Use **`swift test`** for verification; see **[Phase-1-Xcode-SPM-Integration.md](Phase-1-Xcode-SPM-Integration.md)** for the **macOS** sample and **`FountainTests`** layout.
 
-**SPM** remains authoritative for API and CI; **library** edits are made under **`Fountain/`** and **`Package.swift`** only — Xcode picks them up through the package dependency.
+**Library** edits are made under **`Fountain/`**, **`FountainUI/`**, and **`Package.swift`** only.
 
 ## What “deprecated” means here
 

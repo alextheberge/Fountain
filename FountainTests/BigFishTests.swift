@@ -14,7 +14,7 @@ class BigFishTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
-        guard let path = Bundle(for: type(of: self)).path(forResource: "Big Fish", ofType: "fountain") else {
+        guard let path = FountainTestResources.path(forFixture: "Big Fish", extension: "fountain") else {
             XCTFail("Could not find Big Fish.fountain")
             return
         }

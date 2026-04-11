@@ -12,19 +12,19 @@ For more details on Fountain see [fountain.io](https://fountain.io).
 
 ## Fountain Swift package (next-gen)
 
-The **default development path** is **`Package.swift`**: **`swift build`** / **`swift test`** on macOS define CI truth. The library ships a **Swift-native** tokenizer-first parser (**``FountainParsePipeline``**; **no RegexKitLite** in SwiftPM), optional **line-first** **`FastFountainParser`** via **`parser: .fast`**, a **`Codable`** model (`FNElement`, `FountainDocument` / `ScriptElement`), **async** parse helpers, **protocol-based** writers (HTML, Markdown, JSON, plaintext, **minimal FDX**, **PDF**), and an umbrella **`Fountain`** product. **Xcode** (`Fountain.xcodeproj`) links the **same local package** for sample apps and **`FountainTests`** — see [docs/Phase-1-Xcode-SPM-Integration.md](docs/Phase-1-Xcode-SPM-Integration.md). Ongoing work is **polish and depth** (export fidelity vs Final Draft, optional incremental parse, stricter spec edges), not “waiting for a first SwiftPM drop.”
+The **only** supported development path is **`Package.swift`**: **`swift build`** / **`swift test`** on macOS define CI truth. Open **`Package.swift`** in Xcode or use the CLI. The library ships a **Swift-native** tokenizer-first parser (**``FountainParsePipeline``**; **no RegexKitLite** in SwiftPM), optional **line-first** **`FastFountainParser`** via **`parser: .fast`**, a **`Codable`** model (`FNElement`, `FountainDocument` / `ScriptElement`), **async** parse helpers, **protocol-based** writers (HTML, Markdown, JSON, plaintext, **minimal FDX**, **PDF**), and an umbrella **`Fountain`** product. See [docs/Phase-1-Xcode-SPM-Integration.md](docs/Phase-1-Xcode-SPM-Integration.md) for tests + the **macOS** sample. Ongoing work is **polish and depth** (export fidelity vs Final Draft, optional incremental parse, stricter spec edges).
 
 **Two independent version numbers:**
 
 - **Fountain syntax (markup spec):** **`1.1`** today — ``FountainSyntaxPin`` in `FountainSyntaxPin.swift`, [fountain.io/syntax](https://fountain.io/syntax/), and ``FountainDocument.fountainSyntaxVersion`` in JSON. This tracks the **screenplay format** generation, **not** SwiftPM releases.
-- **Swift package (SemVer):** **`2.0.1`** today — ``FountainPackageVersion`` in `FountainPackageVersion.swift`, **[CHANGELOG.md](CHANGELOG.md)**, and **git tags**. Library SemVer can advance while the **syntax** target stays **1.1** (and vice versa in principle).
+- **Swift package (SemVer):** **`2.0.2`** today — ``FountainPackageVersion`` in `FountainPackageVersion.swift`, **[CHANGELOG.md](CHANGELOG.md)**, and **git tags**. Library SemVer can advance while the **syntax** target stays **1.1** (and vice versa in principle).
 
 ### Integrating into your application (SwiftPM)
 
 This stack targets **production macOS and iOS apps** where Fountain belongs: editors, previewers, pipelines, and AI-assisted tools — **Swift-native** parse and export **without** Objective-C or RegexKitLite in the package graph.
 
 1. **Add the package** in Xcode (**File → Add Package Dependencies…**) using the HTTPS URL of **this repository** (or a fork). In `Package.swift` you can depend on a tagged revision, for example:  
-   `.package(url: "https://github.com/nyousefi/Fountain.git", from: "2.0.1")`  
+   `.package(url: "https://github.com/nyousefi/Fountain.git", from: "2.0.2")`  
    (Replace the URL when you maintain a fork.)
 2. **Pick a product** for your target (see [docs/Public-API-Surface.md](docs/Public-API-Surface.md) for the full matrix):
    - **`Fountain`** — single **`import Fountain`**: parse + HTML + plaintext / Markdown / JSON / **FDX** / **PDF** (umbrella; includes paginated PDF helpers that need both Core and HTML).
@@ -36,15 +36,15 @@ This stack targets **production macOS and iOS apps** where Fountain belongs: edi
 
 **Platforms:** **macOS 13+**, **iOS 16+**, Swift **5.9+**. **Wasm:** experimental **`FountainCore`**-only compile — [docs/SwiftWasm-Experimental.md](docs/SwiftWasm-Experimental.md).
 
-- **Phased implementation plan:** [docs/Fountain-1.1-Implementation-Roadmap.md](docs/Fountain-1.1-Implementation-Roadmap.md) — **spec / syntax** work is organized there (filename **1.1** = markup roadmap, not package SemVer). **Phase 14** (Swift package **2.0.0** breaking line) is **complete**; **Phase 15** ([polish](docs/Fountain-1.1-Implementation-Roadmap.md#phase-15), including SPM-only **15.1**) is **active**.
+- **Phased implementation plan:** [docs/Fountain-1.1-Implementation-Roadmap.md](docs/Fountain-1.1-Implementation-Roadmap.md) — **spec / syntax** work is organized there (filename **1.1** = markup roadmap, not package SemVer). **Phase 14** (Swift package **2.0.0** breaking line) and **Phase 15** (polish + **15.1** SPM-only repo) are **complete** in **`[2.0.2]`**.
 - **Changelog / package releases:** [CHANGELOG.md](CHANGELOG.md) — **Swift package** SemVer and breaking API notes.
 - **Syntax pin:** ``FountainSyntaxPin`` points at [fountain.io/syntax](https://fountain.io/syntax/) with ``targetVersionLabel`` **`"1.1"`**; lock a spec revision in release notes when you publish a compliance snapshot.
 - **Design goals:** [Project Specification: Fountain Swift (Next-Gen)](Project%20Specification-%20Fountain%20Swift%20(Next-Gen).md).
 - **Gap analysis:** [docs/Fountain-1.1-Gap-Analysis.md](docs/Fountain-1.1-Gap-Analysis.md) — living inventory and feature matrix; update in the same PR as parser or export changes.
 - **SwiftPM:** `Package.swift` at the repo root defines **`FountainCore`** (parse/model/write, no UI), **`FountainHTML`** (`FNHTMLScript`, `FNPaginator`, `Platform`, CSS resource), optional **`FountainUI`** (**SwiftUI** `FountainView` — import **`FountainUI`** in addition to Core when needed), and an umbrella **`Fountain`** product that re-exports Core + HTML only (import **`Fountain`** in apps). The manifest package name is **`FountainSwiftPM`** so it does not collide with the `Fountain` library target under `swift test`. From the repository root run **`swift build`** and **`swift test`** (macOS 13+ / iOS 16+ / Swift 5.9+; Phase **11** Swift `Regex` floor). `FNHTMLScript` loads `ScriptCSS.css` via `Bundle.module` when built as a package. **CI:** pushes and PRs to **`master`** run **`swift build`** and **`swift test`** (`.github/workflows/swift.yml`). Tests include **`Phase5ProductionFeaturesTests`**, **`BrickSteelCorpusTests`**, **`ExportGoldenFixtureTests`** (FDX/PDF golden minimal fixture), and corpus smoke tests. **Tooling:** **`FountainJSONWriter`** / **`FNScript.fountainDocumentJSONData`** emit `FountainDocument` JSON; **`FNScript.metrics`** gives word/element counts (plus scene, transition, character-cue, and dialogue-element counts) with boneyard excluded from body-wide totals; **`FountainInlineMarkup.attributedFragment`** builds `AttributedString` for inline bold/italic (see API doc for underline limits).
 - **Cross-platform packaging (Phase 10):** SwiftPM + semver tagging are the default consumer path — [docs/SPM-Release-Checklist.md](docs/SPM-Release-Checklist.md). CI enforces **no UIKit/AppKit** in core `Fountain/*.swift` (see `.github/workflows/swift.yml`). Optional **WebAssembly** compile for **`FountainCore`** only: [docs/SwiftWasm-Experimental.md](docs/SwiftWasm-Experimental.md), `scripts/build-fountaincore-wasm.sh`, and the manual GitHub Actions workflow **Wasm: FountainCore** (`.github/workflows/fountaincore-wasm.yml`).
-- **Deprecation stance:** **`Fountain.xcodeproj`** links the **local** Swift package for sample apps and **`FountainTests`** (no duplicate compile of `Fountain/*.swift` in those targets). **`Fountain/Legacy/`** and the Swift **`FountainParser`** / **`FNParserType.regex`** path were **removed** on the road to **2.0.0** — see **[CHANGELOG.md](CHANGELOG.md)** and [docs/Deprecation-And-Distribution.md](docs/Deprecation-And-Distribution.md).
-- **Phase 1 (SwiftPM + boundaries):** **Complete** — `Package.swift` defines **FountainCore** / **FountainHTML** / **Fountain**; CI uses **`swift build`** / **`swift test`**. **Phase 1.2:** Xcode samples and **`FountainTests`** use the same package — [docs/Phase-1-Xcode-SPM-Integration.md](docs/Phase-1-Xcode-SPM-Integration.md). **Distribution:** [docs/Deprecation-And-Distribution.md](docs/Deprecation-And-Distribution.md).
+- **Deprecation stance:** **`Fountain/Legacy/`** and the Swift **`FountainParser`** / **`FNParserType.regex`** path were **removed** on the road to **2.0.0**; **`Fountain.xcodeproj`** and old sample trees were **removed** in **2.0.2** (**Phase 15.1**) — see **[CHANGELOG.md](CHANGELOG.md)** and [docs/Deprecation-And-Distribution.md](docs/Deprecation-And-Distribution.md).
+- **Phase 1 (SwiftPM + boundaries):** **Complete** — `Package.swift` defines **FountainCore** / **FountainHTML** / **Fountain**; CI uses **`swift build`** / **`swift test`**. **Phase 15.1:** SPM-only tree — [docs/Phase-1-Xcode-SPM-Integration.md](docs/Phase-1-Xcode-SPM-Integration.md). **Distribution:** [docs/Deprecation-And-Distribution.md](docs/Deprecation-And-Distribution.md).
 - **Public API map (Phase 1.3):** [docs/Public-API-Surface.md](docs/Public-API-Surface.md) — modules, stability notes, experimental areas. **FDX / PDF:** same doc, section *FDX and PDF export (consumer contract)* — minimal `.fdx` XML, PDF file bytes via **`FountainPDFWriter.renderPDFData`**, base64 on **`FountainScriptRendering.render`**, PDF stub on **WebAssembly**.
 - **Other implementations & fixtures (Phase 7.3):** there is no single blessed cross-language test corpus; **`swift test`** plus bundled fixtures are the source of truth. For external parsers, links, and a **vendoring/license checklist**, see [docs/External-Fountain-Test-References.md](docs/External-Fountain-Test-References.md).
 
@@ -58,11 +58,11 @@ The **Swift package** targets **macOS 13+** and **iOS 16+** (see **`Package.swif
 
 **Inline styling:** the parser preserves `*`, `_`, and related markers on body text; **`FountainInlineMarkup`** and **`FountainHTMLWriter`** apply HTML / **`AttributedString`** semantics for display. See **`FountainInlineRenderingMode`** and [docs/Public-API-Surface.md](docs/Public-API-Surface.md).
 
-### Sample apps and tests
+### Sample app and tests
 
-- **Sample Project Mac** loads `Big Fish.fountain`, builds HTML with `FNHTMLScript`, and displays it in a **`WKWebView`** (see `Application.xib` and `AppDelegate.swift`). The app delegate is exposed to the nib as **`@objc(AppDelegate)`** so the class resolves correctly at load time.
-- **Sample Project iOS** does the same in code with `WKWebView` (`ViewController.swift`).
-- **FountainTests** is a macOS unit-test bundle; the scheme runs tests hosted in the Mac sample app. Set **`PRODUCT_BUNDLE_IDENTIFIER`** in the target that owns each `Info.plist` so it matches **`$(PRODUCT_BUNDLE_IDENTIFIER)`** in the plist (avoids Xcode warnings and signing issues).
+- **macOS sample:** **`Samples/FountainSampleMac/`** — nested Swift package; **`cd Samples/FountainSampleMac && swift run FountainSampleMac`** opens a window with **`WKWebView`** and **Big Fish**. Built in CI.
+- **iOS:** add this package to your app; use **`WKWebView`** + **`FNHTMLScript`** / **`FountainHTMLWriter`** like the macOS sample’s render path ([docs/Phase-1-Xcode-SPM-Integration.md](docs/Phase-1-Xcode-SPM-Integration.md)).
+- **Tests:** **`swift test`** runs **`FountainPackageTests`**, **`FountainUIPackageTests`**, and legacy-style **`FountainTests`** (no Xcode host app).
 
 ### Parser notes (default vs line-first)
 
@@ -108,17 +108,17 @@ Shared regular-expression constants for **HTML** export, slug/title helpers, and
 
 Add this repository as a **package dependency** (see **Integrating into your application** above). Pin **semver tags** for reproducible builds — [docs/SPM-Release-Checklist.md](docs/SPM-Release-Checklist.md). **Do not** copy-paste `Fountain/*.swift` into another target; you lose **`Bundle.module`** resources (e.g. **`ScriptCSS.css`**) and duplicate fixes.
 
-### Xcode sample project (optional)
+### macOS sample (optional)
 
-Open **`Fountain.xcodeproj`** to run **Sample Project Mac/iOS** or the **FountainTests** bundle; those targets link the **local** Swift package ([docs/Phase-1-Xcode-SPM-Integration.md](docs/Phase-1-Xcode-SPM-Integration.md)). **Library correctness** is defined by **`swift test`** at the repo root, not by the Xcode project alone.
+See **`Samples/FountainSampleMac/`** — **`swift build`** / **`swift run`** from that directory ([docs/Phase-1-Xcode-SPM-Integration.md](docs/Phase-1-Xcode-SPM-Integration.md)).
 
 ## Usage
 
-**Minimal path:** load a `.fountain` file into **`FNScript`**, then **`FountainHTMLWriter().render(script)`** for a full HTML document, or **`FountainDocument(script:)`** for **`Codable`** JSON. **Sample Project Mac/iOS** use **`FNHTMLScript`** + **`WKWebView`**. **Consumer contracts** for **FDX** and **PDF**: [docs/Public-API-Surface.md](docs/Public-API-Surface.md) (*FDX and PDF export*).
+**Minimal path:** load a `.fountain` file into **`FNScript`**, then **`FountainHTMLWriter().render(script)`** for a full HTML document, or **`FountainDocument(script:)`** for **`Codable`** JSON. The **macOS** sample uses **`FNHTMLScript`** + **`WKWebView`**. **Consumer contracts** for **FDX** and **PDF**: [docs/Public-API-Surface.md](docs/Public-API-Surface.md) (*FDX and PDF export*).
 
 ## Testing
 
-From the repository root: **`swift build`** and **`swift test`** (same as CI — `.github/workflows/swift.yml`). In Xcode, the **FountainTests** scheme runs additional hosted tests against **Sample Project Mac**; see [docs/Phase-1-Xcode-SPM-Integration.md](docs/Phase-1-Xcode-SPM-Integration.md).
+From the repository root: **`swift build`** and **`swift test`** (same as CI — `.github/workflows/swift.yml`). **`FountainTests`** runs in the same bundle as **`FountainPackageTests`** — no separate Xcode scheme required.
 
 ## License
 

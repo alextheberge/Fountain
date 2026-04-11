@@ -15,6 +15,8 @@ jobs:
         run: swift build
       - name: Swift test
         run: swift test
+      - name: Nested macOS sample (Phase 15.1)
+        run: cd Samples/FountainSampleMac && swift build
       - name: FountainCore sources must not import SwiftUI (Phase 13 boundary)
         run: |
           set -euo pipefail

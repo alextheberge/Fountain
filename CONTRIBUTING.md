@@ -1,6 +1,6 @@
 # Contributing to Fountain (Swift)
 
-**Packaging:** Phase **1** (including **1.2**) is complete — prefer **`swift test`** at the repo root and **`Package.swift`** for library work. **`Fountain.xcodeproj`** links the **local** Swift package for **Sample Project Mac**, **Sample Project iOS**, and **`FountainTests`** (no duplicate compile of `Fountain/*.swift` in those targets). See [docs/Phase-1-Xcode-SPM-Integration.md](docs/Phase-1-Xcode-SPM-Integration.md) for verification and rollback.
+**Packaging:** The repo is **SwiftPM-only** (**Phase 15.1**). Use **`swift test`** at the repo root and **`Package.swift`** for all library work. **`FountainTests`** is a normal SPM test target (fixtures in **`FountainTests/Resources/`**). **macOS** sample: **`Samples/FountainSampleMac/`**. See [docs/Phase-1-Xcode-SPM-Integration.md](docs/Phase-1-Xcode-SPM-Integration.md).
 
 **Releases:** When you bump the **Swift package** SemVer, update ``FountainPackageVersion.librarySemanticVersion`` and [CHANGELOG.md](CHANGELOG.md). Do **not** change ``FountainSyntaxPin.targetVersionLabel`` unless the team is intentionally retargeting a **new Fountain markup** generation (today **1.1**).
 
@@ -24,7 +24,7 @@ Keep Xcode **`FountainTests`** and SPM tests aligned when behavior changes; pref
 ## Before opening a PR
 
 - Run **`swift build`** and **`swift test`** from the repository root.
-- If you use the Xcode project, build **Sample Project Mac** (and tests if you touched shared sources).
+- Optional: **`cd Samples/FountainSampleMac && swift build`** if you touch HTML / **`WKWebView`** integration.
 - Optional: after deep parser changes, run the **Wasm: FountainCore** workflow (Actions tab) or see [docs/SwiftWasm-Experimental.md](docs/SwiftWasm-Experimental.md).
 
 ## Code style
