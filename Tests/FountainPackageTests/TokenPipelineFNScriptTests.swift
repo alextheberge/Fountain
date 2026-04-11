@@ -115,6 +115,33 @@ final class TokenPipelineFNScriptTests: XCTestCase {
         )
     }
 
+    func testTokenPipelineBrickAndSteelFileMatchesFast() throws {
+        let url = try XCTUnwrap(brickSteelFountainURL(), "Brick And Steel.txt not found (run swift test from repo root)")
+        let fast = FNScript(file: url.path, parser: .fast)
+        let token = FNScript(file: url.path, parser: .tokenPipeline)
+        XCTAssertEqual(token.elements.count, fast.elements.count, "Brick & Steel element count")
+        XCTAssertEqual(token.elements.map(\.elementType), fast.elements.map(\.elementType), "Brick & Steel element types")
+        XCTAssertEqual(token.elements.map(\.elementText), fast.elements.map(\.elementText), "Brick & Steel element texts")
+        XCTAssertEqual(
+            FountainWriter.titlePageFromScript(token).trimmingCharacters(in: .whitespacesAndNewlines),
+            FountainWriter.titlePageFromScript(fast).trimmingCharacters(in: .whitespacesAndNewlines),
+            "Brick & Steel title page export parity"
+        )
+    }
+
+    private func brickSteelFountainURL() -> URL? {
+        var fromFile = URL(fileURLWithPath: "\(#filePath)")
+        for _ in 0 ..< 3 {
+            fromFile.deleteLastPathComponent()
+        }
+        let fromFileCandidate = fromFile.appendingPathComponent("FountainTests/Brick And Steel.txt")
+        let cwdCandidate = URL(fileURLWithPath: FileManager.default.currentDirectoryPath)
+            .appendingPathComponent("FountainTests/Brick And Steel.txt")
+        if FileManager.default.fileExists(atPath: fromFileCandidate.path) { return fromFileCandidate }
+        if FileManager.default.fileExists(atPath: cwdCandidate.path) { return cwdCandidate }
+        return nil
+    }
+
     private func bigFishFountainURL() -> URL? {
         var fromFile = URL(fileURLWithPath: "\(#filePath)")
         for _ in 0 ..< 3 {

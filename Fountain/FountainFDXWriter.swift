@@ -43,9 +43,49 @@ public struct FountainFDXWriter: FountainScriptRendering, Sendable {
           <Content>
         \(body)
           </Content>
+        \(Self.fdxLayoutBoilerplate)
         </FinalDraft>
         """
     }
+
+    /// Final Draft **PageLayout**, **ElementSettings** (per common element types), and **MoresAndContinueds**
+    /// so imports pick up US-style margins and (MORE)/(cont'd) defaults (roadmap Phase 8.7).
+    private static let fdxLayoutBoilerplate = #"""
+          <PageLayout BackgroundColor="#FFFFFFFFFFFF" BottomMargin="72" BreakDialogueAndActionAtSentences="Yes" DocumentLeading="Normal" FooterMargin="72" ForegroundColor="#000000000000" HeaderMargin="72" InvisiblesColor="#808080808080" TopMargin="72" UsesSmartQuotes="Yes"/>
+          <ElementSettings Type="General">
+            <FontSpec AdornmentStyle="0" Background="#FFFFFFFFFFFF" Color="#000000000000" Font="Courier Final Draft" RevisionID="0" Size="12" Style=""/>
+            <ParagraphSpec Alignment="Left" FirstIndent="0.00" Leading="Regular" LeftIndent="1.50" RightIndent="7.50" SpaceBefore="0" Spacing="1" StartsNewPage="No"/>
+          </ElementSettings>
+          <ElementSettings Type="Scene Heading">
+            <FontSpec AdornmentStyle="0" Background="#FFFFFFFFFFFF" Color="#000000000000" Font="Courier Final Draft" RevisionID="0" Size="12" Style="AllCaps"/>
+            <ParagraphSpec Alignment="Left" FirstIndent="0.00" Leading="Regular" LeftIndent="1.50" RightIndent="7.50" SpaceBefore="12" Spacing="1" StartsNewPage="No"/>
+          </ElementSettings>
+          <ElementSettings Type="Action">
+            <FontSpec AdornmentStyle="0" Background="#FFFFFFFFFFFF" Color="#000000000000" Font="Courier Final Draft" RevisionID="0" Size="12" Style=""/>
+            <ParagraphSpec Alignment="Left" FirstIndent="0.00" Leading="Regular" LeftIndent="1.50" RightIndent="7.50" SpaceBefore="0" Spacing="1" StartsNewPage="No"/>
+          </ElementSettings>
+          <ElementSettings Type="Character">
+            <FontSpec AdornmentStyle="0" Background="#FFFFFFFFFFFF" Color="#000000000000" Font="Courier Final Draft" RevisionID="0" Size="12" Style="AllCaps"/>
+            <ParagraphSpec Alignment="Left" FirstIndent="0.00" Leading="Regular" LeftIndent="3.50" RightIndent="7.25" SpaceBefore="12" Spacing="1" StartsNewPage="No"/>
+          </ElementSettings>
+          <ElementSettings Type="Dialogue">
+            <FontSpec AdornmentStyle="0" Background="#FFFFFFFFFFFF" Color="#000000000000" Font="Courier Final Draft" RevisionID="0" Size="12" Style=""/>
+            <ParagraphSpec Alignment="Left" FirstIndent="0.00" Leading="Regular" LeftIndent="2.50" RightIndent="6.50" SpaceBefore="0" Spacing="1" StartsNewPage="No"/>
+          </ElementSettings>
+          <ElementSettings Type="Parenthetical">
+            <FontSpec AdornmentStyle="0" Background="#FFFFFFFFFFFF" Color="#000000000000" Font="Courier Final Draft" RevisionID="0" Size="12" Style=""/>
+            <ParagraphSpec Alignment="Left" FirstIndent="-0.10" Leading="Regular" LeftIndent="3.00" RightIndent="6.50" SpaceBefore="0" Spacing="1" StartsNewPage="No"/>
+          </ElementSettings>
+          <ElementSettings Type="Transition">
+            <FontSpec AdornmentStyle="0" Background="#FFFFFFFFFFFF" Color="#000000000000" Font="Courier Final Draft" RevisionID="0" Size="12" Style="AllCaps"/>
+            <ParagraphSpec Alignment="Right" FirstIndent="0.00" Leading="Regular" LeftIndent="5.50" RightIndent="1.00" SpaceBefore="12" Spacing="1" StartsNewPage="No"/>
+          </ElementSettings>
+          <MoresAndContinueds>
+            <FontSpec AdornmentStyle="0" Background="#FFFFFFFFFFFF" Color="#000000000000" Font="Courier Final Draft" RevisionID="0" Size="12" Style=""/>
+            <DialogueBreaks AutomaticCharacterContinueds="Yes" BottomOfPage="Yes" DialogueBottom="(MORE)" DialogueTop="(cont'd)" TopOfNext="Yes"/>
+            <SceneBreaks ContinuedNumber="No" SceneBottom="(CONTINUED)" SceneBottomOfPage="No" SceneTop="CONTINUED:" SceneTopOfNext="No"/>
+          </MoresAndContinueds>
+        """#
 
     private func fdxParagraphType(for fountainType: String) -> String {
         switch fountainType {

@@ -83,6 +83,10 @@ final class FountainScriptRenderingTests: XCTestCase {
         XCTAssertTrue(fdx.contains("Hello."))
         XCTAssertTrue(fdx.contains("<Paragraph Type=\"Transition\">"))
         XCTAssertTrue(fdx.contains("FADE OUT."))
+        XCTAssertTrue(fdx.contains("<PageLayout"), "Phase 8.7 — layout margins for Final Draft import")
+        XCTAssertTrue(fdx.contains("<ElementSettings Type=\"Scene Heading\">"))
+        XCTAssertTrue(fdx.contains("<MoresAndContinueds>"))
+        XCTAssertTrue(fdx.contains("DialogueBottom=\"(MORE)\""))
     }
 
     func testPDFWriterProducesValidPDFBytes() throws {
