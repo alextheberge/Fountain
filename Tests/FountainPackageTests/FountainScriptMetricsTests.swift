@@ -10,5 +10,14 @@ final class FountainScriptMetricsTests: XCTestCase {
         XCTAssertGreaterThan(m.wordCountExcludingBoneyard, 3)
         XCTAssertGreaterThan(m.dialogueWordCount, 0)
         XCTAssertLessThan(m.elementCountExcludingBoneyard, m.elementCount)
+        XCTAssertEqual(m.sceneHeadingCount, 1)
+        XCTAssertEqual(m.transitionCount, 0)
+    }
+
+    func testSceneAndTransitionCounts() {
+        let script = FNScript(string: "\nINT. FIRST - DAY\n\nAction.\n\nCUT TO:\n\nINT. SECOND - NIGHT\n\nMore.\n")
+        let m = script.metrics
+        XCTAssertEqual(m.sceneHeadingCount, 2)
+        XCTAssertEqual(m.transitionCount, 1)
     }
 }

@@ -92,6 +92,7 @@ Legend: **Y** = supported in practice, **P** = partial / edge-case risk, **N** =
 | Dual dialogue `^` | `package-dual-dialogue.fountain` | `PackageFixtureCorpusTests`, `SpecTraceabilityTests` |
 | Section, synopsis, lyrics, `[[ note ]]`, action | `package-mixed-production.fountain` | `PackageFixtureCorpusTests` |
 | Production features (page break, `#` scene nums, boneyard, notes, sections) | inline strings | `Phase5ProductionFeaturesTests` |
+| Boneyard between action lines | `package-boneyard-sandwich.fountain` | `PackageFixtureCorpusTests` |
 | Large screenplay | `FountainTests/Big Fish.fountain` | `BigFishCorpusTests` |
 | Reference dual + title | `FountainTests/Brick And Steel.txt` | `BrickSteelCorpusTests`, async + stream parity |
 

@@ -6,7 +6,7 @@ This is a **map** of supported entry points, not a substitute for Xcode DocC. Pr
 
 | Module | Contents |
 |--------|----------|
-| **FountainCore** | Parse (`FNScript`, `FastFountainParser`, `FountainParser`), model (`FNElement`, `FNElementType`), Codable export (`FountainDocument`, `ScriptElement`, `FountainMetadataKey`), write (`FountainWriter`), metrics (`FountainScriptMetrics` / `FNScript.metrics`), inline markup (`FountainInlineMarkup`, `FountainInlineDelimiterTable`), rendering protocol (`FountainScriptRendering`, plaintext/Markdown/JSON/stub writers), tokens/scanners, async helpers (`parseStringAsync`, `parseFileAsync`, `scriptElementStream(from:)`, `scriptElementStream(fromFile:)`). **No** UIKit/AppKit. |
+| **FountainCore** | Parse (`FNScript`, `FastFountainParser`, `FountainParser`), model (`FNElement`, `FNElementType`), Codable export (`FountainDocument`, `ScriptElement`, `FountainMetadataKey`), write (`FountainWriter`), metrics (`FountainScriptMetrics` / `FNScript.metrics`: word counts, element counts, **scene-heading count**, **transition count**), inline markup (`FountainInlineMarkup`, `FountainInlineDelimiterTable`), rendering protocol (`FountainScriptRendering`, plaintext/Markdown/JSON/stub writers), tokens/scanners, async helpers (`parseStringAsync`, `parseFileAsync`, `scriptElementStream(from:)`, `scriptElementStream(fromFile:)`). **No** UIKit/AppKit. |
 | **FountainHTML** | `FNHTMLScript`, `FNPaginator`, `Platform` (font typealias), `ScriptCSS.css` resource. |
 | **Fountain** | Re-exports Core + HTML for one import. |
 

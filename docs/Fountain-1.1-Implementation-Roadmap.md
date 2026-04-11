@@ -105,7 +105,7 @@ This document turns [Project Specification- Fountain Swift (Next-Gen).md](../Pro
 |------|--------|-----------|
 | 5.1 | **Page breaks** (`===`…): distinct elements; interaction with pagination if you keep `FNPaginator`. | **Started:** `Phase5ProductionFeaturesTests.testPageBreakIsDistinctElement` |
 | 5.2 | **Scene numbers** (`#...#` on slugs): capture in attributes; optional `suppressSceneNumbers` flag. | **Started:** `Phase5ProductionFeaturesTests` (slug capture + `suppressSceneNumbers` export) |
-| 5.3 | **Boneyard** `/* ... */`: strip or isolate for **word-count / timing** estimators; verify **not** counted as dialogue. | **Started:** `FNScript.elementsExcludingBoneyard` + ``FNScript.metrics`` (`FountainScriptMetrics`) + `FountainScriptMetricsTests` |
+| 5.3 | **Boneyard** `/* ... */`: strip or isolate for **word-count / timing** estimators; verify **not** counted as dialogue. | **Started:** `FNScript.elementsExcludingBoneyard` + ``FNScript.metrics`` (`FountainScriptMetrics`: words, dialogue words, element counts, **scene / transition counts**) + `FountainScriptMetricsTests` + `package-boneyard-sandwich.fountain` |
 | 5.4 | **Notes** `[[ ... ]]` per 1.1: element type or annotation model; clarify vs boneyard for exporters. | **Started:** `Phase5ProductionFeaturesTests.testBracketNoteAfterBlankLine` (`Comment` element) |
 | 5.5 | **Sections / synopses** (`#`, `##`, `=`): hierarchical depth in attributes. | **Started:** `Phase5ProductionFeaturesTests` (depth + synopsis + Codable metadata) |
 
@@ -142,7 +142,7 @@ This document turns [Project Specification- Fountain Swift (Next-Gen).md](../Pro
 
 | Step | Action | Done when |
 |------|--------|-----------|
-| 8.1 | Define `FountainWriter` (or `ScriptRenderer`) protocol: `func render(_ document: FNScript) throws -> String` (or associated type for binary PDF). | **Started:** `FountainScriptRendering` + `FountainPlaintextWriter` (`FountainScriptRendering.swift`) |
+| 8.1 | Define `FountainWriter` (or `ScriptRenderer`) protocol: `func render(_ document: FNScript) throws -> String` (or associated type for binary PDF). | **Started:** `FountainScriptRendering` + `FountainPlaintextWriter` (`FountainScriptRendering.swift`); parity test vs ``FountainWriter.documentFromScript`` (`FountainScriptRenderingTests`) |
 | 8.2 | **`HTMLWriter`**: migrate from `FNHTMLScript`; modern CSS (grid/flex); keep **CSS as resource** or string template. | **Started:** ``FNHTMLScript`` + ``FountainScriptRendering``; `ScriptCSS.css` dual-dialogue **grid** + title `.notes` typo fix |
 | 8.3 | **`MarkdownWriter`**: useful for LLM/tooling pipelines. | **Started:** `FountainMarkdownWriter` + **`FountainJSONWriter`** (`FountainScriptRendering`) + `FountainScriptRenderingTests` (lyrics + bracket notes) |
 | 8.4 | **`FDXWriter`** / **`PDFWriter`**: stub behind feature flags or separate products to avoid bloating core. | **Started:** `FountainFDXWriter` / `FountainPDFWriter` + `FountainStubRendererError` |
@@ -191,6 +191,8 @@ Fill as you implement. Link each row to tests.
 | Notes `[[ ]]` | 5 | `Phase5ProductionFeaturesTests` | ☑ |
 | Sections / synopses | 5 | `SectionHeaders.fountain`, `Phase5ProductionFeaturesTests` | ☑ |
 | Brick & Steel sample | 7 | `Brick And Steel.txt`, `BrickSteelCorpusTests` | ☑ |
+| Boneyard between body lines | 5 | `package-boneyard-sandwich.fountain`, `PackageFixtureCorpusTests` | ☑ |
+| Script metrics (scenes / transitions) | 5 | `FountainScriptMetricsTests` | ☑ |
 
 ---
 

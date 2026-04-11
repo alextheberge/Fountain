@@ -14,17 +14,25 @@ public struct FountainScriptMetrics: Sendable, Equatable {
     public var dialogueWordCount: Int
     public var elementCount: Int
     public var elementCountExcludingBoneyard: Int
+    /// Sluglines (`Scene Heading` elements), including forced headings.
+    public var sceneHeadingCount: Int
+    /// Transitions (`Transition` elements).
+    public var transitionCount: Int
 
     public init(
         wordCountExcludingBoneyard: Int,
         dialogueWordCount: Int,
         elementCount: Int,
-        elementCountExcludingBoneyard: Int
+        elementCountExcludingBoneyard: Int,
+        sceneHeadingCount: Int,
+        transitionCount: Int
     ) {
         self.wordCountExcludingBoneyard = wordCountExcludingBoneyard
         self.dialogueWordCount = dialogueWordCount
         self.elementCount = elementCount
         self.elementCountExcludingBoneyard = elementCountExcludingBoneyard
+        self.sceneHeadingCount = sceneHeadingCount
+        self.transitionCount = transitionCount
     }
 }
 
@@ -35,11 +43,15 @@ extension FNScript {
         let wordCount = tokenCount(in: body.map(\.elementText).joined(separator: "\n"))
         let dialoguePieces = elements.filter { $0.elementType == FNElementType.dialogue.rawValue }
         let dialogueWords = tokenCount(in: dialoguePieces.map(\.elementText).joined(separator: "\n"))
+        let scenes = elements.filter { $0.elementType == FNElementType.sceneHeading.rawValue }.count
+        let transitions = elements.filter { $0.elementType == FNElementType.transition.rawValue }.count
         return FountainScriptMetrics(
             wordCountExcludingBoneyard: wordCount,
             dialogueWordCount: dialogueWords,
             elementCount: elements.count,
-            elementCountExcludingBoneyard: body.count
+            elementCountExcludingBoneyard: body.count,
+            sceneHeadingCount: scenes,
+            transitionCount: transitions
         )
     }
 

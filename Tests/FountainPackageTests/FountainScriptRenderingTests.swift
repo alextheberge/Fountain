@@ -10,6 +10,14 @@ final class FountainScriptRenderingTests: XCTestCase {
         XCTAssertTrue(out.contains("Hello."))
     }
 
+    /// Phase 8.1 — protocol path must stay aligned with ``FountainWriter`` export.
+    func testFountainPlaintextWriterMatchesFountainWriterDocument() throws {
+        let script = FNScript(string: "Title: Parity\n\nINT. P - DAY\n\nDone.\n")
+        let fromProtocol = try FountainPlaintextWriter().render(script)
+        let fromStatic = FountainWriter.documentFromScript(script)
+        XCTAssertEqual(fromProtocol, fromStatic)
+    }
+
     func testInlineRenderingModeEnumIsStable() {
         XCTAssertTrue(FountainInlineRenderingMode.allCases.contains(.preserveMarkersInPlaintext))
         XCTAssertTrue(FountainInlineRenderingMode.allCases.contains(.attributedStringFromInlineMarkup))
