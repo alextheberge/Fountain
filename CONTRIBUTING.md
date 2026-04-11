@@ -2,6 +2,8 @@
 
 **Packaging:** Phase **1** (including **1.2**) is complete — prefer **`swift test`** at the repo root and **`Package.swift`** for library work. **`Fountain.xcodeproj`** links the **local** Swift package for **Sample Project Mac**, **Sample Project iOS**, and **`FountainTests`** (no duplicate compile of `Fountain/*.swift` in those targets). See [docs/Phase-1-Xcode-SPM-Integration.md](docs/Phase-1-Xcode-SPM-Integration.md) for verification and rollback.
 
+**Releases:** When you bump the **Swift package** SemVer, update ``FountainPackageVersion.librarySemanticVersion`` and [CHANGELOG.md](CHANGELOG.md). Do **not** change ``FountainSyntaxPin.targetVersionLabel`` unless the team is intentionally retargeting a **new Fountain markup** generation (today **1.1**).
+
 ## Parser and format regressions (Phase 7.4)
 
 When you fix a bug in **`FastFountainParser`**, **`FountainBodyLineTokenizer`**, **`FountainScriptElementsBuilder`**, **`FountainWriter`**, or the **`FountainDocument`** mapping:

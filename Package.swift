@@ -1,6 +1,9 @@
 // swift-tools-version: 5.9
 // Fountain Swift Package — core vs HTML split + umbrella `Fountain` (see docs/Fountain-1.1-Implementation-Roadmap.md, Phase 10 distribution).
-// Syntax target: `FountainSyntaxPin.targetVersionLabel` (currently 1.1).
+//
+// Two version axes (do not conflate):
+//   • Fountain **markup spec** level — `FountainSyntaxPin.targetVersionLabel` (e.g. "1.1") → `FountainDocument.fountainSyntaxVersion`.
+//   • Swift **package** SemVer — `FountainPackageVersion.librarySemanticVersion` (e.g. "2.0.0") → CHANGELOG + git tags.
 //
 // Phase 10.4: **FountainCore** excludes UI pagination/HTML sources; CoreGraphics/CoreText appear only in
 // `FountainPDFWriter.swift` behind `#if canImport` + wasm32 stub (see ADR-008). **FountainHTML** holds
@@ -61,6 +64,7 @@ let package = Package(
                 "FNElementType.swift",
                 "FountainTokenization.swift",
                 "FountainSyntaxPin.swift",
+                "FountainPackageVersion.swift",
                 "FountainForcedPrefix.swift",
                 "FountainSceneHeadingMatcher.swift",
                 "FountainTitlePagePrescan.swift",

@@ -2,6 +2,8 @@
 
 **Spec pin:** [Fountain syntax](https://fountain.io/syntax/) — target **1.1** (see also `FountainSyntaxPin` in code).
 
+**Not package SemVer:** **1.1** here is **markup / syntax** coverage. The **Swift package** may ship **2.0.0**, **2.1.0**, etc. independently — see ``FountainPackageVersion`` and [CHANGELOG.md](../CHANGELOG.md) § Version axes.
+
 **Purpose:** Track what the **current** Swift stack implements vs full 1.1, to drive [Fountain-1.1-Implementation-Roadmap.md](Fountain-1.1-Implementation-Roadmap.md).
 
 **Update rule:** Change this file in the same PR as parser or model changes that affect compliance.

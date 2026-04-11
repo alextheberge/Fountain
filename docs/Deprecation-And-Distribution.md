@@ -1,5 +1,7 @@
 # Deprecation and distribution (Phases 0.3 & 1.2)
 
+**Version axes:** **Fountain syntax 1.1** (``FountainSyntaxPin``, JSON ``fountainSyntaxVersion``) is independent of **Swift package SemVer** (``FountainPackageVersion``, git tags, [CHANGELOG.md](../CHANGELOG.md)). A **2.0.0** library release does not imply Fountain **2.0** markup.
+
 ## Phase 1.2 — Package vs Xcode (complete)
 
 - **SwiftPM (`Package.swift`)** defines **FountainCore**, **FountainHTML**, and umbrella **Fountain**; CI at the repo root is authoritative.

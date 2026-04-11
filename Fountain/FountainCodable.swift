@@ -59,7 +59,10 @@ public struct ScriptElement: Codable, Identifiable, Sendable, Equatable {
 public struct FountainDocument: Codable, Sendable, Equatable {
     public var titlePage: [[String: [String]]]
     public var elements: [ScriptElement]
-    /// Target syntax level for downstream tools (not validated here).
+    /// Target **Fountain markup** syntax generation for this document (default: ``FountainSyntaxPin/targetVersionLabel``, e.g. **`"1.1"`**).
+    ///
+    /// This field describes the **screenplay format spec** level for JSON / tooling interchange. It is **not**
+    /// the SwiftPM **library** semantic version — see ``FountainPackageVersion/librarySemanticVersion``.
     public var fountainSyntaxVersion: String
 
     public init(

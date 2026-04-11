@@ -2,7 +2,22 @@
 
 All notable changes to the **FountainSwiftPM** package are documented here. The manifest package name is **FountainSwiftPM**; library products include **Fountain**, **FountainCore**, **FountainHTML**, and **FountainUI**.
 
-## [Unreleased]
+---
+
+## Version axes (read this first)
+
+| Axis | Meaning | Typical location |
+|------|---------|------------------|
+| **Fountain syntax / spec** | Which generation of the [Fountain markup](https://fountain.io/syntax/) format parsers target | ``FountainSyntaxPin/targetVersionLabel`` (e.g. **`"1.1"`**), ``FountainDocument/fountainSyntaxVersion`` in JSON |
+| **Swift package (SemVer)** | API and distribution releases of **this repository** | ``FountainPackageVersion/librarySemanticVersion``, **git tags**, this file |
+
+A **package** bump (e.g. to **2.0.0**) does **not** by itself change the Fountain **syntax** level; those are updated on their own schedules.
+
+---
+
+## [2.0.0] — 2026-04-11
+
+SwiftPM **library** release **2.0.0**. Fountain **markup** target remains **1.1** (`FountainSyntaxPin.targetVersionLabel`).
 
 ### Breaking
 
@@ -12,8 +27,15 @@ All notable changes to the **FountainSwiftPM** package are documented here. The 
 
 ### Added
 
+- **`FountainPackageVersion`** — programmatic **package** SemVer string, distinct from **syntax** pin (**Phase 14.1**).
 - **FountainUI** (Phase **13**): **`FountainView`**, **`FountainScriptElementTypography`**, **`FountainUIScriptElementLineContent`** — **Phase 13.3** wires **`FountainInlineMarkup.attributedFragment(from:)`** into SwiftUI **`Text`** for body-line kinds (character and scene-heading rows stay plain for cue casing / slug display).
 
-### Not yet in this release train
+---
 
-- **Phase 14.4**: removing **`Fountain.xcodeproj`** and migrating sample apps to SPM-only workflows remains open.
+## [Unreleased]
+
+**Active epic:** **Phase 15** (polish) — [Fountain-1.1-Implementation-Roadmap.md](docs/Fountain-1.1-Implementation-Roadmap.md#phase-15).
+
+### Planned
+
+- **Phase 15.1** — SPM-native repository: remove **`Fountain.xcodeproj`**, migrate **Sample Project Mac/iOS** and **`FountainTests`** to SwiftPM-native targets (or a documented split repo), refresh CI and [Phase-1-Xcode-SPM-Integration.md](docs/Phase-1-Xcode-SPM-Integration.md) / **README** / **CONTRIBUTING**. *(Carried from the closed Phase 14 scope.)*

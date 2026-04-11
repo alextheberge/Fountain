@@ -1,5 +1,7 @@
 Project Specification: Fountain Swift (Next-Gen)
 
+**Versioning (two axes):** This specification describes compliance with **Fountain markup / syntax** generation **1.1** ([fountain.io/syntax](https://fountain.io/syntax/)). The **Swift package** in this repository uses **its own SemVer** (e.g. **2.0.0** for the next-gen breaking line). Library version numbers are **not** Fountain syntax version numbers.
+
 1. Core Objectives
 
 Zero Dependencies: Eliminate RegexKitLite and -licucore in favor of Swift native Regex (Swift 5.7+).
@@ -92,7 +94,7 @@ Conditional Compilation: Use #if canImport(UIKit) or #if os(macOS) only for the 
 
 Wasm Support: Ensure the library compiles with SwiftWasm for browser-based tool integration.
 
-**Note (Phase 14):** The **`Fountain/Legacy/`** Objective-C + RegexKitLite reference tree and the Swift **`FountainParser`** / **`FNParserType.regex`** pipeline have been **removed** from the repository; see **[CHANGELOG.md](CHANGELOG.md)**.
+**Note (Phase 14):** The **`Fountain/Legacy/`** Objective-C + RegexKitLite reference tree and the Swift **`FountainParser`** / **`FNParserType.regex`** pipeline have been **removed** from the repository; see **[CHANGELOG.md](CHANGELOG.md)**. **Phase 14** is **closed**; **Phase 15** tracks post-2.0 polish (including optional removal of **`Fountain.xcodeproj`** in favor of SwiftPM-only workflows).
 
 Swift Regex stack: Refactor `FountainRegexes.swift` to Swift 5.7+ `Regex` / `RegexBuilder` (including `/…/` literals where helpful) and remove `NSRegularExpression` from `String+Regex.swift` entirely — native `Regex` is faster, strictly typed at capture boundaries, and avoids `NSString`/`NSRange` bridging, which matters for Wasm and Linux. Phased as **Phase 11** in [docs/Fountain-1.1-Implementation-Roadmap.md](docs/Fountain-1.1-Implementation-Roadmap.md#phase-11-regex-modernization-swift-native).
 

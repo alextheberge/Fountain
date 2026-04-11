@@ -17,13 +17,14 @@ The manifest **package name** is **`FountainSwiftPM`** so the umbrella **library
 
 1. Run **`swift build`** and **`swift test`** on the oldest supported Xcode / Swift toolchain you claim.
 2. Update **[CHANGELOG.md](../CHANGELOG.md)** (move **Unreleased** into a versioned section for **major** bumps).
-3. Confirm **`FountainSyntaxPin.targetVersionLabel`** matches the Fountain spec level documented in the README.
-4. Review **SemVer** impact:
+3. If the **Swift package** SemVer changes, bump **`FountainPackageVersion.librarySemanticVersion`** in `Fountain/FountainPackageVersion.swift` to match the tag — **independently** of **`FountainSyntaxPin.targetVersionLabel`** (Fountain **markup** generation, e.g. **1.1**).
+4. Confirm **`FountainSyntaxPin.targetVersionLabel`** matches the **Fountain syntax** level documented in the README (do **not** bump this just because the package went **2.0.0**).
+5. Review **SemVer** impact:
    - **Major:** breaking public API or behavior changes to parse output.
    - **Minor:** additive API, new element metadata keys, new optional writers.
    - **Patch:** bug fixes, docs, tests only.
-5. Update **README** “Fountain 1.1 (Swift next-gen)” / version note if present.
-6. Ensure **CI** (`.github/workflows/swift.yml`) is green on `master`.
+6. Update **README** “Fountain Swift package” / version notes if present (keep **syntax 1.1** vs **package 2.x** wording distinct).
+7. Ensure **CI** (`.github/workflows/swift.yml`) is green on `master`.
 
 ## Tagging
 
