@@ -59,3 +59,19 @@ public enum FountainTokenKind: String, Sendable, CaseIterable {
     case dualDialogueSuffix
     case unknown
 }
+
+// MARK: - Tokenized body lines (Phase 3 — coarse line stream)
+
+/// One classified body line from ``FountainBodyLineTokenizer`` (same ordering and branching intent as ``FastFountainParser``).
+public struct FountainTokenizedLine: Sendable, Equatable {
+    public var lineIndex: Int
+    public var kind: FountainTokenKind
+    /// Raw line text from the split body (Fountain blank lines are `""`).
+    public var text: String
+
+    public init(lineIndex: Int, kind: FountainTokenKind, text: String) {
+        self.lineIndex = lineIndex
+        self.kind = kind
+        self.text = text
+    }
+}

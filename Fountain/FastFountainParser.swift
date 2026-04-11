@@ -24,9 +24,6 @@
 
 import Foundation
 
-private let kInlinePattern   = "^([^\\t\\s][^:]+):\\s*([^\\t\\s].*$)"
-private let kDirectivePattern = "^([^\\t\\s][^:]+):([\\t\\s]*$)"
-
 public class FastFountainParser {
     public var elements: [FNElement] = []
     public var titlePage: [[String: [String]]] = []
@@ -46,85 +43,14 @@ public class FastFountainParser {
     // MARK: - Private
 
     private func parseContents(_ rawContents: String) {
-        var contents = rawContents.replacingOccurrencesOfRegex("^\\s*", withString: "")
-        contents = contents.replacingOccurrencesOfRegex("\\r\\n|\\r|\\n", withString: "\n")
-        contents += "\n\n"
-
-        // Find the first blank line
-        let nsContents = contents as NSString
-        let firstBlankLineRange = nsContents.range(of: "\n\n")
-        let topOfDocument = firstBlankLineRange.location != NSNotFound
-            ? nsContents.substring(to: firstBlankLineRange.location)
-            : contents
-
-        // A lone `Key:` line before the first blank line (e.g. "FADE IN:") matches
-        // kDirectivePattern and was incorrectly stripped as an empty title-page field,
-        // dropping the slugline from the body. Real title pages have multiple lines
-        // and/or inline `Key: value` rows—only skip parsing when there is a single
-        // directive-only line (no `Key: value` on the same line).
-        var shouldParseTitlePage = true
-        let nonEmptyTopLines = topOfDocument.split(separator: "\n").map(String.init).filter { !$0.isEmpty }
-        if nonEmptyTopLines.count == 1,
-           let only = nonEmptyTopLines.first,
-           only.isMatchedByRegex(kDirectivePattern),
-           !only.isMatchedByRegex(kInlinePattern) {
-            shouldParseTitlePage = false
-        }
-
-        // ----------------------------------------------------------------------
-        // TITLE PAGE
-        // ----------------------------------------------------------------------
-        if shouldParseTitlePage {
-            var foundTitlePage = false
-            var openKey = ""
-            var openValues: [String] = []
-            let topLines = topOfDocument.components(separatedBy: "\n")
-
-            for line in topLines {
-                if line.isEmpty || line.isMatchedByRegex(kDirectivePattern) {
-                    foundTitlePage = true
-                    if !openKey.isEmpty {
-                        titlePage.append([openKey: openValues])
-                    }
-                    openKey = line.stringByMatching(kDirectivePattern, capture: 1)?.lowercased() ?? ""
-                    if openKey == "author" { openKey = "authors" }
-                    openValues = []
-                } else if line.isMatchedByRegex(kInlinePattern) {
-                    foundTitlePage = true
-                    if !openKey.isEmpty {
-                        titlePage.append([openKey: openValues])
-                        openKey = ""
-                        openValues = []
-                    }
-                    var key = line.stringByMatching(kInlinePattern, capture: 1)?.lowercased() ?? ""
-                    let value = line.stringByMatching(kInlinePattern, capture: 2) ?? ""
-                    if key == "author" { key = "authors" }
-                    titlePage.append([key: [value]])
-                    openKey = ""
-                    openValues = []
-                } else if foundTitlePage {
-                    openValues.append(line.trimmingCharacters(in: .whitespaces))
-                }
-            }
-
-            if foundTitlePage {
-                if openKey.isEmpty && openValues.isEmpty && titlePage.isEmpty {
-                    // do nothing
-                } else {
-                    if !openKey.isEmpty {
-                        titlePage.append([openKey: openValues])
-                        openKey = ""
-                        openValues = []
-                    }
-                    contents = contents.replacingOccurrences(of: topOfDocument, with: "")
-                }
-            }
-        }
+        let prepared = FountainTitlePagePrescan.normalizeLikeFastParser(rawContents)
+        let (parsedTitle, remainder) = FountainTitlePagePrescan.extractTitlePage(fromPreparedContents: prepared)
+        titlePage = parsedTitle
 
         // ----------------------------------------------------------------------
         // BODY
         // ----------------------------------------------------------------------
-        contents = "\n" + contents
+        let contents = "\n" + remainder
         let lines = contents.components(separatedBy: CharacterSet.newlines)
 
         var newlinesBefore = 0

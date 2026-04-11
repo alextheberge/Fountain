@@ -79,13 +79,15 @@ This document turns [Project Specification- Fountain Swift (Next-Gen).md](../Pro
 
 **Goal:** **State-aware scanning** — classify **lines** (and line continuations) into **tokens** without building the final tree yet.
 
+**Status:** **Complete (initial)** — shared title-page prescan, structural line matchers, coarse body line tokenizer (aligned with ``FastFountainParser``), and existing forced-prefix + slug helpers. Production parse remains ``FastFountainParser``; the tokenizer is for tooling, previews, and incremental parser work.
+
 | Step | Action | Done when |
 |------|--------|-----------|
-| 3.1 | Specify **token kinds** (slug, action, character, dialogue, parenthetical, transition, lyrics, section, synopsis, pagebreak, boneyard open/close, title-page directive, blank, unknown…). | **Started:** `FountainTokenKind` + tests |
-| 3.2 | Implement **line splitter** honoring Fountain newline rules; normalize `\r\n` once at input. | **Done (initial):** `FountainLineSplitter.lines` + `LineSplitterTests` |
-| 3.3 | Implement **title page pre-scan** (before body) consistent with 1.1; **do not** mis-classify body lines like `FADE IN:` as title keys (regression from current fast parser fixes). | **Started:** `TitlePageRegressionTests` |
-| 3.4 | Map **forced prefixes** to tokens: `.` scene, `!` action, `@` character, `~` lyrics, `>` transition (non-centered), etc. | **Started:** `FountainForcedPrefixScanner` + `ForcedPrefixScannerTests` |
-| 3.5 | Replace fragile regex-only checks with **scanner + Regex hybrid**: use `Regex` for **localized** patterns (e.g. scene heading stem), not whole-document substitution. | **Started:** `FountainSceneHeadingMatcher` + `BigFishCorpusTests` element-count smoke |
+| 3.1 | Specify **token kinds** (slug, action, character, dialogue, parenthetical, transition, lyrics, section, synopsis, pagebreak, boneyard open/close, title-page directive, blank, unknown…). | **Done:** `FountainTokenKind` + `FountainTokenizedLine` + `LineEndingNormalizationTests` |
+| 3.2 | Implement **line splitter** honoring Fountain newline rules; normalize `\r\n` once at input. | **Done:** `FountainLineEndingNormalizer` / `FountainLineSplitter` + `LineSplitterTests` |
+| 3.3 | Implement **title page pre-scan** (before body) consistent with 1.1; **do not** mis-classify body lines like `FADE IN:` as title keys (regression from current fast parser fixes). | **Done:** `FountainTitlePagePrescan` (used by ``FastFountainParser``) + `TitlePageRegressionTests` + `Phase3TokenizationTests` |
+| 3.4 | Map **forced prefixes** to tokens: `.` scene, `!` action, `@` character, `~` lyrics, `>` transition (non-centered), etc. | **Done:** `FountainForcedPrefixScanner` + `ForcedPrefixScannerTests`; body tokenizer applies full line order including forced lines |
+| 3.5 | Replace fragile regex-only checks with **scanner + Regex hybrid**: use `Regex` for **localized** patterns (e.g. scene heading stem), not whole-document substitution. | **Done:** `FountainSceneHeadingMatcher` + `FountainStructuralLineMatchers` + corpus smoke (`BigFishCorpusTests`); slug stem remains localized `NSRegularExpression` (Swift `Regex` optional follow-up) |
 
 ---
 
