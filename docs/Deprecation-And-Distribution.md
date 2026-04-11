@@ -47,3 +47,11 @@ See **[Phase-1-Xcode-SPM-Integration.md](Phase-1-Xcode-SPM-Integration.md)** for
 ## What “deprecated” means here
 
 See **§ Phase 0.3** above for the authoritative rules. In short: nothing is **removed** yet. Legacy paths (`FountainParser` / RegexKitLite-era `.m`) get **bugfixes only** where necessary; prefer **`FountainCore`**, **`FastFountainParser`**, and **`FountainDocument`** for new work.
+
+---
+
+## Parser classification — Phase 4.6 (whitespace-only “action” lines)
+
+**Change (Fountain 1.1 alignment):** A body line that contains **only** whitespace (two spaces, tabs, etc.) **outside** a dialogue block is **no longer** emitted as a standalone **`Action`** element. It is treated like a **blank** delimiter (same effect on slug / character rules as an empty line). **Inside** dialogue, whitespace-only lines still extend the dialogue block (including the historical **two-space** continuation rule).
+
+**Migration:** If you relied on invisible “action” rows made only of spaces, switch to explicit forced action with **`!`** at the start of the line, or use real action text. Token-pipeline and fast parser stay aligned; see **`Phase46WhitespaceActionTests`** and roadmap **Phase 4.6**.

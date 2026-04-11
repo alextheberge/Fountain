@@ -1,4 +1,7 @@
 import XCTest
+#if canImport(PDFKit)
+import PDFKit
+#endif
 import Fountain
 
 /// Phase 8 — ``FountainScriptRendering`` conformers (plaintext, JSON, Markdown, HTML, stubs).
@@ -99,6 +102,16 @@ final class FountainScriptRenderingTests: XCTestCase {
         let data2 = try writer.renderPDFData(script)
         XCTAssertTrue(data2.starts(with: [0x25, 0x50, 0x44, 0x46]))
     }
+
+    #if canImport(PDFKit)
+    func testPDFWriterMultiPageDocumentHasAtLeastTwoPages() throws {
+        let filler = String(repeating: "WORD ", count: 800)
+        let script = FNScript(string: "INT. LONG SCENE - DAY\n\n\(filler)\n")
+        let data = try FountainPDFWriter().renderPDFData(script)
+        let doc = try XCTUnwrap(PDFDocument(data: data))
+        XCTAssertGreaterThanOrEqual(doc.pageCount, 2, "Phase 8.8 — overflow should begin a new PDF page")
+    }
+    #endif
 
     func testFNHTMLScriptDualDialogueContainsGridClasses() throws {
         let url = try XCTUnwrap(Bundle.module.url(forResource: "package-dual-dialogue", withExtension: "fountain"))

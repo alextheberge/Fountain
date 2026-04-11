@@ -107,11 +107,22 @@ public class FastFountainParser {
                 continue
             }
 
-            // Whitespace-only lines of 2+ spaces are classified as Action (legacy compatibility).
-            // Fountain 1.1 prefers explicit forced action with `!`; see roadmap Phase 4.3 — do not rely on this for new scripts.
-            if line.isMatchedByRegex("^\\s{2,}$") {
-                elements.append(FNElement.element(ofType: "Action", text: line))
-                newlinesBefore = 0
+            // Whitespace-only lines are not standalone Action (Fountain 1.1 / roadmap Phase 4.6 — use `!` for forced action).
+            if line.isMatchedByRegex("^\\s+$") {
+                if isInsideDialogueBlock {
+                    newlinesBefore = 0
+                    let lastIndex = elements.count - 1
+                    var previousElement = elements[lastIndex]
+                    if previousElement.elementType == "Dialogue" {
+                        previousElement.elementText = "\(previousElement.elementText)\n\(line)"
+                        elements[lastIndex] = previousElement
+                    } else {
+                        elements.append(FNElement.element(ofType: "Dialogue", text: line))
+                    }
+                    continue
+                }
+                isInsideDialogueBlock = false
+                newlinesBefore += 1
                 continue
             }
 

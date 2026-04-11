@@ -27,6 +27,7 @@ Uses **`swift:6.0.3-noble`** + **`swiftwasm/setup-swiftwasm@v2`** + the script a
 |---------------|--------|
 | **`FNScript(file:)`** / **`parseFileAsync(_:)`** reading host paths | No traditional POSIX filesystem in the browser; pass **`String`** / async string from JS host. |
 | **`FountainHTML`** (`FNHTMLScript`, `FNPaginator`, `Platform`) | UIKit/AppKit — **omit** from Wasm products. |
+| **``FNPaginator`` / ``FountainTextMeasuring``** | On a **native** host that compiles **FountainHTML**, prefer ``init(script:textMeasurer:)`` with ``CourierPitchMonospaceTextMeasurer`` or ``AppKitFountainTextMeasurer``. For a **hypothetical** Wasm+HTML port, you would supply ``init(script:layoutLineHeight:measureHeight:)`` with a closure implemented in JS (e.g. Canvas **measureText**) or a fixed pitch model — not shipped in-repo. |
 | **`NSRegularExpression` / `NSString` regex bridging** | Temporary; remove per **Phase 11** (`String+Regex.swift`, `FountainRegexes.swift`) — see [roadmap](Fountain-1.1-Implementation-Roadmap.md#phase-11-regex-modernization-swift-native). |
 | **`Task.detached`** (Phase 9.1 async parse) | Verify against your SwiftWasm concurrency/runtime version; prefer cooperative tasks if issues appear. |
 | **Full `swift test` on Wasm** | Not in CI yet; tests assume Apple test bundles and fixtures. |

@@ -9,7 +9,7 @@ Re-parse only changed line ranges during live editing instead of scanning the fu
 ## Preconditions (go)
 
 - [x] Phase 4.5 round-trip tests cover the element kinds you care about for editing (`Phase45RoundTripTests`, `GoldenDocumentTests`, corpus JSON checks — baseline stable for **full** parse).
-- [ ] A **line → element index** map exists (or can be derived) without ambiguity for dialogue blocks — **not implemented**; blocking for a safe incremental merge. **Roadmap:** [Fountain-1.1-Implementation-Roadmap.md](Fountain-1.1-Implementation-Roadmap.md) **Phase 9.4**.
+- [ ] A **line → element index** map exists (or can be derived) without ambiguity for dialogue blocks — **partial:** ``FountainLineToElementIndexMap`` (logical body-line → element index) is implemented; **UTF-16 / character spans**, dialogue ambiguity, and boneyard/title scopes remain **TBD**. **Roadmap:** [Fountain-1.1-Implementation-Roadmap.md](Fountain-1.1-Implementation-Roadmap.md) **Phase 9.4**.
 - [x] Clear definition of **invalidation boundaries**: scene headings, blank lines, boneyard open/close, title page (documented below; title page still implies full pre-scan for edits near the top).
 
 ## Roadmap implementation steps (after 9.3 planning)

@@ -55,9 +55,16 @@ public enum FountainBodyLineTokenizer {
                 continue
             }
 
-            if line.isMatchedByRegex("^\\s{2,}$") {
-                append(index, kind: .action, text: line)
-                newlinesBefore = 0
+            // Whitespace-only: not standalone Action (Phase 4.6); blank-like outside dialogue, dialogue merge inside.
+            if line.isMatchedByRegex("^\\s+$") {
+                if isInsideDialogueBlock {
+                    newlinesBefore = 0
+                    append(index, kind: .dialogue, text: line)
+                    continue
+                }
+                isInsideDialogueBlock = false
+                newlinesBefore += 1
+                append(index, kind: .blank, text: "")
                 continue
             }
 

@@ -34,6 +34,10 @@ import FountainCore
 
 public class FNPaginator {
     private let script: FNScript
+    /// Nominal line height (points) for spacing math — matches ``FountainTextMeasuring/layoutLineHeight`` for the active measurer.
+    private let layoutLineHeight: Int
+    /// Measured block height in the same integer units as ``layoutLineHeight`` (Phase 8.5 — avoids storing `any FountainTextMeasuring` on this class).
+    private let measureHeight: (String, Int) -> Int
     private var pages: [[FNElement]] = []
 
     public var numberOfPages: Int {
@@ -41,8 +45,23 @@ public class FNPaginator {
         return pages.count
     }
 
-    public init(script aScript: FNScript) {
+    /// Paginates with **AppKit/UIKit** line measurement (Courier 12), matching historical behavior.
+    public convenience init(script aScript: FNScript) {
+        self.init(script: aScript, textMeasurer: AppKitFountainTextMeasurer.defaultCourier12())
+    }
+
+    /// Paginates using any ``FountainTextMeasuring`` type (e.g. ``CourierPitchMonospaceTextMeasurer`` for tests or Wasm-adjacent hosts).
+    public convenience init<M: FountainTextMeasuring>(script aScript: FNScript, textMeasurer: M) {
+        let lh = textMeasurer.layoutLineHeight
+        self.init(script: aScript, layoutLineHeight: lh, measureHeight: { text, maxWidth in
+            textMeasurer.heightForString(text, maxWidth: maxWidth)
+        })
+    }
+
+    public init(script aScript: FNScript, layoutLineHeight: Int, measureHeight: @escaping (String, Int) -> Int) {
         script = aScript
+        self.layoutLineHeight = layoutLineHeight
+        self.measureHeight = measureHeight
     }
 
     /// Paginate for US Letter paper size (8.5" × 11").
@@ -57,11 +76,12 @@ public class FNPaginator {
     }
 
     public func paginateForSize(_ pageSize: CGSize) {
+        pages.removeAll(keepingCapacity: true)
+
         let oneInchBuffer: CGFloat = 72
         let maxPageHeight = pageSize.height - (oneInchBuffer * 2.01).rounded()
 
-        let font = PlatformFont(name: "Courier", size: 12)!
-        let lineHeight = Int(font.pointSize)
+        let lineHeight = layoutLineHeight
 
         var blockHeight = 0
         let initialY = 0
@@ -91,7 +111,7 @@ public class FNPaginator {
 
             let spaceBefore   = FNPaginator.spaceBeforeForElement(element) * lineHeight
             let elementWidth  = FNPaginator.widthForElement(element)
-            let height        = FNPaginator.heightForString(element.elementText, font: font, maxWidth: elementWidth, lineHeight: lineHeight)
+            let height        = measureHeight(element.elementText, elementWidth)
 
             guard height > 0 else { continue }
 
@@ -104,7 +124,7 @@ public class FNPaginator {
             if element.elementType == "Scene Heading" && i + 1 < maxElements {
                 let nextElement       = script.elements[i + 1]
                 let nextElementWidth  = FNPaginator.widthForElement(nextElement)
-                let nextElementHeight = FNPaginator.heightForString(nextElement.elementText, font: font, maxWidth: nextElementWidth, lineHeight: lineHeight)
+                let nextElementHeight = measureHeight(nextElement.elementText, nextElementWidth)
 
                 if (CGFloat(blockHeight + currentY + nextElementHeight) >= maxPageHeight) && nextElementHeight >= lineHeight {
                     var forcedBreak = FNElement()
@@ -130,7 +150,7 @@ public class FNPaginator {
                         nextElement = script.elements[j]
                         j += 1
                         if dialogueBlockTypes.contains(nextElement.elementType) {
-                            blockHeight += FNPaginator.heightForString(nextElement.elementText, font: font, maxWidth: elementWidth, lineHeight: lineHeight)
+                            blockHeight += measureHeight(nextElement.elementText, elementWidth)
                         }
                     } else {
                         isEndOfArray = true
@@ -170,7 +190,7 @@ public class FNPaginator {
                     while partialHeight < pageOverflow && blockIndex < maxTmpElements - 1 {
                         blockIndex += 1
                         let e = tmpElements[blockIndex]
-                        let h = FNPaginator.heightForString(e.elementText, font: font, maxWidth: FNPaginator.widthForElement(e), lineHeight: lineHeight)
+                        let h = measureHeight(e.elementText, FNPaginator.widthForElement(e))
                         let s = FNPaginator.spaceBeforeForElement(e) * lineHeight
                         partialHeight += h + s
                     }
@@ -191,13 +211,13 @@ public class FNPaginator {
 
                                 var characterCue = tmpElements[0]
                                 characterCue.elementText = "\(characterCue.elementText) (CONT'D)"
-                                blockHeight += FNPaginator.heightForString(characterCue.elementText, font: font, maxWidth: FNPaginator.widthForElement(characterCue), lineHeight: lineHeight)
+                                blockHeight += measureHeight(characterCue.elementText, FNPaginator.widthForElement(characterCue))
                                 currentPage.append(characterCue)
 
                                 for z in blockIndex..<maxTmpElements {
                                     let e = tmpElements[z]
                                     currentPage.append(e)
-                                    blockHeight += FNPaginator.heightForString(e.elementText, font: font, maxWidth: FNPaginator.widthForElement(e), lineHeight: lineHeight)
+                                    blockHeight += measureHeight(e.elementText, FNPaginator.widthForElement(e))
                                 }
                                 currentY = blockHeight
                                 tmpElements = []
@@ -216,7 +236,7 @@ public class FNPaginator {
                             for z in 0..<blockIndex {
                                 let e = tmpElements[z]
                                 heightBeforeDialogue += FNPaginator.spaceBeforeForElement(e)
-                                heightBeforeDialogue += FNPaginator.heightForString(e.elementText, font: font, maxWidth: FNPaginator.widthForElement(e), lineHeight: lineHeight)
+                                heightBeforeDialogue += measureHeight(e.elementText, FNPaginator.widthForElement(e))
                             }
 
                             var dialogueHeight = heightBeforeDialogue
@@ -228,7 +248,7 @@ public class FNPaginator {
                             while dialogueHeight < distanceToBottom && sentenceIndex < maxSentences - 1 {
                                 sentenceIndex += 1
                                 let text = dialogueBeforeBreak + sentences[sentenceIndex]
-                                let h = FNPaginator.heightForString(text, font: font, maxWidth: FNPaginator.widthForElement(tmpElements[blockIndex]), lineHeight: lineHeight)
+                                let h = measureHeight(text, FNPaginator.widthForElement(tmpElements[blockIndex]))
                                 dialogueHeight = h
                                 if dialogueHeight < distanceToBottom {
                                     dialogueBeforeBreak += sentences[sentenceIndex]
@@ -261,7 +281,7 @@ public class FNPaginator {
                             var characterCue = FNElement()
                             characterCue.elementType = "Character"
                             characterCue.elementText = tmpElements[0].elementText
-                            blockHeight += FNPaginator.heightForString(characterCue.elementText, font: font, maxWidth: FNPaginator.widthForElement(characterCue), lineHeight: lineHeight)
+                            blockHeight += measureHeight(characterCue.elementText, FNPaginator.widthForElement(characterCue))
                             currentPage.append(characterCue)
 
                             let startSentence = max(sentenceIndex, 0)
@@ -273,14 +293,14 @@ public class FNPaginator {
                             var postBreakDialogue = FNElement()
                             postBreakDialogue.elementType = "Dialogue"
                             postBreakDialogue.elementText = dialogueAfterBreak
-                            blockHeight += FNPaginator.heightForString(postBreakDialogue.elementText, font: font, maxWidth: FNPaginator.widthForElement(postBreakDialogue), lineHeight: lineHeight)
+                            blockHeight += measureHeight(postBreakDialogue.elementText, FNPaginator.widthForElement(postBreakDialogue))
                             currentPage.append(postBreakDialogue)
 
                             if blockIndex + 1 < maxTmpElements {
                                 for z in (blockIndex + 1)..<maxTmpElements {
                                     let e = tmpElements[z]
                                     currentPage.append(e)
-                                    blockHeight += FNPaginator.heightForString(e.elementText, font: font, maxWidth: FNPaginator.widthForElement(e), lineHeight: lineHeight)
+                                    blockHeight += measureHeight(e.elementText, FNPaginator.widthForElement(e))
                                 }
                             }
 
@@ -365,7 +385,7 @@ public class FNPaginator {
     public static func heightForString(_ string: String, font: PlatformFont, maxWidth: Int, lineHeight: Int) -> Int {
         let textStorage   = NSTextStorage(string: string, attributes: [.font: font])
         let layoutManager = NSLayoutManager()
-        let textContainer = NSTextContainer(size: CGSize(width: CGFloat(maxWidth), height: .greatestFiniteMagnitude))
+        let textContainer = NSTextContainer(size: CGSize(width: CGFloat(max(1, maxWidth)), height: .greatestFiniteMagnitude))
 
         layoutManager.addTextContainer(textContainer)
         textStorage.addLayoutManager(layoutManager)

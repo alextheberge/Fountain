@@ -31,6 +31,7 @@ let package = Package(
             exclude: [
                 "Legacy",
                 "ScriptCSS.css",
+                "AppKitFountainTextMeasurer.swift",
                 "FNHTMLScript.swift",
                 "FNPaginator.swift",
                 "Platform.swift",
@@ -69,8 +70,11 @@ let package = Package(
                 "FountainFDXWriter.swift",
                 "FountainPDFWriter.swift",
                 "FountainParsePipeline.swift",
+                "FountainLineToElementIndexMap.swift",
+                "FountainTextMeasuring.swift",
             ],
             sources: [
+                "AppKitFountainTextMeasurer.swift",
                 "FNHTMLScript.swift",
                 "FNPaginator.swift",
                 "Platform.swift",

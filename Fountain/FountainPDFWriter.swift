@@ -2,19 +2,19 @@
 //  FountainPDFWriter.swift
 //
 //  Courier screenplay PDF via CoreGraphics + CoreText (Phase 8 / Next-Gen spec §4).
-//  **WebAssembly:** ``FountainPDFWriter`` is unavailable (throws ``FountainStubRendererError``); use plaintext / JSON / FDX on wasm32.
+//  **WebAssembly** or hosts **without** CoreGraphics/CoreText: stub throws ``FountainStubRendererError`` — use plaintext / JSON / FDX.
 //
 
 import Foundation
 
-#if arch(wasm32)
+#if arch(wasm32) || !canImport(CoreGraphics) || !canImport(CoreText)
 
-/// PDF export is not available when compiling **FountainCore** for WebAssembly.
+/// PDF export is unavailable for this compilation (Wasm or missing CoreGraphics / CoreText).
 public struct FountainPDFWriter: FountainScriptRendering, Sendable {
     public init() {}
 
     public func render(_ script: FNScript) throws -> String {
-        throw FountainStubRendererError.notImplemented("FountainPDFWriter (not available on WebAssembly)")
+        throw FountainStubRendererError.notImplemented("FountainPDFWriter (CoreGraphics and CoreText required)")
     }
 }
 
@@ -33,6 +33,8 @@ public enum FountainPDFExportError: Error, Equatable, Sendable {
 ///
 /// ``FountainScriptRendering/render(_:)`` returns **base64**-encoded PDF bytes because the protocol
 /// surface is `String`. Use ``renderPDFData(_:)`` when you need `Data` directly.
+///
+/// Phase **8.8 (initial):** each page draws a **top-right page number** (industry-style draft numbering); dialogue **(MORE)** / **(CONT’D)** when using paginated element streams remains coordinated with ``FNPaginator`` separately.
 public struct FountainPDFWriter: FountainScriptRendering, Sendable {
     private static let pageWidth: CGFloat = 612
     private static let pageHeight: CGFloat = 792
@@ -42,6 +44,7 @@ public struct FountainPDFWriter: FountainScriptRendering, Sendable {
     private static let marginBottom: CGFloat = 72
     private static let fontSize: CGFloat = 12
     private static let lineSpacing: CGFloat = 2
+    private static let headerNumberY: CGFloat = 48
 
     public init() {}
 
@@ -62,12 +65,34 @@ public struct FountainPDFWriter: FountainScriptRendering, Sendable {
         }
 
         let font = CTFontCreateWithName("Courier" as CFString, Self.fontSize, nil)
+        let headerFont = CTFontCreateWithName("Courier" as CFString, 10, nil)
         let colorSpace = CGColorSpaceCreateDeviceGray()
         let black = CGColor(colorSpace: colorSpace, components: [0, 1])!
+
+        var pageNumber = 1
+
+        func drawPageNumber(_ n: Int) {
+            let s = "\(n)."
+            let attrs: [CFString: Any] = [
+                kCTFontAttributeName: headerFont,
+                kCTForegroundColorAttributeName: black,
+            ]
+            let attr = CFAttributedStringCreate(nil, s as CFString, attrs as CFDictionary)!
+            let ctLine = CTLineCreateWithAttributedString(attr)
+            var ascent: CGFloat = 0
+            var descent: CGFloat = 0
+            var leading: CGFloat = 0
+            let w = CGFloat(CTLineGetTypographicBounds(ctLine, &ascent, &descent, &leading))
+            let x = Self.pageWidth - Self.marginRight - w
+            ctx.textPosition = CGPoint(x: x, y: Self.headerNumberY)
+            CTLineDraw(ctLine, ctx)
+        }
 
         ctx.beginPDFPage(nil)
         ctx.translateBy(x: 0, y: Self.pageHeight)
         ctx.scaleBy(x: 1, y: -1)
+
+        drawPageNumber(pageNumber)
 
         var y: CGFloat = Self.marginTop
         let textWidth = Self.pageWidth - Self.marginLeft - Self.marginRight
@@ -75,9 +100,11 @@ public struct FountainPDFWriter: FountainScriptRendering, Sendable {
 
         func newPage() {
             ctx.endPDFPage()
+            pageNumber += 1
             ctx.beginPDFPage(nil)
             ctx.translateBy(x: 0, y: Self.pageHeight)
             ctx.scaleBy(x: 1, y: -1)
+            drawPageNumber(pageNumber)
             y = Self.marginTop
         }
 
