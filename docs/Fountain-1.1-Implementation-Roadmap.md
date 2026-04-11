@@ -141,10 +141,10 @@ This document turns [Project Specification- Fountain Swift (Next-Gen).md](../Pro
 
 | Step | Action | Done when |
 |------|--------|-----------|
-| 7.1 | Curate **official-style fixture set**: minimal one-liners per rule + **Big Fish** + **Brick & Steel** + edge cases (forced lines, boneyard, dual). | **Started:** `BigFishCorpusTests` + `BrickSteelCorpusTests` + `PackageFixtureCorpusTests` (incl. `package-mixed-production.fountain`, `package-scene-pagebreak.fountain` for `#…#` + `===`) |
-| 7.2 | Add **structured assertions**: expected `FNElementType` sequences + key attributes (not only string snapshots). | **Started:** `ParseAssertions` + `ParseStructureTests` + `StructuredComplianceTests` + `assertFountainDocumentsStructurallyEqual` (JSON decode vs re-parse); **Big Fish** / **Brick & Steel** corpus JSON + metrics checks |
-| 7.3 | Track **external suite** if one exists (community “standardized Fountain test suite” — integrate or vendor with license check). | **Started:** README § other implementations & fixtures |
-| 7.4 | **Regression policy:** any parser bugfix adds a **minimal** new fixture. | **Started:** [CONTRIBUTING.md](../CONTRIBUTING.md) |
+| 7.1 | Curate **official-style fixture set**: minimal one-liners per rule + **Big Fish** + **Brick & Steel** + edge cases (forced lines, boneyard, dual). | **Done:** `BigFishCorpusTests` + `BrickSteelCorpusTests` + `PackageFixtureCorpusTests` + bundled `Tests/FountainPackageTests/Fixtures/*.fountain` + `SpecTraceabilityTests` + `Phase7ComplianceTests` (fixture inventory + minimal slug / parenthetical / bracket note / page break / `CUT TO:` rows) |
+| 7.2 | Add **structured assertions**: expected `FNElementType` sequences + key attributes (not only string snapshots). | **Done:** `ParseAssertions` + `ParseStructureTests` + `StructuredComplianceTests` + `GoldenDocumentTests` + `Phase45RoundTripTests` / `Phase7ComplianceTests` (`assertFountainDocumentsStructurallyEqual` on JSON); **Big Fish** / **Brick & Steel** corpus JSON + metrics |
+| 7.3 | Track **external suite** if one exists (community “standardized Fountain test suite” — integrate or vendor with license check). | **Done:** [README](../README.markdown) (summary) + [External-Fountain-Test-References.md](External-Fountain-Test-References.md) (table + vendoring checklist) |
+| 7.4 | **Regression policy:** any parser bugfix adds a **minimal** new fixture. | **Done:** [CONTRIBUTING.md](../CONTRIBUTING.md) (parser / format regression section) |
 
 ---
 
@@ -203,6 +203,8 @@ Fill as you implement. Link each row to tests.
 | Notes `[[ ]]` | 5 | `Phase5ProductionFeaturesTests` | ☑ |
 | Sections / synopses | 5 | `SectionHeaders.fountain`, `Phase5ProductionFeaturesTests` | ☑ |
 | Brick & Steel sample | 7 | `Brick And Steel.txt`, `BrickSteelCorpusTests` | ☑ |
+| Phase 7 matrix (fixtures + minimal one-liners + JSON structural parity) | 7 | `Phase7ComplianceTests`, `PackageFixtureCorpusTests` | ☑ |
+| External parsers / vendoring policy | 7 | [External-Fountain-Test-References.md](External-Fountain-Test-References.md) | ☑ |
 | Boneyard between body lines | 5 | `package-boneyard-sandwich.fountain`, `PackageFixtureCorpusTests` | ☑ |
 | Script metrics (scenes / transitions / page breaks / boneyard / sections / synopses / notes) | 5 | `FountainScriptMetricsTests` | ☑ |
 | Scene numbers + page break | 5 | `package-scene-pagebreak.fountain`, `PackageFixtureCorpusTests` | ☑ |
@@ -234,5 +236,6 @@ Fill as you implement. Link each row to tests.
 - [SwiftWasm-Experimental.md](SwiftWasm-Experimental.md) — Phase 10.3 Wasm notes  
 - [Deprecation-And-Distribution.md](Deprecation-And-Distribution.md) — Phases 0.3 & 1.2  
 - [Public-API-Surface.md](Public-API-Surface.md) — Phase 1.3  
+- [External-Fountain-Test-References.md](External-Fountain-Test-References.md) — Phase 7.3 external parsers / vendoring notes  
 
 When this roadmap and the gap analysis diverge from reality, **update the tables** in the same PR as the code change.

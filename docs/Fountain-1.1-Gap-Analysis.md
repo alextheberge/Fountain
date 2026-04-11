@@ -20,7 +20,7 @@
 
 This document **remains living**: as Phases 2–7 advance, update the matrix and fixture map so “baseline” does not drift from code.
 
-**Where full 1.1 compliance is tracked:** Roadmap **Phase 7** (tests + traceability), not Phase 0. Phase 0 answers *what we have and where the risks are*.
+**Where full 1.1 compliance is tracked:** Roadmap **Phase 7** (tests + traceability), not Phase 0. Phase 0 answers *what we have and where the risks are*. **Phase 7** is **roadmap-complete** (fixtures, structured assertions, external references doc, regression policy); the **feature matrix** below still tracks spec gaps until every **N** / **P** is closed.
 
 ---
 

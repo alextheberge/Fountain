@@ -2,7 +2,7 @@
 
 This is a **map** of supported entry points, not a substitute for Xcode DocC. Prefer **`import Fountain`** in apps (umbrella); use **`import FountainCore`** or **`import FountainHTML`** only when you want a slimmer dependency graph.
 
-**Phase 1.3 status:** **Complete** for documentation and stability expectations below. **`@_spi(…)`** is not applied in source yet; when a subsystem stabilizes, you may narrow visibility without changing runtime behavior.
+**Phase 1.3 status:** **Complete** for documentation and stability expectations below. **Phase 7** (SwiftPM test matrix and external-suite tracking) is documented in [Fountain-1.1-Implementation-Roadmap.md](Fountain-1.1-Implementation-Roadmap.md) and [External-Fountain-Test-References.md](External-Fountain-Test-References.md). **`@_spi(…)`** is not applied in source yet; when a subsystem stabilizes, you may narrow visibility without changing runtime behavior.
 
 ## API tiers (semver guidance)
 

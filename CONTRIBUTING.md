@@ -6,9 +6,11 @@
 
 When you fix a bug in **`FastFountainParser`**, **`FountainWriter`**, or the **`FountainDocument`** mapping:
 
-1. Add a **minimal** reproduction as a string (or tiny `.fountain` under `Tests/FountainPackageTests/Fixtures/` when shared across tests).
-2. Add or extend an SPM test in **`Tests/FountainPackageTests/`** (e.g. `SpecTraceabilityTests`, `Phase5ProductionFeaturesTests`) so `swift test` catches the regression.
+1. Add a **minimal** reproduction as a string (or tiny `.fountain` under `Tests/FountainPackageTests/Fixtures/` when shared across tests). If you add a fixture file, extend **`Phase7ComplianceTests.testBundledFixtureInventory`** so the inventory stays accurate.
+2. Add or extend an SPM test in **`Tests/FountainPackageTests/`** (e.g. `SpecTraceabilityTests`, `Phase5ProductionFeaturesTests`, `Phase7ComplianceTests`) so `swift test` catches the regression.
 3. Update **`docs/Fountain-1.1-Implementation-Roadmap.md`** spec traceability or phase tables if the change affects Fountain 1.1 coverage notes.
+
+**Third-party test cases:** see [docs/External-Fountain-Test-References.md](docs/External-Fountain-Test-References.md) (Phase 7.3) before copying tests into the repo.
 
 Keep Xcode **`FountainTests`** and SPM tests aligned when behavior changes; prefer the same fixture text in both places when practical.
 
