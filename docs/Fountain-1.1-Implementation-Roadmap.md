@@ -95,7 +95,7 @@ This document turns [Project Specification- Fountain Swift (Next-Gen).md](../Pro
 
 **Goal:** Tokens → **blocks** (dialogue blocks, dual dialogue, continuity).
 
-**Status:** **Complete (initial)** — dialogue line roles align with ``FastFountainParser`` parenthetical detection; dual-`^` columns match the fast parser and ``FountainScriptElementsBuilder``; token→element assembly is parity-tested against ``FNScript`` on package fixtures. Canonical production parse remains ``FNScript`` / ``FastFountainParser``; the builder proves the Phase 3 tokenizer stream can reconstruct element **types** (and merges) for the same inputs. **Next:** [Phase 12](#phase-12-canonical-state-aware-parser-default-fnscript) makes that stream the **default** parse path (Project Specification *State-Aware Scanner*).
+**Status:** **Complete (initial)** — dialogue line roles align with ``FastFountainParser`` parenthetical detection; dual-`^` columns match the fast parser and ``FountainScriptElementsBuilder``; token→element assembly is parity-tested against ``FNScript`` on package fixtures. Canonical production parse remains ``FNScript`` / ``FastFountainParser``; the builder proves the Phase 3 tokenizer stream can reconstruct element **types** (and merges) for the same inputs. **Next:** [Phase 12](#phase-12-canonical-state-aware-parser-default-fnscript) makes that stream the **default** parse path (Project Specification *State-Aware Scanner*). **Tightening:** **4.6** removes the legacy **whitespace-only** “forced action” path in favor of strict **`!`**.
 
 | Step | Action | Done when |
 |------|--------|-----------|
@@ -104,6 +104,7 @@ This document turns [Project Specification- Fountain Swift (Next-Gen).md](../Pro
 | 4.3 | **Action** merging rules (soft line breaks vs hard breaks) — explicitly match 1.1; **remove reliance on trailing spaces** for forcing; prefer **`!`**. | **Done:** `ActionMergingTests`; legacy all-whitespace action lines remain accepted in ``FastFountainParser`` (document-only preference for `!`) |
 | 4.4 | **Centered text** `> ... <` vs **forced transition** `>` — disambiguation per spec. | **Done:** `ParseStructureTests` + tokenizer order (`> … TO:` → transition before bare-`>` branch) |
 | 4.5 | Emit final **`[FNElement]`** list from token stream. | **Done:** `FountainScriptElementsBuilder` + `Phase4ParityTests` (element-type parity vs ``FNScript`` on fixtures) + existing `Phase45RoundTripTests` / export round-trip |
+| 4.6 | **Strict forced action (`!` only):** update the **parser state machine** (``FastFountainParser`` and ``FountainBodyLineTokenizer`` / ``FountainScriptElementsBuilder`` so **`.tokenPipeline`** stays aligned) to **require** the **`!`** prefix for **forced action** per Fountain 1.1; **deprecate** then **remove** the legacy branch that treats **two-or-more whitespace-only lines** (`^\\s{2,}$`) as standalone **Action** elements. Optional one-release **warnings** or migration note before removal. | `- [ ]` Legacy whitespace path **gone** or removed per semver plan; **`ActionMergingTests`**, **`SpecTraceabilityTests`**, **`TokenPipelineFNScriptTests`** updated; [Fountain-1.1-Gap-Analysis.md](Fountain-1.1-Gap-Analysis.md) / README document any **breaking** classification change. |
 
 ---
 
@@ -267,6 +268,7 @@ Fill as you implement. Link each row to tests.
 |--------------------|----------|--------------|--------|
 | Forced scene heading `.` | 3–4 | `SpecTraceabilityTests` | ☑ |
 | Forced action `!` | 3–4 | `SpecTraceabilityTests` | ☑ |
+| Forced action **`!` only** (no whitespace-only action shortcut) | 4.6 | `ActionMergingTests`, `SpecTraceabilityTests`, `TokenPipelineFNScriptTests` | ☐ |
 | Forced character `@` | 3–4 | `SpecTraceabilityTests` | ☑ |
 | Forced transition `>` | 3–4 | `SpecTraceabilityTests` | ☑ |
 | Lyrics `~` | 3–4 | `SpecTraceabilityTests` | ☑ |
@@ -335,7 +337,7 @@ Small, continuous improvements after numbered phases are **initial-complete**:
 | Item | Notes |
 |------|--------|
 | **Phase 3.5** | Prefer Swift ``Regex`` for **localized** slug checks — **started:** ``FountainSceneHeadingMatcher`` uses Swift `Regex` on **macOS 13+ / iOS 16+** and the same rule via `NSRegularExpression` on older OS (package still supports macOS 12 / iOS 15). |
-| **Phase 4.3** | **Started:** ``FastFountainParser`` documents legacy whitespace-only action lines vs Fountain 1.1 ``!`` forced action. |
+| **Phase 4.3 / 4.6** | **4.3 done:** soft breaks + ``!`` preference. **4.6 planned:** strict **`!`** only — remove legacy whitespace-only action branch — see Phase 4 table. |
 | **Phase 1** | **Polish:** [Phase-1-Xcode-SPM-Integration.md](Phase-1-Xcode-SPM-Integration.md) — verification, rollback, and contributor notes (local package wiring **done** in `Fountain.xcodeproj` **today**). **Superseded by [Phase 14](#phase-14-version-20-and-spm-only-repository)** when the project goes **SPM-only**. |
 | **Phase 8** | Deeper HTML/CSS refactor if desired. **Polish:** ``FountainStubRendererError`` retained for future optional stubs; conforms to ``LocalizedError``. **Planned:** **8.5** ``TextMeasurer`` + ``FNPaginator``; **8.6** PDF portability / **CoreGraphics** isolation; **8.7** FDX **ElementSettings** / **MoresAndContinueds**; **8.8** PDF **(MORE)**/**(CONT’D)** + page-number header — see Phase 8 table. |
 | **Phase 9.3–9.5** | **9.3** planning done — [Fountain-Incremental-Parse-Spike.md](Fountain-Incremental-Parse-Spike.md). **Implementation:** **9.4** line→element map; **9.5** `parseIncremental(newText:range:)` (safe boundaries, chunk re-tokenize, merge into ``FountainDocument``) — see Phase 9 table. |
