@@ -49,7 +49,7 @@ This document turns [Project Specification- Fountain Swift (Next-Gen).md](../Pro
 
 **Goal:** A **SwiftPM library** that can be used by macOS/iOS apps **and** future tooling without Xcode-only coupling.
 
-**Status:** **Complete** for library distribution, CI, module split, documented public API, and **Phase 1.2** — Xcode sample apps and **`FountainTests`** link the **local** Swift package (no duplicate `Fountain/*.swift` compile in those targets). Details: [Phase-1-Xcode-SPM-Integration.md](Phase-1-Xcode-SPM-Integration.md).
+**Status:** **Complete** for library distribution, CI, module split, documented public API, and **Phase 1.2** — Xcode sample apps and **`FountainTests`** link the **local** Swift package (no duplicate `Fountain/*.swift` compile in those targets). Details: [Phase-1-Xcode-SPM-Integration.md](Phase-1-Xcode-SPM-Integration.md). An optional **SwiftUI** **`FountainUI`** library is **not** required to close Phase 1 — see [Phase 13](#phase-13-swiftui-and-fountainui).
 
 | Step | Action | Done when |
 |------|--------|-----------|
@@ -226,6 +226,22 @@ This document turns [Project Specification- Fountain Swift (Next-Gen).md](../Pro
 
 ---
 
+## Phase 13: SwiftUI and FountainUI
+
+**Goal:** Ship an **optional SwiftPM product** **`FountainUI`** that renders a **`FountainDocument`** with **native SwiftUI** (`Text`, layout primitives) for in-app previews, editors, and tooling — without pulling **SwiftUI** into **`FountainCore`**. **Not** a Wasm target; document platform availability alongside **FountainHTML**.
+
+**Status:** **Not started**.
+
+| Step | Action | Done when |
+|------|--------|-----------|
+| 13.1 | Add **`FountainUI`** SwiftPM **library target** (depends on **`FountainCore`** for ``FountainDocument``, ``ScriptElement``, ``ScriptElementKind``, metadata keys). Wire **macOS / iOS** platforms only (or match existing package floors); keep **SwiftUI** imports **out** of **`FountainCore`**. Optionally add **`FountainUI`** to the umbrella **`Fountain`** product or document **`import FountainUI`** for apps that need it. | `- [ ]` `Package.swift` + `swift test` (add **`FountainUIPackageTests`** or host tests in existing bundle); [Public-API-Surface.md](Public-API-Surface.md) + README note; **CI** allowlists updated if **Phase 10.2** grep must permit new SwiftUI-only paths under **`FountainUI/`**. |
+| 13.2 | Implement **`FountainView(document: FountainDocument)`** (or equivalent **View** struct) that **iterates** ``ScriptElement`` rows and emits **properly styled** ``Text`` (and containers such as ``VStack`` / spacing) per **element kind** (scene heading, character, dialogue, action, transition, etc.), using **native** typography (system serif / monospaced choices documented). | `- [ ]` Snapshot or unit tests on **minimal** + **dual-dialogue** fixtures; accessibility **Dynamic Type** behavior documented; dual-column layout respects ``ScriptElement`` dual-dialogue metadata where applicable. |
+| 13.3 | **(Bonus)** Map **``FountainInlineMarkup.attributedFragment(from:)``** (or ``renderInline`` → attributed pipeline) **directly** into **SwiftUI**-ready **`AttributedString`** / **`Text`** attributes so **bold / italic / underline** match **Phase 6** semantics without HTML round-trip. | `- [ ]` Focused tests on inline-heavy snippets; document any **SwiftUI** / **Foundation** attribute gaps vs HTML export. |
+
+**Dependency:** Relies on **Phase 2** ``FountainDocument`` / ``ScriptElement`` and **Phase 6** inline markup APIs; coordinate with **Phase 8** so styling choices stay consistent with **HTML** / **PDF** where sensible.
+
+---
+
 ## Spec traceability matrix (seed)
 
 Fill as you implement. Link each row to tests.
@@ -268,6 +284,8 @@ Fill as you implement. Link each row to tests.
 | Swift **`Regex` / `RegexBuilder`** + no `NSRegularExpression` in **`String+Regex.swift`** | 11 | [§ Phase 11](#phase-11-regex-modernization-swift-native); `FountainRegexes.swift`, `String+Regex.swift`, Wasm script + [SwiftWasm-Experimental.md](SwiftWasm-Experimental.md) | ☐ |
 | **State-aware default parse** (`FountainParsePipeline`); **`FastFountainParser`** deprecated off default | 12 | [§ Phase 12](#phase-12-canonical-state-aware-parser-default-fnscript); `TokenPipelineFNScriptTests`, `FNScript`, [Public-API-Surface.md](Public-API-Surface.md) | ☐ |
 | **Fast vs tokenPipeline** parity (exhaustive, pre-default-flip) | 12 / 7 | `TokenPipelineFNScriptTests`, corpus tests, [External-Fountain-Test-References.md](External-Fountain-Test-References.md) | ☐ |
+| **SwiftUI** `FountainView` + **`FountainUI`** SPM target | 13 | [§ Phase 13](#phase-13-swiftui-and-fountainui); `FountainUI` tests | ☐ |
+| **Bonus:** Inline markup → **`AttributedString`** for SwiftUI | 13.3 / 6 | ``FountainInlineMarkup``, `FountainUI` | ☐ |
 
 ---
 
@@ -283,7 +301,8 @@ Fill as you implement. Link each row to tests.
 8. **Phase 9** — Async + perf.  
 9. **Phase 10** — SPM / Wasm distribution and parser–UI boundary (roadmap complete; optional Wasm CI is manual); **10.4** when landing **8.5** / **8.6**.  
 10. **Phase 11** — Regex modernization (**`FountainRegexes.swift`**, **`String+Regex.swift`**) when raising the Swift/os floor or doing a focused perf/Wasm pass.  
-11. **Phase 12** — **Parity-complete** token pipeline, then **default `FNScript`** on **`FountainParsePipeline`** and **deprecate `FastFountainParser`** from the default path (aligns with the Project Specification *State-Aware Scanner*).
+11. **Phase 12** — **Parity-complete** token pipeline, then **default `FNScript`** on **`FountainParsePipeline`** and **deprecate `FastFountainParser`** from the default path (aligns with the Project Specification *State-Aware Scanner*).  
+12. **Phase 13** — **`FountainUI`** SwiftUI surface (`FountainView`, optional **AttributedString** inline path) when you want native in-app screenplay preview beyond **HTML** / **WKWebView**.
 
 ---
 
@@ -302,6 +321,7 @@ Small, continuous improvements after numbered phases are **initial-complete**:
 | **Structural matchers** | **Polish:** ``FountainStructuralLineMatchers`` page break / boneyard / bracket / `TO:` / all-caps cue use **string logic** (no `NSRegularExpression`). |
 | **Phase 11** | **Planned:** Swift **`Regex` / `RegexBuilder`** for **`FountainRegexes.swift`**; remove **`NSRegularExpression`** from **`String+Regex.swift`** — see [§ Phase 11](#phase-11-regex-modernization-swift-native) (Wasm + Linux performance). |
 | **Phase 12** | **Planned:** Full **`.fast`** / **`.tokenPipeline`** parity suite, then **default** **`FNScript`** on **`FountainParsePipeline`**; deprecate **`FastFountainParser`** as default — [§ Phase 12](#phase-12-canonical-state-aware-parser-default-fnscript). |
+| **Phase 13** | **Planned:** **`FountainUI`** SPM target, **`FountainView(document:)`**, optional inline → **`AttributedString`** — [§ Phase 13](#phase-13-swiftui-and-fountainui). |
 
 ---
 
