@@ -20,8 +20,8 @@ public enum FountainBodyLineTokenizer {
         var commentText = ""
         var lastNonBlankKind: FountainTokenKind?
 
-        func append(_ lineIndex: Int, kind: FountainTokenKind, text: String) {
-            out.append(FountainTokenizedLine(lineIndex: lineIndex, kind: kind, text: text))
+        func append(_ lineIndex: Int, kind: FountainTokenKind, text: String, isMergeContinuation: Bool = false) {
+            out.append(FountainTokenizedLine(lineIndex: lineIndex, kind: kind, text: text, isMergeContinuation: isMergeContinuation))
             if kind != .blank {
                 lastNonBlankKind = kind
             }
@@ -190,7 +190,7 @@ public enum FountainBodyLineTokenizer {
             }
 
             if newlinesBefore == 0, lastNonBlankKind != nil {
-                append(index, kind: .action, text: line)
+                append(index, kind: .action, text: line, isMergeContinuation: true)
                 newlinesBefore = 0
                 continue
             }

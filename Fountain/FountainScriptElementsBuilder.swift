@@ -14,14 +14,17 @@ public enum FountainScriptElementsBuilder {
         var isCommentBlock = false
         var commentText = ""
 
-        func mergeOrAppendAction(text: String) {
-            if let last = elements.last, last.elementType == "Action" {
-                var m = last
-                m.elementText = "\(m.elementText)\n\(text)"
-                elements[elements.count - 1] = m
-            } else {
+        /// Matches ``FastFountainParser`` continuation merge: any non-blank line after a line with no intervening blank is appended to the previous element; a trailing ``Scene Heading`` becomes ``Action``.
+        func mergeContinuationLikeFast(text: String) {
+            guard var previous = elements.last else {
                 elements.append(FNElement.element(ofType: "Action", text: text))
+                return
             }
+            if previous.elementType == "Scene Heading" {
+                previous.elementType = "Action"
+            }
+            previous.elementText = "\(previous.elementText)\n\(text)"
+            elements[elements.count - 1] = previous
         }
 
         func mergeOrAppendDialogue(text: String) {
@@ -160,8 +163,15 @@ public enum FountainScriptElementsBuilder {
             case .lyrics:
                 elements.append(FNElement.element(ofType: "Lyrics", text: t.text))
 
-            case .forcedAction, .action:
-                mergeOrAppendAction(text: t.text)
+            case .forcedAction:
+                elements.append(FNElement.element(ofType: "Action", text: t.text))
+
+            case .action:
+                if t.isMergeContinuation {
+                    mergeContinuationLikeFast(text: t.text)
+                } else {
+                    elements.append(FNElement.element(ofType: "Action", text: t.text))
+                }
 
             case .forcedCharacterCue, .characterCue:
                 appendCharacterCue(rawLine: t.text)
@@ -176,7 +186,11 @@ public enum FountainScriptElementsBuilder {
                 break
 
             case .unknown:
-                mergeOrAppendAction(text: t.text)
+                if t.isMergeContinuation {
+                    mergeContinuationLikeFast(text: t.text)
+                } else {
+                    elements.append(FNElement.element(ofType: "Action", text: t.text))
+                }
             }
         }
 

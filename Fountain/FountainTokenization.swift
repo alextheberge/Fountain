@@ -68,10 +68,13 @@ public struct FountainTokenizedLine: Sendable, Equatable {
     public var kind: FountainTokenKind
     /// Raw line text from the split body (Fountain blank lines are `""`).
     public var text: String
+    /// True when this line follows a non-blank line with no intervening blank — matches ``FastFountainParser``’s “merge into previous element” rows (scene slug + immediate action, synopsis continuations, etc.).
+    public var isMergeContinuation: Bool
 
-    public init(lineIndex: Int, kind: FountainTokenKind, text: String) {
+    public init(lineIndex: Int, kind: FountainTokenKind, text: String, isMergeContinuation: Bool = false) {
         self.lineIndex = lineIndex
         self.kind = kind
         self.text = text
+        self.isMergeContinuation = isMergeContinuation
     }
 }

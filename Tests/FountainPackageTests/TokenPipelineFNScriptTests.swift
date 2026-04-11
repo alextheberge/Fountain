@@ -37,6 +37,20 @@ final class TokenPipelineFNScriptTests: XCTestCase {
         assertFastAndTokenPipelineMatch("\nINT. ROOM - DAY\n\nFirst.\nSecond.\n")
     }
 
+    /// ``FastFountainParser`` merges a slug with the following line when there is **no** blank between them (slug becomes action).
+    func testTokenPipelineMatchesFastSlugWithImmediateActionNoBlank() {
+        assertFastAndTokenPipelineMatch(
+            """
+
+            INT. MERGED - DAY
+            Opening description on the next line with no blank after the slug.
+
+            BOB
+            Hi.
+            """
+        )
+    }
+
     func testTokenPipelineMatchesFastCharacterDialogue() {
         assertFastAndTokenPipelineMatch("\nINT. X\n\nBOB\nHi.\n")
     }
@@ -86,12 +100,19 @@ final class TokenPipelineFNScriptTests: XCTestCase {
         }
     }
 
-    /// Full-script **fast** vs **tokenPipeline** element sequences still diverge on Big Fish (merging / boundary heuristics).
-    /// Keep a **scale** check so the tokenizer path survives feature-length input; tighten to full parity when the pipeline catches up.
-    func testBigFishTokenPipelineParsesWithManyElements() throws {
+    /// Feature-length **fast** vs **tokenPipeline** parity (continuation merge, slug + action, etc.).
+    func testTokenPipelineBigFishFileMatchesFast() throws {
         let url = try XCTUnwrap(bigFishFountainURL(), "Big Fish.fountain not found (run swift test from repo root)")
-        let script = FNScript(file: url.path, parser: .tokenPipeline)
-        XCTAssertGreaterThan(script.elements.count, 500, "Sanity: Big Fish on tokenPipeline should yield hundreds of elements")
+        let fast = FNScript(file: url.path, parser: .fast)
+        let token = FNScript(file: url.path, parser: .tokenPipeline)
+        XCTAssertEqual(token.elements.count, fast.elements.count, "Big Fish element count")
+        XCTAssertEqual(token.elements.map(\.elementType), fast.elements.map(\.elementType), "Big Fish element types")
+        XCTAssertEqual(token.elements.map(\.elementText), fast.elements.map(\.elementText), "Big Fish element texts")
+        XCTAssertEqual(
+            FountainWriter.titlePageFromScript(token).trimmingCharacters(in: .whitespacesAndNewlines),
+            FountainWriter.titlePageFromScript(fast).trimmingCharacters(in: .whitespacesAndNewlines),
+            "Big Fish title page export parity"
+        )
     }
 
     private func bigFishFountainURL() -> URL? {
