@@ -152,7 +152,7 @@ This document turns [Project Specification- Fountain Swift (Next-Gen).md](../Pro
 
 **Goal:** **Eliminate monolithic HTML** in core; multiple backends.
 
-**Status:** **Complete (initial)** — unified ``FountainScriptRendering`` API; plaintext / Markdown / JSON / HTML + **FDX / PDF** exporters with tests. Legacy ``FountainWriter`` remains for Fountain body/title string export; new call sites should prefer protocol conformers.
+**Status:** **Complete (initial)** — unified ``FountainScriptRendering`` API; plaintext / Markdown / JSON / HTML + **FDX / PDF** exporters with tests. Legacy ``FountainWriter`` remains for Fountain body/title string export; new call sites should prefer protocol conformers. **Follow-up:** **8.5** / **8.6** improve **cross-platform** pagination measurement and **PDF** portability (Wasm / Linux).
 
 | Step | Action | Done when |
 |------|--------|-----------|
@@ -160,6 +160,8 @@ This document turns [Project Specification- Fountain Swift (Next-Gen).md](../Pro
 | 8.2 | **`HTMLWriter`**: migrate from `FNHTMLScript`; modern CSS (grid/flex); keep **CSS as resource** or string template. | **Done:** ``FNHTMLScript`` conforms to ``FountainScriptRendering``; ``FountainHTMLWriter`` (thin adapter in **FountainHTML**); `ScriptCSS.css` resource + dual-dialogue grid tests (`FountainScriptRenderingTests`) |
 | 8.3 | **`MarkdownWriter`**: useful for LLM/tooling pipelines. | **Done:** ``FountainMarkdownWriter`` + ``FountainJSONWriter`` + `FountainScriptRenderingTests` (lyrics + bracket notes + JSON shape) |
 | 8.4 | **`FDXWriter`** / **`PDFWriter`**: Final Draft XML + PDF export. | **Done:** ``FountainFDXWriter`` emits minimal importable .fdx; ``FountainPDFWriter`` renders US Letter PDF via CoreGraphics/CoreText (``render`` = base64, ``renderPDFData`` = `Data`). Tests: ``FountainScriptRenderingTests`` (`testFDXWriterEmitsFinalDraftXML`, `testPDFWriterProducesValidPDFBytes`). |
+| 8.5 | **Abstract text measurement** out of ``FNPaginator`` behind a protocol (e.g. **`TextMeasurer`**) so **core pagination math** does not hard-code **UIKit/AppKit** font metrics. Ship a **default** implementation in **FountainHTML** (or a thin **`FountainApple`** product) using **`NSAttributedString` / `UIFont` / `NSFont`** (or equivalent) on Apple platforms; **Wasm / Linux** consumers inject their own measurer (e.g. **HTML Canvas**-backed layout in JS, or a stub for tests). | `- [ ]` Protocol + injection API documented in [Public-API-Surface.md](Public-API-Surface.md); **FountainHTML** (or new target) builds on **macOS/iOS**; **FountainCore** stays free of UIKit/AppKit except allowed files per Phase 10.2; regression tests for paginator output with a **fake** `TextMeasurer`; [SwiftWasm-Experimental.md](SwiftWasm-Experimental.md) notes how hosts supply measurement. |
+| 8.6 | **PDF portability:** if **FountainPDFWriter** stays in-repo, either (a) adopt a **lightweight cross-platform** PDF generator that does not require **CoreGraphics** on every OS, **or** (b) **strictly isolate** ``FountainPDFWriter`` (and any CoreText/CoreGraphics-only code paths) behind **`#if canImport(CoreGraphics)`** (and related guards), matching the existing **wasm32** stub story with a clear **Linux** story. | `- [ ]` Decision recorded in this doc or **ADR**; **Package.swift** / conditional stubs aligned; **`swift test`** on **macOS** unchanged or updated per choice; **Wasm** script outcome recorded; consumers without CoreGraphics get a **compile-time** or **runtime** stub with documented behavior. |
 
 ---
 
@@ -181,11 +183,14 @@ This document turns [Project Specification- Fountain Swift (Next-Gen).md](../Pro
 
 ## Phase 10 — Cross-platform packaging
 
+**Goal:** **SPM-first** distribution, CI guardrails on parser vs UI boundaries, and **Wasm** experiments without blocking **FountainCore** consumers on **Linux** or the browser.
+
 | Step | Action | Done when |
 |------|--------|-----------|
 | 10.1 | **SPM** is default distribution; tag semver. | **Done:** [SPM-Release-Checklist.md](SPM-Release-Checklist.md) (default distribution, products table, tagging flow); consumers use package URL + **`import Fountain`** / **`FountainCore`** |
 | 10.2 | **Conditional compilation:** `#if canImport(UIKit)` only in **render** or **sample** targets, not in parser. | **Done:** `.github/workflows/swift.yml` greps `Fountain/*.swift` (excluding `Platform` / `FNPaginator` / `FNHTMLScript`) for `canImport(UIKit\|AppKit)` **and** stray `import UIKit` / `import AppKit` |
 | 10.3 | **SwiftWasm** (stretch): build script + CI matrix entry; document unsupported APIs. | **Done:** `scripts/build-fountaincore-wasm.sh` + [SwiftWasm-Experimental.md](SwiftWasm-Experimental.md) + manual workflow [`.github/workflows/fountaincore-wasm.yml`](../.github/workflows/fountaincore-wasm.yml) (Actions → **Wasm: FountainCore**) |
+| 10.4 | **Products vs platform APIs:** when **8.5** / **8.6** land, keep **`FountainCore`** buildable on **Wasm/Linux** without linking **CoreGraphics** / UI font stacks unless explicitly opted in — e.g. optional **`FountainApple`** product, **`#if canImport`**, or **SPM** `exclude` rules updated; extend **CI grep** allowlists if new Apple-only files are introduced. | `- [ ]` `Package.swift` + workflow allowlists + [SwiftWasm-Experimental.md](SwiftWasm-Experimental.md) updated in the same PR as **8.5** / **8.6**; no regression on **macOS** `swift test`. |
 
 ---
 
@@ -246,6 +251,8 @@ Fill as you implement. Link each row to tests.
 | Scene numbers + page break | 5 | `package-scene-pagebreak.fountain`, `PackageFixtureCorpusTests` | ☑ |
 | Dual dialogue HTML (grid CSS) | 8 | `package-dual-dialogue.fountain`, `FountainScriptRenderingTests` | ☑ |
 | Writer protocol + adapters (plain / MD / JSON / HTML / FDX / PDF) | 8 | ``FountainScriptRendering``, ``FountainHTMLWriter``, ``FountainFDXWriter``, ``FountainPDFWriter``, `FountainScriptRenderingTests` | ☑ |
+| **`TextMeasurer`** + ``FNPaginator`` injection (non-Apple measurers) | 8.5 / 10 | ``FNPaginator``, [SwiftWasm-Experimental.md](SwiftWasm-Experimental.md) | ☐ |
+| **PDF** portable or **CoreGraphics**-isolated (`FountainPDFWriter`) | 8.6 / 10 | ``FountainPDFWriter``, Wasm / Linux build notes | ☐ |
 | Async full parse (string + file) | 9 | `FNScriptAsyncTests` | ☑ |
 | `scriptElementStream` preview (full parse, async load) | 9 | `FountainRoadmapExtensionsTests`, `FNScriptAsyncTests` | ☑ |
 | Incremental parse (spike / preconditions) | 9.3 | [Fountain-Incremental-Parse-Spike.md](Fountain-Incremental-Parse-Spike.md) | ☑ |
@@ -268,9 +275,9 @@ Fill as you implement. Link each row to tests.
 4. **Phases 3 → 5** — New parser pipeline (core engineering).  
 5. **Phase 7** — Tests tightened **continuously** (don’t defer to end).  
 6. **Phase 6** — Rich text when core parse is stable.  
-7. **Phase 8** — Writers / ``FountainScriptRendering`` (**initial complete**; FDX/PDF baseline shipped — refine layout vs Final Draft in follow-ups).  
+7. **Phase 8** — Writers / ``FountainScriptRendering`` (**initial complete**; FDX/PDF baseline shipped — refine layout vs Final Draft in follow-ups; **8.5**/**8.6** for cross-platform pagination + PDF).  
 8. **Phase 9** — Async + perf.  
-9. **Phase 10** — SPM / Wasm distribution and parser–UI boundary (roadmap complete; optional Wasm CI is manual).  
+9. **Phase 10** — SPM / Wasm distribution and parser–UI boundary (roadmap complete; optional Wasm CI is manual); **10.4** when landing **8.5** / **8.6**.  
 10. **Phase 11** — Regex modernization (**`FountainRegexes.swift`**, **`String+Regex.swift`**) when raising the Swift/os floor or doing a focused perf/Wasm pass.  
 11. **Phase 12** — **Parity-complete** token pipeline, then **default `FNScript`** on **`FountainParsePipeline`** and **deprecate `FastFountainParser`** from the default path (aligns with the Project Specification *State-Aware Scanner*).
 
@@ -285,7 +292,7 @@ Small, continuous improvements after numbered phases are **initial-complete**:
 | **Phase 3.5** | Prefer Swift ``Regex`` for **localized** slug checks — **started:** ``FountainSceneHeadingMatcher`` uses Swift `Regex` on **macOS 13+ / iOS 16+** and the same rule via `NSRegularExpression` on older OS (package still supports macOS 12 / iOS 15). |
 | **Phase 4.3** | **Started:** ``FastFountainParser`` documents legacy whitespace-only action lines vs Fountain 1.1 ``!`` forced action. |
 | **Phase 1** | **Polish:** [Phase-1-Xcode-SPM-Integration.md](Phase-1-Xcode-SPM-Integration.md) — verification, rollback, and contributor notes (local package wiring **done** in `Fountain.xcodeproj`). |
-| **Phase 8** | Deeper HTML/CSS refactor if desired. **Polish:** ``FountainStubRendererError`` retained for future optional stubs; conforms to ``LocalizedError``. |
+| **Phase 8** | Deeper HTML/CSS refactor if desired. **Polish:** ``FountainStubRendererError`` retained for future optional stubs; conforms to ``LocalizedError``. **Planned:** **8.5** ``TextMeasurer`` + ``FNPaginator``; **8.6** PDF portability / **CoreGraphics** isolation — see Phase 8 table. |
 | **Phase 9.3–9.5** | **9.3** planning done — [Fountain-Incremental-Parse-Spike.md](Fountain-Incremental-Parse-Spike.md). **Implementation:** **9.4** line→element map; **9.5** `parseIncremental(newText:range:)` (safe boundaries, chunk re-tokenize, merge into ``FountainDocument``) — see Phase 9 table. |
 | **Gap analysis** | **Closed (matrix):** feature matrix all **Y** with SPM regression pointers — ``GapMatrixClosureTests`` + prior tests; see [Fountain-1.1-Gap-Analysis.md](Fountain-1.1-Gap-Analysis.md). |
 | **Structural matchers** | **Polish:** ``FountainStructuralLineMatchers`` page break / boneyard / bracket / `TO:` / all-caps cue use **string logic** (no `NSRegularExpression`). |
