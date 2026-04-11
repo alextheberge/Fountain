@@ -79,7 +79,7 @@ Legend: **Y** = supported in practice, **P** = partial / edge-case risk, **N** =
 |------|--------|
 | Xcode project | Y — primary |
 | SwiftPM `Package.swift` | **Started** — `swift build` / `swift test`; `FountainCore` / `FountainHTML` / umbrella `Fountain`; CI on `master` via GitHub Actions; release checklist [SPM-Release-Checklist.md](SPM-Release-Checklist.md) |
-| Contributor workflow | **Started** — [CONTRIBUTING.md](../CONTRIBUTING.md); `FountainScriptRendering` protocol for pluggable writers (Phase 8.1) |
+| Contributor workflow | **Started** — [CONTRIBUTING.md](../CONTRIBUTING.md); `FountainScriptRendering` protocol for pluggable writers (Phase 8.1); API map [Public-API-Surface.md](Public-API-Surface.md) |
 
 ---
 

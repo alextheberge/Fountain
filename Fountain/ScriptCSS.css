@@ -122,7 +122,7 @@ body > p:first-child {
 	padding-top: 2.6em;
 }
 #script-title .notes {
-	white-space: pre-line !important;shape-rendering
+	white-space: pre-line !important;
 }
 .center {
 	text-align: center !important;
@@ -132,19 +132,35 @@ hr {
     border: none;
     border-bottom: 1px solid #ccc;
 }
+/* Phase 8.2 — dual column: prefer grid; floats kept as fallback for very old engines */
 .dual-dialogue {
 	overflow: hidden;
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	column-gap: 8px;
+	align-items: start;
 }
 .dual-dialogue .dual-dialogue-left,
 .dual-dialogue .dual-dialogue-right {
-	width: 228px;
-	float: left;
+	width: auto;
+	min-width: 0;
+	float: none;
+}
+@supports not (display: grid) {
+	.dual-dialogue {
+		display: block;
+	}
+	.dual-dialogue .dual-dialogue-left,
+	.dual-dialogue .dual-dialogue-right {
+		width: 228px;
+		float: left;
+	}
 }
 .dual-dialogue p {
 	width: auto;
 }
 .dual-dialogue .character {
-	xtext-align: center;
+	text-align: center;
 	padding-left: 40px;
 }
 .dual-dialogue .parenthetical {

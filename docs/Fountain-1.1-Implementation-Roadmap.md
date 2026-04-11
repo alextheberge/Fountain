@@ -36,7 +36,7 @@ This document turns [Project Specification- Fountain Swift (Next-Gen).md](../Pro
 |------|--------|-----------|
 | 0.1 | Inventory current parsers (`FastFountainParser`, `FountainParser`, legacy ObjC) and **list gaps vs Fountain 1.1** (forced rules, boneyard, notes, dual dialogue, etc.). | **Started:** [Fountain-1.1-Gap-Analysis.md](Fountain-1.1-Gap-Analysis.md) |
 | 0.2 | Inventory **all regex patterns** (`FountainRegexes.swift` / `.m`) and mark which are **spec-critical** vs **styling-only**. | **Done (Swift):** table in [Fountain-1.1-Gap-Analysis.md](Fountain-1.1-Gap-Analysis.md) § Regex pattern inventory |
-| 0.3 | Decide **deprecation policy**: keep legacy targets for one release, feature-flag, or hard cut. | **Started:** see README § Work in progress (legacy ObjC retained for reference; SwiftPM is the forward path) |
+| 0.3 | Decide **deprecation policy**: keep legacy targets for one release, feature-flag, or hard cut. | **Started:** README + [Deprecation-And-Distribution.md](Deprecation-And-Distribution.md) |
 | 0.4 | Add **pin** to Fountain syntax version you’re targeting (1.1 + any errata). | **Done:** `FountainSyntaxPin` + README link |
 
 **Deliverable:** `docs/Fountain-1.1-Gap-Analysis.md` (short, living document).
@@ -50,8 +50,8 @@ This document turns [Project Specification- Fountain Swift (Next-Gen).md](../Pro
 | Step | Action | Done when |
 |------|--------|-----------|
 | 1.1 | Create `Package.swift` with **`FountainCore`** + **`FountainHTML`** + umbrella **`Fountain`** — core has **no** UI frameworks; HTML target holds AppKit/UIKit usage. | **Done (initial):** `swift build` + `swift test` at repo root; products `Fountain`, `FountainCore`, `FountainHTML` |
-| 1.2 | Move or duplicate **model + parse + write** into the package; keep sample apps consuming the package (or same sources via careful symlink — prefer package as source of truth). | **Started:** README explains dual path; `.xcodeproj` still compiles `Fountain/` inline (test host + `PRODUCT_MODULE_NAME`); `Package.swift` is source of truth for SPM |
-| 1.3 | Define **public API surface** (`FNScript`, element types, errors). Mark experimental APIs `@_spi` or nested `FountainCore.Experimental` if needed. | **Started:** doc comments on `FNScript`, `FNElement`; `FNElementType`, `FountainDocument` API |
+| 1.2 | Move or duplicate **model + parse + write** into the package; keep sample apps consuming the package (or same sources via careful symlink — prefer package as source of truth). | **Started:** README + [Deprecation-And-Distribution.md](Deprecation-And-Distribution.md) (SPM vs Xcode table) |
+| 1.3 | Define **public API surface** (`FNScript`, element types, errors). Mark experimental APIs `@_spi` or nested `FountainCore.Experimental` if needed. | **Started:** [Public-API-Surface.md](Public-API-Surface.md) + doc comments on core types |
 | 1.4 | **CI:** `swift build` + `swift test` on macOS (Linux where possible; Wasm later). | **Done:** `.github/workflows/swift.yml` |
 
 ---
@@ -65,7 +65,7 @@ This document turns [Project Specification- Fountain Swift (Next-Gen).md](../Pro
 | 2.1 | Introduce **`FNElementType`** `String` enum (or similar) covering **all** 1.1 structural kinds you need (including `pageBreak`, `boneyard`, `synopsis`, `section`, `general`, `note`, etc. — align names with spec vocabulary). | **Started:** `FNElementType` + map to `ScriptElementKind` |
 | 2.2 | Implement **`FNElement`** struct: `id`, `type`, `content`, **`attributes: [String: String]`** (or typed `Metadata` struct with `Codable`) for scene number, section depth, `dualDialogue`, `centered`, etc. | **Started:** `FountainMetadataKey` + `ScriptElement.metadata` + golden JSON (`Tests/FountainPackageTests/Fixtures/`) |
 | 2.3 | Migration shim from **old** `FNElement` class / `elementType: String` if dual-stack period is required. | **Started:** `LegacyInteropTests` (SPM) prove `asFountainDocument()` matches `FNElementType` for a slice |
-| 2.4 | Define **`FNScript`** (or `FountainDocument`) with `elements` + `titlePage` + version metadata. | **Started:** `FountainDocument(script:)` + `FountainSyntaxPin` default on `asFountainDocument()`; runtime parse remains `FNScript` |
+| 2.4 | Define **`FNScript`** (or `FountainDocument`) with `elements` + `titlePage` + version metadata. | **Started:** `FountainDocument(script:)` + ``FNScript.fountainDocument`` / ``asFountainDocument()`` + `FountainSyntaxPin` |
 
 ---
 
@@ -130,7 +130,7 @@ This document turns [Project Specification- Fountain Swift (Next-Gen).md](../Pro
 | Step | Action | Done when |
 |------|--------|-----------|
 | 7.1 | Curate **official-style fixture set**: minimal one-liners per rule + **Big Fish** + **Brick & Steel** + edge cases (forced lines, boneyard, dual). | **Started:** `BigFishCorpusTests` + `Tests/FountainPackageTests/Fixtures/*.fountain` (`PackageFixtureCorpusTests`) |
-| 7.2 | Add **structured assertions**: expected `FNElementType` sequences + key attributes (not only string snapshots). | **Started:** `ParseAssertions` + `ParseStructureTests` |
+| 7.2 | Add **structured assertions**: expected `FNElementType` sequences + key attributes (not only string snapshots). | **Started:** `ParseAssertions` + `ParseStructureTests` + `StructuredComplianceTests` |
 | 7.3 | Track **external suite** if one exists (community “standardized Fountain test suite” — integrate or vendor with license check). | **Started:** README § other implementations & fixtures |
 | 7.4 | **Regression policy:** any parser bugfix adds a **minimal** new fixture. | **Started:** [CONTRIBUTING.md](../CONTRIBUTING.md) |
 
@@ -143,7 +143,7 @@ This document turns [Project Specification- Fountain Swift (Next-Gen).md](../Pro
 | Step | Action | Done when |
 |------|--------|-----------|
 | 8.1 | Define `FountainWriter` (or `ScriptRenderer`) protocol: `func render(_ document: FNScript) throws -> String` (or associated type for binary PDF). | **Started:** `FountainScriptRendering` + `FountainPlaintextWriter` (`FountainScriptRendering.swift`) |
-| 8.2 | **`HTMLWriter`**: migrate from `FNHTMLScript`; modern CSS (grid/flex); keep **CSS as resource** or string template. | **Started:** ``FNHTMLScript`` conforms to ``FountainScriptRendering`` (`render(_:)`) |
+| 8.2 | **`HTMLWriter`**: migrate from `FNHTMLScript`; modern CSS (grid/flex); keep **CSS as resource** or string template. | **Started:** ``FNHTMLScript`` + ``FountainScriptRendering``; `ScriptCSS.css` dual-dialogue **grid** + title `.notes` typo fix |
 | 8.3 | **`MarkdownWriter`**: useful for LLM/tooling pipelines. | **Started:** `FountainMarkdownWriter` + `FountainScriptRenderingTests` |
 | 8.4 | **`FDXWriter`** / **`PDFWriter`**: stub behind feature flags or separate products to avoid bloating core. | **Started:** `FountainFDXWriter` / `FountainPDFWriter` + `FountainStubRendererError` |
 
@@ -214,5 +214,7 @@ Fill as you implement. Link each row to tests.
 - [Fountain-Incremental-Parse-Spike.md](Fountain-Incremental-Parse-Spike.md) — Phase 9.3 incremental parse planning  
 - [SPM-Release-Checklist.md](SPM-Release-Checklist.md) — Phase 10.1 tagging / semver  
 - [SwiftWasm-Experimental.md](SwiftWasm-Experimental.md) — Phase 10.3 Wasm notes  
+- [Deprecation-And-Distribution.md](Deprecation-And-Distribution.md) — Phases 0.3 & 1.2  
+- [Public-API-Surface.md](Public-API-Surface.md) — Phase 1.3  
 
 When this roadmap and the gap analysis diverge from reality, **update the tables** in the same PR as the code change.
