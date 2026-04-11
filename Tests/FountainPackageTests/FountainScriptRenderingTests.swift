@@ -111,6 +111,34 @@ final class FountainScriptRenderingTests: XCTestCase {
         let doc = try XCTUnwrap(PDFDocument(data: data))
         XCTAssertGreaterThanOrEqual(doc.pageCount, 2, "Phase 8.8 — overflow should begin a new PDF page")
     }
+
+    /// Phase 8.8 — ``FNPaginator`` + ``FountainPDFWriter/renderPDFDataPaginated(script:)`` (FountainHTML extension).
+    func testPDFWriterPaginatedExportIsValidPDF() throws {
+        let script = FNScript(string: """
+        Title: Paginated Export Test
+
+        INT. ROOM - DAY
+
+        Action before break.
+
+        ===
+
+        After explicit page break.
+        """)
+        let data = try FountainPDFWriter().renderPDFDataPaginated(script: script)
+        let doc = try XCTUnwrap(PDFDocument(data: data))
+        XCTAssertGreaterThanOrEqual(doc.pageCount, 1)
+        let combined = (0 ..< doc.pageCount).compactMap { doc.page(at: $0)?.string }.joined()
+        XCTAssertTrue(combined.contains("INT.") || combined.contains("ROOM"))
+    }
+
+    func testPDFWriterFlatExportIncludesDraftTitleInExtractedText() throws {
+        let script = FNScript(string: "Title: Draft Title Alpha\n\nINT. Z - DAY\n\nBody.\n")
+        let data = try FountainPDFWriter().renderPDFData(script)
+        let doc = try XCTUnwrap(PDFDocument(data: data))
+        let combined = (0 ..< doc.pageCount).compactMap { doc.page(at: $0)?.string }.joined()
+        XCTAssertTrue(combined.contains("Draft Title Alpha"), "Header should repeat title-page Title key")
+    }
     #endif
 
     func testFNHTMLScriptDualDialogueContainsGridClasses() throws {

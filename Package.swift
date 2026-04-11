@@ -87,7 +87,10 @@ let package = Package(
             name: "Fountain",
             dependencies: ["FountainCore", "FountainHTML"],
             path: "Sources/Fountain",
-            sources: ["Fountain.swift"]
+            sources: [
+                "Fountain.swift",
+                "FountainPDFPagination.swift",
+            ]
         ),
         .testTarget(
             name: "FountainPackageTests",

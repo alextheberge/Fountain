@@ -27,8 +27,9 @@ public enum FountainInlineRenderingMode: String, Sendable, CaseIterable {
 
 /// Pluggable screenplay export from ``FNScript`` (Phase 8 — replaces ad hoc “call `FountainWriter` then HTML separately” for new code).
 ///
-/// **FountainCore** ships: ``FountainPlaintextWriter`` (Fountain plain text), ``FountainMarkdownWriter``, ``FountainJSONWriter``, ``FountainFDXWriter`` (Final Draft .fdx XML), and ``FountainPDFWriter`` (Courier PDF; ``render(_:)`` returns **base64** — use ``FountainPDFWriter/renderPDFData(_:)`` for `Data`).
+/// **FountainCore** ships: ``FountainPlaintextWriter`` (Fountain plain text), ``FountainMarkdownWriter``, ``FountainJSONWriter``, ``FountainFDXWriter`` (Final Draft .fdx XML), and ``FountainPDFWriter`` (Courier PDF; ``render(_:)`` returns **base64** — use ``FountainPDFWriter/renderPDFData(_:)`` or ``renderPDFData(pages:script:)`` for `Data`).
 /// **FountainHTML** ships: ``FountainHTMLWriter`` and ``FNHTMLScript`` — both produce the same full HTML document (grid CSS, dual dialogue, title page).
+/// **Fountain** (umbrella) additionally documents ``FountainPDFWriter/renderPDFDataPaginated(script:)`` — see ``Sources/Fountain/FountainPDFPagination.swift``.
 public protocol FountainScriptRendering {
     /// Produce output from the in-memory model (e.g. Fountain plain text, HTML, Markdown, JSON).
     func render(_ script: FNScript) throws -> String

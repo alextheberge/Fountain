@@ -11,5 +11,6 @@ Living checklist of corpora and suites where **`.fast`** and **`.tokenPipeline`*
 | Boneyard sandwich, dual dialogue | `Phase4ParityTests`, `TokenPipelineFNScriptTests` | Dedicated fixtures |
 | **Whitespace-only body line (Phase 4.6)** | `Phase46WhitespaceActionTests` | No standalone `Action` for `^\\s+$` outside dialogue |
 | **``FNPaginator`` + ``CourierPitchMonospaceTextMeasurer``** | `FountainTextMeasuringTests.testPaginatorUsesCourierPitchMeasurerWithoutCrash` | Phase 8.5 closure injection smoke |
+| **Paginated PDF (FNP + writer)** | `FountainScriptRenderingTests.testPDFWriterPaginatedExportIsValidPDF` | Phase 8.8 — ``renderPDFDataPaginated`` |
 
 **Not yet exhaustive:** maintainer-signed matrix vs Phase 7.3 external cases remains open on the roadmap until every adopted external file is listed here.

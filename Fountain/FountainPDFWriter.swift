@@ -16,6 +16,14 @@ public struct FountainPDFWriter: FountainScriptRendering, Sendable {
     public func render(_ script: FNScript) throws -> String {
         throw FountainStubRendererError.notImplemented("FountainPDFWriter (CoreGraphics and CoreText required)")
     }
+
+    public func renderPDFData(_ script: FNScript) throws -> Data {
+        throw FountainStubRendererError.notImplemented("FountainPDFWriter (CoreGraphics and CoreText required)")
+    }
+
+    public func renderPDFData(pages: [[FNElement]], script: FNScript) throws -> Data {
+        throw FountainStubRendererError.notImplemented("FountainPDFWriter (CoreGraphics and CoreText required)")
+    }
 }
 
 #else
@@ -29,12 +37,20 @@ public enum FountainPDFExportError: Error, Equatable, Sendable {
     case cannotCreatePDFContext
 }
 
+private enum PDFBodyMode {
+    case flat
+    case paginated([[FNElement]])
+}
+
 /// Renders ``FNScript`` to a **US Letter** PDF using Courier 12pt.
 ///
 /// ``FountainScriptRendering/render(_:)`` returns **base64**-encoded PDF bytes because the protocol
 /// surface is `String`. Use ``renderPDFData(_:)`` when you need `Data` directly.
 ///
-/// Phase **8.8 (initial):** each page draws a **top-right page number** (industry-style draft numbering); dialogue **(MORE)** / **(CONT’D)** when using paginated element streams remains coordinated with ``FNPaginator`` separately.
+/// **Phase 8.8:** ``renderPDFData(_:)`` flows body elements with soft page breaks (mono wrap). Use
+/// ``renderPDFData(pages:script:)`` with slabs from ``FNPaginator`` (see **FountainHTML** ``FountainPDFWriter/renderPDFDataPaginated(script:)``)
+/// so **(MORE)** / **(CONT’D)** screenplay pagination matches ``FNPaginator``. Each PDF page draws **top-right page numbers**
+/// and, when present, a **draft title** from the title page’s **Title** key at the **top-left**.
 public struct FountainPDFWriter: FountainScriptRendering, Sendable {
     private static let pageWidth: CGFloat = 612
     private static let pageHeight: CGFloat = 792
@@ -45,16 +61,27 @@ public struct FountainPDFWriter: FountainScriptRendering, Sendable {
     private static let fontSize: CGFloat = 12
     private static let lineSpacing: CGFloat = 2
     private static let headerNumberY: CGFloat = 48
+    private static let headerTitleMaxChars = 72
 
     public init() {}
 
-    /// Base64-encoded PDF (decode with `Data(base64Encoded:)`).
     public func render(_ script: FNScript) throws -> String {
         let data = try renderPDFData(script)
         return data.base64EncodedString()
     }
 
+    /// Single continuous body layout (wrap + overflow pages). Does **not** run ``FNPaginator``.
     public func renderPDFData(_ script: FNScript) throws -> Data {
+        try exportPDF(script: script, bodyMode: .flat)
+    }
+
+    /// One **screenplay page** per inner array (e.g. output of ``FNPaginator``). Use **FountainHTML**’s
+    /// ``FountainPDFWriter/renderPDFDataPaginated(script:)`` to build slabs automatically.
+    public func renderPDFData(pages: [[FNElement]], script: FNScript) throws -> Data {
+        try exportPDF(script: script, bodyMode: .paginated(pages))
+    }
+
+    private func exportPDF(script: FNScript, bodyMode: PDFBodyMode) throws -> Data {
         let mutableData = NSMutableData()
         guard let consumer = CGDataConsumer(data: mutableData) else {
             throw FountainPDFExportError.cannotCreatePDFConsumer
@@ -66,18 +93,34 @@ public struct FountainPDFWriter: FountainScriptRendering, Sendable {
 
         let font = CTFontCreateWithName("Courier" as CFString, Self.fontSize, nil)
         let headerFont = CTFontCreateWithName("Courier" as CFString, 10, nil)
+        let titleHeaderFont = CTFontCreateWithName("Courier" as CFString, 9, nil)
         let colorSpace = CGColorSpaceCreateDeviceGray()
         let black = CGColor(colorSpace: colorSpace, components: [0, 1])!
 
         var pageNumber = 1
+        var y: CGFloat = Self.marginTop
+        let textWidth = Self.pageWidth - Self.marginLeft - Self.marginRight
+        let maxY = Self.pageHeight - Self.marginBottom
 
-        func drawPageNumber(_ n: Int) {
-            let s = "\(n)."
-            let attrs: [CFString: Any] = [
+        func drawPageHeader() {
+            let draftTitle = Self.draftTitleLine(from: script)
+            if let draftTitle, !draftTitle.isEmpty {
+                let titleAttrs: [CFString: Any] = [
+                    kCTFontAttributeName: titleHeaderFont,
+                    kCTForegroundColorAttributeName: black,
+                ]
+                let titleAttr = CFAttributedStringCreate(nil, draftTitle as CFString, titleAttrs as CFDictionary)!
+                let titleLine = CTLineCreateWithAttributedString(titleAttr)
+                ctx.textPosition = CGPoint(x: Self.marginLeft, y: Self.headerNumberY)
+                CTLineDraw(titleLine, ctx)
+            }
+
+            let s = "\(pageNumber)."
+            let numAttrs: [CFString: Any] = [
                 kCTFontAttributeName: headerFont,
                 kCTForegroundColorAttributeName: black,
             ]
-            let attr = CFAttributedStringCreate(nil, s as CFString, attrs as CFDictionary)!
+            let attr = CFAttributedStringCreate(nil, s as CFString, numAttrs as CFDictionary)!
             let ctLine = CTLineCreateWithAttributedString(attr)
             var ascent: CGFloat = 0
             var descent: CGFloat = 0
@@ -88,25 +131,21 @@ public struct FountainPDFWriter: FountainScriptRendering, Sendable {
             CTLineDraw(ctLine, ctx)
         }
 
-        ctx.beginPDFPage(nil)
-        ctx.translateBy(x: 0, y: Self.pageHeight)
-        ctx.scaleBy(x: 1, y: -1)
-
-        drawPageNumber(pageNumber)
-
-        var y: CGFloat = Self.marginTop
-        let textWidth = Self.pageWidth - Self.marginLeft - Self.marginRight
-        let maxY = Self.pageHeight - Self.marginBottom
-
         func newPage() {
             ctx.endPDFPage()
             pageNumber += 1
             ctx.beginPDFPage(nil)
             ctx.translateBy(x: 0, y: Self.pageHeight)
             ctx.scaleBy(x: 1, y: -1)
-            drawPageNumber(pageNumber)
+            drawPageHeader()
             y = Self.marginTop
         }
+
+        ctx.beginPDFPage(nil)
+        ctx.translateBy(x: 0, y: Self.pageHeight)
+        ctx.scaleBy(x: 1, y: -1)
+
+        drawPageHeader()
 
         func drawParagraph(_ string: String, indent: CGFloat) {
             let lines = Self.wrappedLines(string, maxChars: Self.monoCharsPerLine(forWidth: textWidth - indent))
@@ -128,6 +167,25 @@ public struct FountainPDFWriter: FountainScriptRendering, Sendable {
             }
         }
 
+        func drawBodyElements(_ elements: [FNElement]) {
+            for element in elements {
+                if element.elementText.range(of: #"^\s*$"#, options: .regularExpression) != nil,
+                   element.elementType != "Page Break" {
+                    continue
+                }
+                let text = pdfDisplayText(for: element, script: script)
+                let indent = Self.indent(for: element.elementType)
+                switch element.elementType {
+                case "Transition":
+                    drawParagraph(text, indent: 0)
+                case "Page Break":
+                    drawParagraph(element.elementText.isEmpty ? "===" : element.elementText, indent: 0)
+                default:
+                    drawParagraph(text, indent: indent)
+                }
+            }
+        }
+
         for block in script.titlePage {
             for (_, values) in block {
                 for line in values where !line.isEmpty {
@@ -136,24 +194,38 @@ public struct FountainPDFWriter: FountainScriptRendering, Sendable {
             }
         }
 
-        for element in script.elements {
-            if element.elementText.range(of: #"^\s*$"#, options: .regularExpression) != nil,
-               element.elementType != "Page Break" {
-                continue
-            }
-            let text = pdfDisplayText(for: element, script: script)
-            let indent = Self.indent(for: element.elementType)
-            switch element.elementType {
-            case "Transition":
-                drawParagraph(text, indent: 0)
-            default:
-                drawParagraph(text, indent: indent)
+        switch bodyMode {
+        case .flat:
+            drawBodyElements(script.elements)
+        case .paginated(let slabs):
+            var firstSlab = true
+            for slab in slabs {
+                if !firstSlab {
+                    newPage()
+                }
+                firstSlab = false
+                drawBodyElements(slab)
             }
         }
 
         ctx.endPDFPage()
         ctx.closePDF()
         return mutableData as Data
+    }
+
+    private static func draftTitleLine(from script: FNScript) -> String? {
+        for block in script.titlePage {
+            if let lines = block["Title"] {
+                let joined = lines.map { $0.trimmingCharacters(in: .whitespaces) }.filter { !$0.isEmpty }.joined(separator: " ")
+                if !joined.isEmpty {
+                    if joined.count > headerTitleMaxChars {
+                        return String(joined.prefix(headerTitleMaxChars - 1)) + "…"
+                    }
+                    return joined
+                }
+            }
+        }
+        return nil
     }
 
     private static func monoCharsPerLine(forWidth width: CGFloat) -> Int {
