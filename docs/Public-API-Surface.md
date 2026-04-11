@@ -21,6 +21,16 @@ This is a **map** of supported entry points, not a substitute for Xcode DocC. Pr
 | **FountainHTML** | `FNHTMLScript`, `FountainHTMLWriter` (``FountainScriptRendering`` adapter), `FNPaginator`, `Platform` (font typealias), `ScriptCSS.css` resource. |
 | **Fountain** | Re-exports Core + HTML for one import. |
 
+## FDX and PDF export (consumer contract)
+
+Use this section as the **single** contract for Final Draft and PDF output (see also [SwiftWasm-Experimental.md](SwiftWasm-Experimental.md) for Wasm).
+
+| Writer | Output | How to consume |
+|--------|--------|----------------|
+| **`FountainFDXWriter`** | **Minimal Final Draft `.fdx` XML** (`String`): `FinalDraft` + `Content` + `Paragraph`/`Text` only — enough for typical import into Final Draft; **not** a full native FD document (no `ElementSettings` / watermark boilerplate). | Save UTF-8 bytes to a `.fdx` file. **Regression:** `Tests/FountainPackageTests/Fixtures/export-golden-minimal.{fountain,fdx}` + ``ExportGoldenFixtureTests/testFDXWriterMatchesGoldenMinimalFixture`` — update the `.fdx` fixture only when intentionally changing export shape. |
+| **`FountainPDFWriter`** | **US Letter**, Courier, CoreGraphics + CoreText (`Data` via ``renderPDFData(_:)``). | **Always** use ``renderPDFData(_:)`` to write a `.pdf` file. ``FountainScriptRendering/render(_:)`` returns **base64-encoded** `Data` because the protocol returns `String` — decode with `Data(base64Encoded:)`. **Regression:** ``ExportGoldenFixtureTests`` checks PDFKit-extracted text for the same minimal fixture. |
+| **Wasm (`arch(wasm32)`)** | **`FountainPDFWriter`** is a **stub** (throws ``FountainStubRendererError``); **FDX** still works (Foundation-only). | Use FDX / plaintext / JSON on WebAssembly builds of **FountainCore**. |
+
 ## Stability expectations
 
 - **`fountainDocument`** / **`asFountainDocument()`** build a **new** snapshot each time; each ``ScriptElement`` reuses the corresponding parsed ``FNElement/id`` so IDs stay aligned across repeated snapshots of the same ``FNScript``. For stable JSON bytes, call ``fountainDocumentJSONData(prettyPrinted:)`` once, or hold a single ``FountainDocument`` value while comparing exports.
