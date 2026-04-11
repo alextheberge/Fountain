@@ -29,6 +29,19 @@ final class FountainScriptRenderingTests: XCTestCase {
         XCTAssertTrue(md.contains("Hello."))
     }
 
+    func testMarkdownWriterEmitsLyricsAndBracketNotes() throws {
+        let script = FNScript(string: "\nINT. X - DAY\n\n~♪ Sing\n\nBOB\nHi.\n\n[[ note ]]\n\nOut.\n")
+        XCTAssertEqual(
+            script.elements.map(\.elementType),
+            ["Scene Heading", "Lyrics", "Character", "Dialogue", "Comment", "Action"]
+        )
+        let md = try FountainMarkdownWriter().render(script)
+        XCTAssertTrue(md.contains("## INT. X"))
+        XCTAssertTrue(md.contains("Sing"))
+        XCTAssertTrue(md.contains("> *"))
+        XCTAssertTrue(md.contains("[[") && md.contains("note"))
+    }
+
     func testFNHTMLScriptRenderProducesDocument() throws {
         let script = FNScript(string: "\nINT. H - DAY\n\n*emphasis* in action.\n")
         let htmlGen = FNHTMLScript(script: script)

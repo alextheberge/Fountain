@@ -83,8 +83,20 @@ Legend: **Y** = supported in practice, **P** = partial / edge-case risk, **N** =
 
 ---
 
+## Fixture / test map (SPM)
+
+| Area | Bundled or corpus fixture | Primary tests |
+|------|---------------------------|---------------|
+| Minimal body + dialogue | `Tests/FountainPackageTests/Fixtures/package-roundtrip-sample.fountain` | `PackageFixtureCorpusTests` |
+| Forced block (`.!@>`) | `package-forced-block.fountain` | `PackageFixtureCorpusTests` |
+| Dual dialogue `^` | `package-dual-dialogue.fountain` | `PackageFixtureCorpusTests`, `SpecTraceabilityTests` |
+| Section, synopsis, lyrics, `[[ note ]]`, action | `package-mixed-production.fountain` | `PackageFixtureCorpusTests` |
+| Production features (page break, `#` scene nums, boneyard, notes, sections) | inline strings | `Phase5ProductionFeaturesTests` |
+| Large screenplay | `FountainTests/Big Fish.fountain` | `BigFishCorpusTests` |
+| Reference dual + title | `FountainTests/Brick And Steel.txt` | `BrickSteelCorpusTests`, async + stream parity |
+
 ## Next steps (from roadmap)
 
-1. Expand this matrix with **test fixture IDs** per row (`Tests/FountainPackageTests/Fixtures/*.fountain` + `PackageFixtureCorpusTests`, `Phase5ProductionFeaturesTests`, `BigFishCorpusTests`, Xcode `FountainTests` corpora).
+1. Keep this table in sync when adding `Fixtures/*.fountain` or corpus tests.
 2. Phase 2: replace legacy `FNElement` **class** with a `Codable` struct (or dual-stack with explicit migration).
 3. Phase 3–4: line tokenizer + block builder; retire regex-only body parse incrementally.

@@ -191,4 +191,18 @@ extension FNScript {
             }
         }
     }
+
+    /// Like ``scriptElementStream(from:)``, but reads the screenplay from disk (uses ``parseFileAsync`` + one ``FountainDocument`` snapshot).
+    public static func scriptElementStream(fromFile path: String) -> AsyncStream<ScriptElement> {
+        AsyncStream { continuation in
+            Task {
+                let script = await parseFileAsync(path)
+                let doc = FountainDocument(script: script)
+                for el in doc.elements {
+                    continuation.yield(el)
+                }
+                continuation.finish()
+            }
+        }
+    }
 }

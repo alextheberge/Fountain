@@ -29,4 +29,22 @@ final class PackageFixtureCorpusTests: XCTestCase {
         XCTAssertEqual(kinds, [.sceneHeading, .action, .character, .dialogue, .transition])
         XCTAssertTrue(script.elements.first { $0.elementType == "Action" }?.elementText.contains("!Forced") ?? false)
     }
+
+    /// Section, synopsis, lyrics (multi-line), dialogue, bracket note, action — Phase 5 / 7.1 bundle.
+    func testMixedProductionFixtureKindSequence() throws {
+        let url = try XCTUnwrap(Bundle.module.url(forResource: "package-mixed-production", withExtension: "fountain"))
+        let text = try String(contentsOf: url, encoding: .utf8)
+        let script = FNScript(string: text)
+        let kinds = script.asFountainDocument().elements.map(\.kind)
+        XCTAssertEqual(
+            kinds,
+            [
+                .sectionHeading, .synopsis, .sceneHeading,
+                .lyrics, .lyrics,
+                .character, .dialogue,
+                .comment,
+                .action,
+            ]
+        )
+    }
 }

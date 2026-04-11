@@ -6,7 +6,7 @@ This is a **map** of supported entry points, not a substitute for Xcode DocC. Pr
 
 | Module | Contents |
 |--------|----------|
-| **FountainCore** | Parse (`FNScript`, `FastFountainParser`, `FountainParser`), model (`FNElement`, `FNElementType`), Codable export (`FountainDocument`, `ScriptElement`, `FountainMetadataKey`), write (`FountainWriter`), metrics (`FountainScriptMetrics` / `FNScript.metrics`), inline markup (`FountainInlineMarkup`, `FountainInlineDelimiterTable`), rendering protocol (`FountainScriptRendering`, plaintext/Markdown/JSON/stub writers), tokens/scanners, async helpers (`parseStringAsync`, `scriptElementStream`). **No** UIKit/AppKit. |
+| **FountainCore** | Parse (`FNScript`, `FastFountainParser`, `FountainParser`), model (`FNElement`, `FNElementType`), Codable export (`FountainDocument`, `ScriptElement`, `FountainMetadataKey`), write (`FountainWriter`), metrics (`FountainScriptMetrics` / `FNScript.metrics`), inline markup (`FountainInlineMarkup`, `FountainInlineDelimiterTable`), rendering protocol (`FountainScriptRendering`, plaintext/Markdown/JSON/stub writers), tokens/scanners, async helpers (`parseStringAsync`, `parseFileAsync`, `scriptElementStream(from:)`, `scriptElementStream(fromFile:)`). **No** UIKit/AppKit. |
 | **FountainHTML** | `FNHTMLScript`, `FNPaginator`, `Platform` (font typealias), `ScriptCSS.css` resource. |
 | **Fountain** | Re-exports Core + HTML for one import. |
 
@@ -19,7 +19,7 @@ This is a **map** of supported entry points, not a substitute for Xcode DocC. Pr
 
 ## Experimental / evolving
 
-- **`FNScript.scriptElementStream(from:)`** — full parse then stream; not incremental (see [Fountain-Incremental-Parse-Spike.md](Fountain-Incremental-Parse-Spike.md)).
+- **`FNScript.scriptElementStream(from:)`** / **`scriptElementStream(fromFile:)`** — full parse then stream; not incremental (see [Fountain-Incremental-Parse-Spike.md](Fountain-Incremental-Parse-Spike.md)).
 - **`FountainMarkdownWriter`** — lossy projection for tools, not a Fountain spec inverse.
 
 For semantic versioning guidance when you change any of the above, see [SPM-Release-Checklist.md](SPM-Release-Checklist.md).
