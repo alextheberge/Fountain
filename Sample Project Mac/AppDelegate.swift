@@ -6,6 +6,7 @@
 //
 
 import AppKit
+import Fountain
 import WebKit
 
 @main

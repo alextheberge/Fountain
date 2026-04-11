@@ -1,23 +1,24 @@
-# Phase 1.2 follow-up — Xcode samples + local Swift package (optional)
+# Phase 1.2 — Xcode samples + local Swift package
 
 Phase **1** is **complete** for SwiftPM: `Package.swift` is the canonical definition of **FountainCore**, **FountainHTML**, and umbrella **Fountain**, and CI runs `swift build` / `swift test` at the repo root.
 
-The **Xcode** project (`Fountain.xcodeproj`) still compiles the same `Fountain/*.swift` files **into the sample app targets** (not as a separate framework target). That keeps **one filesystem tree** but **two build graphs** (SPM vs Xcode). This document is for contributors who want to **link the local package** from Xcode later and drop duplicate compilation.
+The **Xcode** project (`Fountain.xcodeproj`) now references the **same** repository as an **`XCLocalSwiftPackageReference`** (path `.` from the project directory) and links the **Fountain** product into **Sample Project Mac**, **Sample Project iOS**, and **FountainTests**. Sample targets no longer list `Fountain/*.swift` in **Compile Sources**; library code is built only through SwiftPM.
 
-## Why migrate
+## Why this setup
 
 - Single compile path for library code in Xcode (fewer “forgot to add new file to pbxproj” mistakes).
 - Sample apps behave like external consumers of the **Fountain** product.
 
-## Rough migration checklist
+## What was done (reference checklist)
 
-1. In Xcode: **File → Add Package Dependencies… → Add Local…** and select the repository root (the folder containing `Package.swift`).
-2. Add the **Fountain** product to **Sample Project Mac**, **Sample Project iOS**, and **FountainTests** (or **FountainCore** only if you split tests).
-3. **Remove** all `Fountain/*.swift` entries from each app target’s **Compile Sources** (keep only `AppDelegate.swift`, `ViewController.swift`, etc.).
-4. **Resources:** `ScriptCSS.css` is bundled via **FountainHTML**’s `Bundle.module` when built as SPM; today the Mac sample also copies `ScriptCSS.css` into the app bundle. After migration, prefer loading CSS from the **FountainHTML** resource bundle (or keep a thin copy in the app if you need `Bundle.main` compatibility during transition).
-5. **`FountainTests`** uses `@testable import Fountain`. After linking the package, confirm the test target’s dependency enables **testable** access in your Xcode version (local packages usually support this for debug test runs). If not, switch tests to `import Fountain` and test only public API, or move remaining tests into **`Tests/FountainPackageTests/`** under SPM.
+1. **Local package:** repository root (folder containing `Package.swift`) is the Swift package; Xcode resolves **FountainSwiftPM** locally.
+2. **Fountain** product is attached to **Sample Project Mac**, **Sample Project iOS**, and **FountainTests**.
+3. **`Fountain/*.swift`** was removed from app targets’ **Compile Sources**; apps import **`Fountain`** where needed (`AppDelegate.swift`, `ViewController.swift`).
+4. **Resources:** duplicate **`ScriptCSS.css`** copy steps were removed from Mac and iOS app bundles; CSS is loaded from **FountainHTML**’s `Bundle.module` (`#if SWIFT_PACKAGE` in `FNHTMLScript.swift`).
+5. **Module name:** the Mac sample’s **`PRODUCT_MODULE_NAME`** is **`SampleProjectMac`** so it does not collide with the **`Fountain`** Swift module from the package; **`Application.xib`** sets **`customModule`** / **`customModuleProvider`** for **`AppDelegate`** accordingly.
+6. **`FountainTests`** keeps **`@testable import Fountain`** with the package linked (works with current Xcode for this project).
 
-Until this migration is done, **editing `Fountain/*.swift` once** still updates both SPM and Xcode, because both compile the same paths.
+**New Swift files** under `Fountain/` belong in **`Package.swift`** (and exclude lists for Core vs HTML); do not add them back to duplicate Xcode compile phases.
 
 ## Prerequisites
 
@@ -33,4 +34,4 @@ Until this migration is done, **editing `Fountain/*.swift` once** still updates 
 
 ## Rollback
 
-If package wiring breaks signing or resource lookup: remove the local package dependency from the sample targets, **re-add** `Fountain/*.swift` to **Compile Sources** from the project navigator (same paths as today), and restore any copied **`ScriptCSS.css`** in the app target until you debug bundle loading.
+If package wiring breaks signing or resource lookup: remove the local package dependency from the affected targets, **re-add** `Fountain/*.swift` to **Compile Sources** from the project navigator (same paths as before Phase 1.2), restore **`ScriptCSS.css`** in the app targets’ **Copy Bundle Resources**, and revert **`PRODUCT_MODULE_NAME`** / **`Application.xib`** `customModule` for the Mac sample if you restore **`Fountain`** as the app module name.

@@ -674,7 +674,7 @@
             </view>
             <point key="canvasLocation" x="139" y="-80"/>
         </window>
-        <customObject id="823" customClass="AppDelegate">
+        <customObject id="823" customClass="AppDelegate" customModule="SampleProjectMac" customModuleProvider="target">
             <connections>
                 <outlet property="webView" destination="825" id="845"/>
             </connections>

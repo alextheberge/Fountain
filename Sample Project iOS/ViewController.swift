@@ -5,6 +5,7 @@
 //  Copyright (c) 2013 Nima Yousefi. All rights reserved.
 //
 
+import Fountain
 import UIKit
 import WebKit
 

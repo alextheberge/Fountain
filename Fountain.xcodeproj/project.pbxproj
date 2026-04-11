@@ -468,6 +468,9 @@
 			dependencies = (
 			);
 			name = "Sample Project iOS";
+			packageProductDependencies = (
+				F0E1A002000000000000002 /* Fountain */,
+			);
 			productName = "Sample Project iOS";
 			productReference = 149D632C17EA93E100DA482C /* Sample Project iOS.app */;
 			productType = "com.apple.product-type.application";
@@ -485,6 +488,9 @@
 			dependencies = (
 			);
 			name = "Sample Project Mac";
+			packageProductDependencies = (
+				F0E1A002000000000000002 /* Fountain */,
+			);
 			productName = Fountain;
 			productReference = 3C0BB02914DF3D55004A90E8 /* Sample Project Mac.app */;
 			productType = "com.apple.product-type.application";
@@ -503,6 +509,9 @@
 				149D636117EA94A600DA482C /* PBXTargetDependency */,
 			);
 			name = FountainTests;
+			packageProductDependencies = (
+				F0E1A002000000000000002 /* Fountain */,
+			);
 			productName = FountainTests;
 			productReference = 3C0BB04A14DF3D56004A90E8 /* FountainTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
@@ -531,6 +540,9 @@
 				Base,
 			);
 			mainGroup = 3C0BB01E14DF3D55004A90E8;
+			packageReferences = (
+				F0E1A001000000000000001 /* XCLocalSwiftPackageReference "." */,
+			);
 			productRefGroup = 3C0BB02A14DF3D55004A90E8 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -548,7 +560,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				149D636E17EA96BB00DA482C /* Big Fish.fountain in Resources */,
-				149D636D17EA96A300DA482C /* ScriptCSS.css in Resources */,
 				149D634617EA93E200DA482C /* Images.xcassets in Resources */,
 				149D633817EA93E200DA482C /* InfoPlist.strings in Resources */,
 				149D634117EA93E200DA482C /* Main.storyboard in Resources */,
@@ -562,7 +573,6 @@
 				3CBFF74215940A40005EC5BF /* Big Fish.fountain in Resources */,
 				3C0BB03814DF3D55004A90E8 /* InfoPlist.strings in Resources */,
 				3CBFF73C159407CC005EC5BF /* Application.xib in Resources */,
-				3CBFF74415940ACC005EC5BF /* ScriptCSS.css in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -599,29 +609,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AA1001000000000000000001 /* Platform.swift in Sources */,
-				AA1002000000000000000001 /* String+Regex.swift in Sources */,
-				AA1003000000000000000001 /* FountainRegexes.swift in Sources */,
-				AA100E000000000000000001 /* FountainSyntaxPin.swift in Sources */,
-				AA1004000000000000000001 /* FNElement.swift in Sources */,
-				AA100C000000000000000001 /* FNElementType.swift in Sources */,
-				AA1005000000000000000001 /* FastFountainParser.swift in Sources */,
-				AA1006000000000000000001 /* FountainParser.swift in Sources */,
-				AA1007000000000000000001 /* FountainWriter.swift in Sources */,
-				AA1008000000000000000001 /* FNScript.swift in Sources */,
-				AA100B000000000000000001 /* FountainCodable.swift in Sources */,
-				AA100F000000000000000001 /* FountainForcedPrefix.swift in Sources */,
-				AA1020000000000000000001 /* FountainSceneHeadingMatcher.swift in Sources */,
-				AA1021000000000000000001 /* FountainDialogueBlockRecognizer.swift in Sources */,
-				AA1030000000000000000001 /* FountainScriptRendering.swift in Sources */,
-				AA1031000000000000000001 /* FountainInlineMarkup.swift in Sources */,
-				AA1031500000000000000001 /* FountainInlineAttributedKeys.swift in Sources */,
-				AA1032000000000000000001 /* FountainInlineDelimiterTable.swift in Sources */,
-				AA1033000000000000000001 /* FountainStubRenderers.swift in Sources */,
-				AA1034000000000000000001 /* FountainScriptMetrics.swift in Sources */,
-				AA100D000000000000000001 /* FountainTokenization.swift in Sources */,
-				AA1009000000000000000001 /* FNPaginator.swift in Sources */,
-				AA100A000000000000000001 /* FNHTMLScript.swift in Sources */,
 				AA6002000000000000000001 /* ViewController.swift in Sources */,
 				AA6001000000000000000001 /* AppDelegate.swift in Sources */,
 			);
@@ -631,29 +618,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AA2001000000000000000001 /* Platform.swift in Sources */,
-				AA2002000000000000000001 /* String+Regex.swift in Sources */,
-				AA2003000000000000000001 /* FountainRegexes.swift in Sources */,
-				AA200E000000000000000001 /* FountainSyntaxPin.swift in Sources */,
-				AA2004000000000000000001 /* FNElement.swift in Sources */,
-				AA200C000000000000000001 /* FNElementType.swift in Sources */,
-				AA2005000000000000000001 /* FastFountainParser.swift in Sources */,
-				AA2006000000000000000001 /* FountainParser.swift in Sources */,
-				AA2007000000000000000001 /* FountainWriter.swift in Sources */,
-				AA2008000000000000000001 /* FNScript.swift in Sources */,
-				AA200B000000000000000001 /* FountainCodable.swift in Sources */,
-				AA200F000000000000000001 /* FountainForcedPrefix.swift in Sources */,
-				AA2020000000000000000001 /* FountainSceneHeadingMatcher.swift in Sources */,
-				AA2021000000000000000001 /* FountainDialogueBlockRecognizer.swift in Sources */,
-				AA2030000000000000000001 /* FountainScriptRendering.swift in Sources */,
-				AA2031000000000000000001 /* FountainInlineMarkup.swift in Sources */,
-				AA2031500000000000000001 /* FountainInlineAttributedKeys.swift in Sources */,
-				AA2032000000000000000001 /* FountainInlineDelimiterTable.swift in Sources */,
-				AA2033000000000000000001 /* FountainStubRenderers.swift in Sources */,
-				AA2034000000000000000001 /* FountainScriptMetrics.swift in Sources */,
-				AA200D000000000000000001 /* FountainTokenization.swift in Sources */,
-				AA2009000000000000000001 /* FNPaginator.swift in Sources */,
-				AA200A000000000000000001 /* FNHTMLScript.swift in Sources */,
 				AA8001000000000000000001 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -693,6 +657,21 @@
 			targetProxy = 149D636017EA94A600DA482C /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		F0E1A001000000000000001 /* XCLocalSwiftPackageReference "." */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = .;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		F0E1A002000000000000002 /* Fountain */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F0E1A001000000000000001 /* XCLocalSwiftPackageReference "." */;
+			productName = Fountain;
+		};
+/* End XCSwiftPackageProductDependency section */
 
 /* Begin PBXVariantGroup section */
 		149D633617EA93E200DA482C /* InfoPlist.strings */ = {
@@ -872,7 +851,7 @@
 				INFOPLIST_FILE = "$(SRCROOT)/Sample Project Mac/Fountain-Info.plist";
 				MACOSX_DEPLOYMENT_TARGET = 12.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.yourcompany.Sample-Project-Mac";
-				PRODUCT_MODULE_NAME = Fountain;
+				PRODUCT_MODULE_NAME = SampleProjectMac;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 				SWIFT_VERSION = 5.9;
@@ -888,7 +867,7 @@
 				INFOPLIST_FILE = "$(SRCROOT)/Sample Project Mac/Fountain-Info.plist";
 				MACOSX_DEPLOYMENT_TARGET = 12.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.yourcompany.Sample-Project-Mac";
-				PRODUCT_MODULE_NAME = Fountain;
+				PRODUCT_MODULE_NAME = SampleProjectMac;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
 				SWIFT_VERSION = 5.9;
