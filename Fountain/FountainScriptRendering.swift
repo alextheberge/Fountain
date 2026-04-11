@@ -11,13 +11,12 @@ import Foundation
 /// How inline emphasis markers (`*bold*`, `_italic_`, etc.) are expected to flow through the stack.
 ///
 /// The **fast parser** keeps markers inside ``FNElement`` / ``ScriptElement`` text; HTML export uses
-/// ``FountainInlineMarkup`` (linear scan, Phase 6.2). A future **rich** path may attach `AttributedString` per element without
-/// leaking raw markers to UI.
+/// ``FountainInlineMarkup.htmlFragment(from:)``; rich UI can use ``FountainInlineMarkup.attributedFragment(from:)`` per line.
 public enum FountainInlineRenderingMode: String, Sendable, CaseIterable {
     /// Current default: markers remain in stored text; renderers strip or convert.
     case preserveMarkersInPlaintext
-    /// Reserved for an `AttributedString`-based pipeline (not implemented).
-    case attributedStringPlanned
+    /// Use ``FountainInlineMarkup.attributedFragment(from:)`` for `AttributedString` with intents + underline.
+    case attributedStringFromInlineMarkup
 }
 
 // MARK: - Script rendering protocol (Phase 8.1)
@@ -133,5 +132,21 @@ public struct FountainMarkdownWriter: FountainScriptRendering, Sendable {
         }
 
         return lines.joined()
+    }
+}
+
+// MARK: - JSON export (tooling / LLM)
+
+/// Encodes ``FountainDocument`` as UTF-8 JSON text (stable for pipelines and fixtures).
+public struct FountainJSONWriter: FountainScriptRendering, Sendable {
+    public var prettyPrinted: Bool
+
+    public init(prettyPrinted: Bool = false) {
+        self.prettyPrinted = prettyPrinted
+    }
+
+    public func render(_ script: FNScript) throws -> String {
+        let data = try script.fountainDocumentJSONData(prettyPrinted: prettyPrinted)
+        return String(decoding: data, as: UTF8.self)
     }
 }

@@ -148,6 +148,16 @@ extension FNScript {
     public var fountainDocument: FountainDocument {
         asFountainDocument()
     }
+
+    /// Encodes a single ``asFountainDocument()`` snapshot as JSON (UTF-8). Uses one parse snapshot so element IDs match a decode round-trip.
+    public func fountainDocumentJSONData(prettyPrinted: Bool = false) throws -> Data {
+        let document = asFountainDocument()
+        let enc = JSONEncoder()
+        if prettyPrinted {
+            enc.outputFormatting = [.prettyPrinted, .sortedKeys]
+        }
+        return try enc.encode(document)
+    }
 }
 
 // MARK: - Phase 9.1 (async parse)

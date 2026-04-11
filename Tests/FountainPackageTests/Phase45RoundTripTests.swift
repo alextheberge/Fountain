@@ -12,6 +12,17 @@ final class Phase45RoundTripTests: XCTestCase {
         XCTAssertEqual(decoded.elements.map(\.kind), [.sceneHeading, .action])
     }
 
+    /// Public export path (Phase 2.4 / 8.3): decode must match a fresh document snapshot (structurally; IDs are per-snapshot).
+    func testFountainDocumentJSONDataAPIRoundTrip() throws {
+        let script = FNScript(string: "\n# ACT I\n= Beat.\n\nINT. API - DAY\n\nBOB\nLine.\n")
+        let data = try script.fountainDocumentJSONData(prettyPrinted: true)
+        let decoded = try JSONDecoder().decode(FountainDocument.self, from: data)
+        ParseAssertions.assertFountainDocumentsStructurallyEqual(decoded, script.asFountainDocument())
+        let dataBare = try script.fountainDocumentJSONData(prettyPrinted: false)
+        let decodedBare = try JSONDecoder().decode(FountainDocument.self, from: dataBare)
+        ParseAssertions.assertFountainDocumentsStructurallyEqual(decodedBare, script.asFountainDocument())
+    }
+
     func testPlaintextWriterRoundTripPreservesElementKindSequence() {
         let source = "\nINT. PLAIN - DAY\n\nAction line.\n\nBOB\nHi there.\n"
         let first = FNScript(string: source)

@@ -6,12 +6,13 @@ This is a **map** of supported entry points, not a substitute for Xcode DocC. Pr
 
 | Module | Contents |
 |--------|----------|
-| **FountainCore** | Parse (`FNScript`, `FastFountainParser`, `FountainParser`), model (`FNElement`, `FNElementType`), Codable export (`FountainDocument`, `ScriptElement`, `FountainMetadataKey`), write (`FountainWriter`), inline markup (`FountainInlineMarkup`, `FountainInlineDelimiterTable`), rendering protocol (`FountainScriptRendering`, plaintext/Markdown/stub writers), tokens/scanners, async helpers (`parseStringAsync`, `scriptElementStream`). **No** UIKit/AppKit. |
+| **FountainCore** | Parse (`FNScript`, `FastFountainParser`, `FountainParser`), model (`FNElement`, `FNElementType`), Codable export (`FountainDocument`, `ScriptElement`, `FountainMetadataKey`), write (`FountainWriter`), metrics (`FountainScriptMetrics` / `FNScript.metrics`), inline markup (`FountainInlineMarkup`, `FountainInlineDelimiterTable`), rendering protocol (`FountainScriptRendering`, plaintext/Markdown/JSON/stub writers), tokens/scanners, async helpers (`parseStringAsync`, `scriptElementStream`). **No** UIKit/AppKit. |
 | **FountainHTML** | `FNHTMLScript`, `FNPaginator`, `Platform` (font typealias), `ScriptCSS.css` resource. |
 | **Fountain** | Re-exports Core + HTML for one import. |
 
 ## Stability expectations
 
+- **`fountainDocument`** / **`asFountainDocument()`** build a **new** snapshot each time (new ``ScriptElement`` UUIDs). For stable JSON, call ``fountainDocumentJSONData(prettyPrinted:)`` once, or hold a single ``FountainDocument`` value if you need to compare exports.
 - **`FNScript`** / **`FNElement`** / **`FountainWriter`** string labels (`elementType`) are **legacy-stable** for existing documents.
 - **`FountainDocument`** / **`ScriptElement`** / **`ScriptElementKind`** are the **preferred** interchange shape for JSON and tooling; additive metadata keys may appear in minor releases.
 - **`FountainScriptRendering`** conformers may grow; throwing stubs (**`FountainFDXWriter`**, **`FountainPDFWriter`**) are explicitly incomplete.

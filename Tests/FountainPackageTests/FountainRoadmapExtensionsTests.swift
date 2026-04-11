@@ -27,4 +27,20 @@ final class FountainRoadmapExtensionsTests: XCTestCase {
         }
         XCTAssertEqual(kinds, [.sceneHeading, .action])
     }
+
+    /// Stream uses a fresh parse; assert structural parity with ``FountainDocument`` (ids are not stable across parses).
+    func testScriptElementStreamMatchesParallelDocumentFields() async {
+        let source = "\nINT. STREAM - DAY\n\nHey.\n\nANN\nHi.\n"
+        let doc = FountainDocument(script: FNScript(string: source))
+        var index = 0
+        for await el in FNScript.scriptElementStream(from: source) {
+            XCTAssertLessThan(index, doc.elements.count)
+            let ref = doc.elements[index]
+            XCTAssertEqual(el.kind, ref.kind, "index \(index)")
+            XCTAssertEqual(el.text, ref.text, "index \(index)")
+            XCTAssertEqual(el.metadata, ref.metadata, "index \(index)")
+            index += 1
+        }
+        XCTAssertEqual(index, doc.elements.count)
+    }
 }

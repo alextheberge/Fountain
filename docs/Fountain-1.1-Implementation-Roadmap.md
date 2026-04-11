@@ -65,7 +65,7 @@ This document turns [Project Specification- Fountain Swift (Next-Gen).md](../Pro
 | 2.1 | Introduce **`FNElementType`** `String` enum (or similar) covering **all** 1.1 structural kinds you need (including `pageBreak`, `boneyard`, `synopsis`, `section`, `general`, `note`, etc. — align names with spec vocabulary). | **Started:** `FNElementType` + map to `ScriptElementKind` |
 | 2.2 | Implement **`FNElement`** struct: `id`, `type`, `content`, **`attributes: [String: String]`** (or typed `Metadata` struct with `Codable`) for scene number, section depth, `dualDialogue`, `centered`, etc. | **Started:** `FountainMetadataKey` + `ScriptElement.metadata` + golden JSON (`Tests/FountainPackageTests/Fixtures/`) |
 | 2.3 | Migration shim from **old** `FNElement` class / `elementType: String` if dual-stack period is required. | **Started:** `LegacyInteropTests` (SPM) prove `asFountainDocument()` matches `FNElementType` for a slice |
-| 2.4 | Define **`FNScript`** (or `FountainDocument`) with `elements` + `titlePage` + version metadata. | **Started:** `FountainDocument(script:)` + ``FNScript.fountainDocument`` / ``asFountainDocument()`` + `FountainSyntaxPin` |
+| 2.4 | Define **`FNScript`** (or `FountainDocument`) with `elements` + `titlePage` + version metadata. | **Started:** `FountainDocument(script:)` + ``FNScript.fountainDocument`` / ``fountainDocumentJSONData(prettyPrinted:)`` (single ``asFountainDocument()`` snapshot per encode) + `FountainSyntaxPin` |
 
 ---
 
@@ -105,7 +105,7 @@ This document turns [Project Specification- Fountain Swift (Next-Gen).md](../Pro
 |------|--------|-----------|
 | 5.1 | **Page breaks** (`===`…): distinct elements; interaction with pagination if you keep `FNPaginator`. | **Started:** `Phase5ProductionFeaturesTests.testPageBreakIsDistinctElement` |
 | 5.2 | **Scene numbers** (`#...#` on slugs): capture in attributes; optional `suppressSceneNumbers` flag. | **Started:** `Phase5ProductionFeaturesTests` (slug capture + `suppressSceneNumbers` export) |
-| 5.3 | **Boneyard** `/* ... */`: strip or isolate for **word-count / timing** estimators; verify **not** counted as dialogue. | **Started:** `FNScript.elementsExcludingBoneyard` + `Phase5ProductionFeaturesTests` |
+| 5.3 | **Boneyard** `/* ... */`: strip or isolate for **word-count / timing** estimators; verify **not** counted as dialogue. | **Started:** `FNScript.elementsExcludingBoneyard` + ``FNScript.metrics`` (`FountainScriptMetrics`) + `FountainScriptMetricsTests` |
 | 5.4 | **Notes** `[[ ... ]]` per 1.1: element type or annotation model; clarify vs boneyard for exporters. | **Started:** `Phase5ProductionFeaturesTests.testBracketNoteAfterBlankLine` (`Comment` element) |
 | 5.5 | **Sections / synopses** (`#`, `##`, `=`): hierarchical depth in attributes. | **Started:** `Phase5ProductionFeaturesTests` (depth + synopsis + Codable metadata) |
 
@@ -117,9 +117,9 @@ This document turns [Project Specification- Fountain Swift (Next-Gen).md](../Pro
 
 | Step | Action | Done when |
 |------|--------|-----------|
-| 6.1 | Document **two modes**: `plain` (preserve markers in `content`) vs `rich` (parse to `AttributedString` segments). | **Started:** `FountainInlineRenderingMode` + doc comments in `FountainScriptRendering.swift` |
-| 6.2 | Implement **bold / italic / underline** (and `_` where spec applies) with **Fuzzili-safe** parsing (no catastrophic backtracking). | **Started:** `FountainInlineMarkup.htmlFragment` + `FountainInlineMarkupTests`; ``FNHTMLScript`` uses it for HTML |
-| 6.3 | Keep **regex/constants** in one module for **Wasm** reuse. | **Started:** `FountainInlineDelimiterTable` + `FountainRoadmapExtensionsTests` |
+| 6.1 | Document **two modes**: `plain` (preserve markers in `content`) vs `rich` (parse to `AttributedString` segments). | **Started:** `FountainInlineRenderingMode` (incl. ``attributedStringFromInlineMarkup``) + ``FountainInlineMarkup.attributedFragment(from:)`` + `FountainInlineAttributedTests` |
+| 6.2 | Implement **bold / italic / underline** (and `_` where spec applies) with **Fuzzili-safe** parsing (no catastrophic backtracking). | **Started:** shared scanner → ``htmlFragment`` / ``attributedFragment``; underline in `AttributedString` is partial (see ``attributedFragment`` doc); HTML full fidelity |
+| 6.3 | Keep **regex/constants** in one module for **Wasm** reuse. | **Started:** `FountainInlineDelimiterTable` (incl. bold/italic/underline flags per rule) + `FountainRoadmapExtensionsTests` |
 
 ---
 
@@ -129,8 +129,8 @@ This document turns [Project Specification- Fountain Swift (Next-Gen).md](../Pro
 
 | Step | Action | Done when |
 |------|--------|-----------|
-| 7.1 | Curate **official-style fixture set**: minimal one-liners per rule + **Big Fish** + **Brick & Steel** + edge cases (forced lines, boneyard, dual). | **Started:** `BigFishCorpusTests` + `Tests/FountainPackageTests/Fixtures/*.fountain` (`PackageFixtureCorpusTests`) |
-| 7.2 | Add **structured assertions**: expected `FNElementType` sequences + key attributes (not only string snapshots). | **Started:** `ParseAssertions` + `ParseStructureTests` + `StructuredComplianceTests` |
+| 7.1 | Curate **official-style fixture set**: minimal one-liners per rule + **Big Fish** + **Brick & Steel** + edge cases (forced lines, boneyard, dual). | **Started:** `BigFishCorpusTests` + `BrickSteelCorpusTests` + `PackageFixtureCorpusTests` |
+| 7.2 | Add **structured assertions**: expected `FNElementType` sequences + key attributes (not only string snapshots). | **Started:** `ParseAssertions` + `ParseStructureTests` + `StructuredComplianceTests` + `assertFountainDocumentsStructurallyEqual` (JSON decode vs re-parse); **Big Fish** / **Brick & Steel** corpus JSON + metrics checks |
 | 7.3 | Track **external suite** if one exists (community “standardized Fountain test suite” — integrate or vendor with license check). | **Started:** README § other implementations & fixtures |
 | 7.4 | **Regression policy:** any parser bugfix adds a **minimal** new fixture. | **Started:** [CONTRIBUTING.md](../CONTRIBUTING.md) |
 
@@ -144,7 +144,7 @@ This document turns [Project Specification- Fountain Swift (Next-Gen).md](../Pro
 |------|--------|-----------|
 | 8.1 | Define `FountainWriter` (or `ScriptRenderer`) protocol: `func render(_ document: FNScript) throws -> String` (or associated type for binary PDF). | **Started:** `FountainScriptRendering` + `FountainPlaintextWriter` (`FountainScriptRendering.swift`) |
 | 8.2 | **`HTMLWriter`**: migrate from `FNHTMLScript`; modern CSS (grid/flex); keep **CSS as resource** or string template. | **Started:** ``FNHTMLScript`` + ``FountainScriptRendering``; `ScriptCSS.css` dual-dialogue **grid** + title `.notes` typo fix |
-| 8.3 | **`MarkdownWriter`**: useful for LLM/tooling pipelines. | **Started:** `FountainMarkdownWriter` + `FountainScriptRenderingTests` |
+| 8.3 | **`MarkdownWriter`**: useful for LLM/tooling pipelines. | **Started:** `FountainMarkdownWriter` + **`FountainJSONWriter`** (`FountainScriptRendering`) + `FountainScriptRenderingTests` |
 | 8.4 | **`FDXWriter`** / **`PDFWriter`**: stub behind feature flags or separate products to avoid bloating core. | **Started:** `FountainFDXWriter` / `FountainPDFWriter` + `FountainStubRendererError` |
 
 ---
@@ -156,7 +156,7 @@ This document turns [Project Specification- Fountain Swift (Next-Gen).md](../Pro
 | Step | Action | Done when |
 |------|--------|-----------|
 | 9.1 | **`parse(_:)` async**: offload full parse to `Task.detached` or custom executor; **synchronous** wrapper documented as “small docs only.” | **Started:** ``FNScript.parseStringAsync`` / ``parseFileAsync`` + `FNScriptAsyncTests` |
-| 9.2 | **Streaming API** (optional): `AsyncSequence` of elements for preview. | **Started:** ``FNScript.scriptElementStream(from:)`` → `AsyncStream<ScriptElement>` (full parse, then yield) |
+| 9.2 | **Streaming API** (optional): `AsyncSequence` of elements for preview. | **Started:** ``FNScript.scriptElementStream(from:)`` → `AsyncStream<ScriptElement>` (full parse, then yield); `FountainRoadmapExtensionsTests` field parity vs parallel ``FountainDocument`` |
 | 9.3 | **Incremental parse** (advanced): diff by line map; **last** after baseline is solid. | **Started:** [Fountain-Incremental-Parse-Spike.md](Fountain-Incremental-Parse-Spike.md) (go/no-go checklist) |
 
 ---
@@ -190,6 +190,7 @@ Fill as you implement. Link each row to tests.
 | Boneyard | 5 | `Boneyard.fountain`, `Phase5ProductionFeaturesTests` | ☑ |
 | Notes `[[ ]]` | 5 | `Phase5ProductionFeaturesTests` | ☑ |
 | Sections / synopses | 5 | `SectionHeaders.fountain`, `Phase5ProductionFeaturesTests` | ☑ |
+| Brick & Steel sample | 7 | `Brick And Steel.txt`, `BrickSteelCorpusTests` | ☑ |
 
 ---
 

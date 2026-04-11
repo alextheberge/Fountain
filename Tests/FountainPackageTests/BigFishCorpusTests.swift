@@ -21,4 +21,16 @@ final class BigFishCorpusTests: XCTestCase {
         let script = FNScript(file: url.path)
         XCTAssertGreaterThan(script.elements.count, 500, "Sanity: Big Fish should yield hundreds of elements")
     }
+
+    func testBigFishMetricsAndDocumentJSONRoundTrip() throws {
+        let url = try XCTUnwrap(bigFishURL(), "Big Fish.fountain not found (run `swift test` from repo root)")
+        let script = FNScript(file: url.path)
+        let m = script.metrics
+        XCTAssertGreaterThan(m.wordCountExcludingBoneyard, 2_000, "Feature-length dialogue/action volume")
+        XCTAssertGreaterThan(m.dialogueWordCount, 500, "Substantial spoken text")
+
+        let data = try script.fountainDocumentJSONData()
+        let decoded = try JSONDecoder().decode(FountainDocument.self, from: data)
+        ParseAssertions.assertFountainDocumentsStructurallyEqual(decoded, script.asFountainDocument())
+    }
 }

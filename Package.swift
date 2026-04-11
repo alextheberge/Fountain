@@ -60,6 +60,7 @@ let package = Package(
                 "FountainInlineMarkup.swift",
                 "FountainInlineDelimiterTable.swift",
                 "FountainStubRenderers.swift",
+                "FountainScriptMetrics.swift",
             ],
             sources: [
                 "FNHTMLScript.swift",

@@ -61,6 +61,7 @@
 		AA1031000000000000000001 /* FountainInlineMarkup.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0031000000000000000001 /* FountainInlineMarkup.swift */; };
 		AA1032000000000000000001 /* FountainInlineDelimiterTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0032000000000000000001 /* FountainInlineDelimiterTable.swift */; };
 		AA1033000000000000000001 /* FountainStubRenderers.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0033000000000000000001 /* FountainStubRenderers.swift */; };
+		AA1034000000000000000001 /* FountainScriptMetrics.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0034000000000000000001 /* FountainScriptMetrics.swift */; };
 		AA2001000000000000000001 /* Platform.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0001000000000000000001 /* Platform.swift */; };
 		AA2002000000000000000001 /* String+Regex.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0002000000000000000001 /* String+Regex.swift */; };
 		AA2003000000000000000001 /* FountainRegexes.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0003000000000000000001 /* FountainRegexes.swift */; };
@@ -82,6 +83,7 @@
 		AA2031000000000000000001 /* FountainInlineMarkup.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0031000000000000000001 /* FountainInlineMarkup.swift */; };
 		AA2032000000000000000001 /* FountainInlineDelimiterTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0032000000000000000001 /* FountainInlineDelimiterTable.swift */; };
 		AA2033000000000000000001 /* FountainStubRenderers.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0033000000000000000001 /* FountainStubRenderers.swift */; };
+		AA2034000000000000000001 /* FountainScriptMetrics.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0034000000000000000001 /* FountainScriptMetrics.swift */; };
 		AA4001000000000000000001 /* BaseElementTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA3001000000000000000001 /* BaseElementTests.swift */; };
 		AA4002000000000000000001 /* SceneHeaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA3002000000000000000001 /* SceneHeaderTests.swift */; };
 		AA4003000000000000000001 /* SceneNumberTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA3003000000000000000001 /* SceneNumberTests.swift */; };
@@ -172,6 +174,7 @@
 		AA0031000000000000000001 /* FountainInlineMarkup.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FountainInlineMarkup.swift; sourceTree = "<group>"; };
 		AA0032000000000000000001 /* FountainInlineDelimiterTable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FountainInlineDelimiterTable.swift; sourceTree = "<group>"; };
 		AA0033000000000000000001 /* FountainStubRenderers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FountainStubRenderers.swift; sourceTree = "<group>"; };
+		AA0034000000000000000001 /* FountainScriptMetrics.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FountainScriptMetrics.swift; sourceTree = "<group>"; };
 		AA0005000000000000000001 /* FastFountainParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FastFountainParser.swift; sourceTree = "<group>"; };
 		AA0006000000000000000001 /* FountainParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FountainParser.swift; sourceTree = "<group>"; };
 		AA0007000000000000000001 /* FountainWriter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FountainWriter.swift; sourceTree = "<group>"; };
@@ -382,6 +385,7 @@
 				AA0031000000000000000001 /* FountainInlineMarkup.swift */,
 				AA0032000000000000000001 /* FountainInlineDelimiterTable.swift */,
 				AA0033000000000000000001 /* FountainStubRenderers.swift */,
+				AA0034000000000000000001 /* FountainScriptMetrics.swift */,
 				AA000D000000000000000001 /* FountainTokenization.swift */,
 				AA0008000000000000000001 /* FNScript.swift */,
 				AA0009000000000000000001 /* FNPaginator.swift */,
@@ -609,6 +613,7 @@
 				AA1031000000000000000001 /* FountainInlineMarkup.swift in Sources */,
 				AA1032000000000000000001 /* FountainInlineDelimiterTable.swift in Sources */,
 				AA1033000000000000000001 /* FountainStubRenderers.swift in Sources */,
+				AA1034000000000000000001 /* FountainScriptMetrics.swift in Sources */,
 				AA100D000000000000000001 /* FountainTokenization.swift in Sources */,
 				AA1009000000000000000001 /* FNPaginator.swift in Sources */,
 				AA100A000000000000000001 /* FNHTMLScript.swift in Sources */,
@@ -639,6 +644,7 @@
 				AA2031000000000000000001 /* FountainInlineMarkup.swift in Sources */,
 				AA2032000000000000000001 /* FountainInlineDelimiterTable.swift in Sources */,
 				AA2033000000000000000001 /* FountainStubRenderers.swift in Sources */,
+				AA2034000000000000000001 /* FountainScriptMetrics.swift in Sources */,
 				AA200D000000000000000001 /* FountainTokenization.swift in Sources */,
 				AA2009000000000000000001 /* FNPaginator.swift in Sources */,
 				AA200A000000000000000001 /* FNHTMLScript.swift in Sources */,

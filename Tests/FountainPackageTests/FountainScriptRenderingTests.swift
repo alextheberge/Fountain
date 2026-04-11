@@ -12,6 +12,14 @@ final class FountainScriptRenderingTests: XCTestCase {
 
     func testInlineRenderingModeEnumIsStable() {
         XCTAssertTrue(FountainInlineRenderingMode.allCases.contains(.preserveMarkersInPlaintext))
+        XCTAssertTrue(FountainInlineRenderingMode.allCases.contains(.attributedStringFromInlineMarkup))
+    }
+
+    func testJSONWriterEncodesDocument() throws {
+        let script = FNScript(string: "\nINT. JSON - DAY\n\nHello.\n")
+        let json = try FountainJSONWriter(prettyPrinted: true).render(script)
+        XCTAssertTrue(json.contains("\"fountainSyntaxVersion\""))
+        XCTAssertTrue(json.contains("INT. JSON - DAY"))
     }
 
     func testMarkdownWriterIncludesSceneHeadingAndBody() throws {

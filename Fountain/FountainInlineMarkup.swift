@@ -7,7 +7,7 @@
 
 import Foundation
 
-/// Converts Fountain inline markers in a single line (or fragment) to a safe HTML string.
+/// Converts Fountain inline markers in a single line (or fragment) to HTML or `AttributedString`.
 public enum FountainInlineMarkup {
     // MARK: - Public
 
@@ -15,6 +15,55 @@ public enum FountainInlineMarkup {
     public static func htmlFragment(from source: String) -> String {
         var out = ""
         out.reserveCapacity(source.utf8.count + 24)
+        scan(source) { event in
+            switch event {
+            case .plain(let ch):
+                appendEscapedChar(&out, ch)
+            case .styled(let inner, let rule):
+                out.append(rule.htmlOpen)
+                out.append(escapeHtml(inner))
+                out.append(rule.htmlClose)
+            case .italicOnly(let inner):
+                out.append("<em>")
+                out.append(escapeHtml(inner))
+                out.append("</em>")
+            case .underlineOnly(let inner):
+                out.append("<u>")
+                out.append(escapeHtml(inner))
+                out.append("</u>")
+            }
+        }
+        return out
+    }
+
+    /// Rich-text fragment for SwiftUI/AppKit using `InlinePresentationIntent` (bold / italic). **Underline** is applied in ``htmlFragment(from:)`` only; `AttributedString` underline still depends on AppKit/UIKit attribute bridging, so combined `_underline_` may appear unadorned here while remaining correct in HTML export.
+    public static func attributedFragment(from source: String) -> AttributedString {
+        var result = AttributedString()
+        scan(source) { event in
+            switch event {
+            case .plain(let ch):
+                result.append(AttributedString(String(ch)))
+            case .styled(let inner, let rule):
+                appendStyled(&result, inner: inner, bold: rule.bold, italic: rule.italic, underline: rule.underline)
+            case .italicOnly(let inner):
+                appendStyled(&result, inner: inner, bold: false, italic: true, underline: false)
+            case .underlineOnly(let inner):
+                appendStyled(&result, inner: inner, bold: false, italic: false, underline: true)
+            }
+        }
+        return result
+    }
+
+    // MARK: - Scan events (shared HTML + AttributedString)
+
+    private enum ScanEvent {
+        case plain(Character)
+        case styled(Substring, FountainInlineDelimiterTable.EmphasisPair)
+        case italicOnly(Substring)
+        case underlineOnly(Substring)
+    }
+
+    private static func scan(_ source: String, emit: (ScanEvent) -> Void) {
         var i = source.startIndex
         let end = source.endIndex
 
@@ -22,55 +71,55 @@ public enum FountainInlineMarkup {
             if source[i] == "\\" {
                 let n = source.index(after: i)
                 if n < end, source[n] == "*" {
-                    out.append("*")
+                    emit(.plain("*"))
                     i = source.index(after: n)
                     continue
                 }
             }
 
             if source[i] == "_" {
-                if let j = consumeUnderscoreLedOpen(&out, source: source, i: i, end: end) {
+                if let (j, inner, rule) = matchUnderscoreLed(source: source, i: i, end: end) {
+                    emit(.styled(inner, rule))
                     i = j
                     continue
                 }
-                if let j = consumePlainUnderline(&out, source: source, i: i, end: end) {
+                if let (j, inner) = matchPlainUnderline(source: source, i: i, end: end) {
+                    emit(.underlineOnly(inner))
                     i = j
                     continue
                 }
             }
 
             if source[i] == "*" {
-                if let j = consumeStarLedOpen(&out, source: source, i: i, end: end) {
+                if let (j, inner, rule) = matchStarLed(source: source, i: i, end: end) {
+                    emit(.styled(inner, rule))
                     i = j
                     continue
                 }
-                // Do not fall through to single-`*` italic while still sitting on the first `*` of `**` that failed validation.
                 if source[i...].hasPrefix("**") {
-                    appendEscapedChar(&out, "*")
+                    emit(.plain("*"))
                     i = source.index(after: i)
                     continue
                 }
-                if let j = consumeItalicSingleAsterisk(&out, source: source, i: i, end: end) {
+                if let (j, inner) = matchItalicSingleAsterisk(source: source, i: i, end: end) {
+                    emit(.italicOnly(inner))
                     i = j
                     continue
                 }
             }
 
-            appendEscapedChar(&out, source[i])
+            emit(.plain(source[i]))
             i = source.index(after: i)
         }
-
-        return out
     }
 
-    // MARK: - Underscore-led (BIU, BU, IU)
+    // MARK: - Match helpers (return end index after closing delimiter)
 
-    private static func consumeUnderscoreLedOpen(
-        _ out: inout String,
+    private static func matchUnderscoreLed(
         source: String,
         i: String.Index,
         end: String.Index
-    ) -> String.Index? {
+    ) -> (String.Index, Substring, FountainInlineDelimiterTable.EmphasisPair)? {
         for rule in FountainInlineDelimiterTable.underscoreLedEmphasis {
             guard source[i...].hasPrefix(rule.open) else { continue }
             let innerStart = source.index(i, offsetBy: rule.open.count)
@@ -79,22 +128,17 @@ public enum FountainInlineMarkup {
             }
             let inner = source[innerStart..<closeStart]
             guard innerValidForLegacy(inner) else { continue }
-            out.append(rule.htmlOpen)
-            out.append(escapeHtml(inner))
-            out.append(rule.htmlClose)
-            return source.index(closeStart, offsetBy: rule.close.count)
+            let afterClose = source.index(closeStart, offsetBy: rule.close.count)
+            return (afterClose, inner, rule)
         }
         return nil
     }
 
-    // MARK: - Star-led (BIU mirror, BI, BU, B, I)
-
-    private static func consumeStarLedOpen(
-        _ out: inout String,
+    private static func matchStarLed(
         source: String,
         i: String.Index,
         end: String.Index
-    ) -> String.Index? {
+    ) -> (String.Index, Substring, FountainInlineDelimiterTable.EmphasisPair)? {
         for rule in FountainInlineDelimiterTable.starLedEmphasis {
             guard source[i...].hasPrefix(rule.open) else { continue }
             let innerStart = source.index(i, offsetBy: rule.open.count)
@@ -103,20 +147,17 @@ public enum FountainInlineMarkup {
             }
             let inner = source[innerStart..<closeStart]
             guard innerValidForLegacy(inner) else { continue }
-            out.append(rule.htmlOpen)
-            out.append(escapeHtml(inner))
-            out.append(rule.htmlClose)
-            return source.index(closeStart, offsetBy: rule.close.count)
+            let afterClose = source.index(closeStart, offsetBy: rule.close.count)
+            return (afterClose, inner, rule)
         }
         return nil
     }
 
-    private static func consumeItalicSingleAsterisk(
-        _ out: inout String,
+    private static func matchItalicSingleAsterisk(
         source: String,
         i: String.Index,
         end: String.Index
-    ) -> String.Index? {
+    ) -> (String.Index, Substring)? {
         guard source[i] == "*" else { return nil }
         let innerStart = source.index(after: i)
         guard innerStart < end else { return nil }
@@ -126,20 +167,15 @@ public enum FountainInlineMarkup {
         }
         let inner = source[innerStart..<closeStart]
         guard innerValidForLegacy(inner) else { return nil }
-        out.append("<em>")
-        out.append(escapeHtml(inner))
-        out.append("</em>")
-        return source.index(after: closeStart)
+        let afterClose = source.index(after: closeStart)
+        return (afterClose, inner)
     }
 
-    // MARK: - Plain underline _word_
-
-    private static func consumePlainUnderline(
-        _ out: inout String,
+    private static func matchPlainUnderline(
         source: String,
         i: String.Index,
         end: String.Index
-    ) -> String.Index? {
+    ) -> (String.Index, Substring)? {
         guard source[i] == "_" else { return nil }
         let innerStart = source.index(after: i)
         guard innerStart < end else { return nil }
@@ -149,14 +185,35 @@ public enum FountainInlineMarkup {
             if source[j] == "_" {
                 let inner = source[innerStart..<j]
                 guard !inner.isEmpty, !inner.contains("_") else { return nil }
-                out.append("<u>")
-                out.append(escapeHtml(inner))
-                out.append("</u>")
-                return source.index(after: j)
+                return (source.index(after: j), inner)
             }
             j = source.index(after: j)
         }
         return nil
+    }
+
+    // MARK: - AttributedString
+
+    private static func appendStyled(
+        _ result: inout AttributedString,
+        inner: Substring,
+        bold: Bool,
+        italic: Bool,
+        underline: Bool
+    ) {
+        var piece = AttributedString(String(inner))
+        var intent = InlinePresentationIntent()
+        if bold { intent.insert(.stronglyEmphasized) }
+        if italic { intent.insert(.emphasized) }
+        if !intent.isEmpty {
+            piece.inlinePresentationIntent = intent
+        }
+        // Underline-only spans (no bold/italic): keep readable plain text until a portable underline attribute exists on all Apple targets without importing UI frameworks into core.
+        if underline && !bold && !italic {
+            result += AttributedString(String(inner))
+            return
+        }
+        result += piece
     }
 
     // MARK: - Scan helpers

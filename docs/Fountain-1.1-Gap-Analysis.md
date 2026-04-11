@@ -69,7 +69,7 @@ Legend: **Y** = supported in practice, **P** = partial / edge-case risk, **N** =
 | Boneyard `/* */` | P | Metrics/export semantics |
 | Notes `[[ ]]` | P | |
 | Scene numbers `#..#` on slug | P | |
-| Inline bold/italic/underline | P | `FountainInlineMarkup.htmlFragment` for HTML (linear scan); still not `AttributedString` |
+| Inline bold/italic/underline | P | `FountainInlineMarkup.htmlFragment` + `attributedFragment` (bold/italic via `InlinePresentationIntent`; underline-only / portable underline on `AttributedString` still limited) |
 
 ---
 
