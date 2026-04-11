@@ -25,6 +25,7 @@ The manifest **package name** is **`FountainSwiftPM`** so the umbrella **library
    - **Patch:** bug fixes, docs, tests only.
 6. Update **README** “Fountain Swift package” / version notes if present (keep **syntax 1.1** vs **package 2.x** wording distinct).
 7. Ensure **CI** (`.github/workflows/swift.yml`) is green on `master`.
+8. If you add **`.fountain`** files under **`Tests/FountainPackageTests/Fixtures/`**, append the basename (sorted) to **`FountainPackageBundledFountainFixtures.basenames`** so inventory, **fast**/**tokenPipeline** parity, and **Phase 4** builder parity stay in sync ([CONTRIBUTING.md](../CONTRIBUTING.md)).
 
 ## Tagging
 

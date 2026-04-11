@@ -1,7 +1,7 @@
 import XCTest
 import Fountain
 
-/// Phase 4.5 — token stream assembly matches ``FNScript`` / ``FastFountainParser`` for representative sources.
+/// Phase 4.5 — ``FountainScriptElementsBuilder`` element-type sequence matches default ``FNScript`` (**``.tokenPipeline``**) for representative and bundled sources (Phase **15.2**).
 final class Phase4ParityTests: XCTestCase {
     private func assertElementTypesMatch(_ raw: String, file: StaticString = #filePath, line: UInt = #line) {
         let ref = FNScript(string: raw).elements.map(\.elementType)
@@ -21,27 +21,16 @@ final class Phase4ParityTests: XCTestCase {
         assertElementTypesMatch("\nINT. X\n\nBOB\n(beat)\nLine.\n")
     }
 
-    func testParityBoneyardSandwich() throws {
-        let url = try XCTUnwrap(Bundle.module.url(forResource: "package-boneyard-sandwich", withExtension: "fountain"))
-        let raw = try String(contentsOf: url, encoding: .utf8)
-        assertElementTypesMatch(raw)
-    }
-
-    func testParityDualDialogueFixture() throws {
-        let url = try XCTUnwrap(Bundle.module.url(forResource: "package-dual-dialogue", withExtension: "fountain"))
-        let raw = try String(contentsOf: url, encoding: .utf8)
-        assertElementTypesMatch(raw)
-    }
-
-    func testParityMixedProductionFixture() throws {
-        let url = try XCTUnwrap(Bundle.module.url(forResource: "package-mixed-production", withExtension: "fountain"))
-        let raw = try String(contentsOf: url, encoding: .utf8)
-        assertElementTypesMatch(raw)
-    }
-
-    func testParityForcedBlockFixture() throws {
-        let url = try XCTUnwrap(Bundle.module.url(forResource: "package-forced-block", withExtension: "fountain"))
-        let raw = try String(contentsOf: url, encoding: .utf8)
-        assertElementTypesMatch(raw)
+    func testParityScriptElementsBuilderMatchesDefaultParserAllBundledFountainFixtures() throws {
+        for base in FountainPackageBundledFountainFixtures.basenames {
+            let url = try XCTUnwrap(
+                Bundle.module.url(forResource: base, withExtension: "fountain"),
+                "Missing \(base).fountain",
+                file: #filePath,
+                line: #line
+            )
+            let raw = try String(contentsOf: url, encoding: .utf8)
+            assertElementTypesMatch(raw, file: #filePath, line: #line)
+        }
     }
 }

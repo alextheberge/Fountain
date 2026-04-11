@@ -43,4 +43,5 @@ SwiftPM **library** release **2.0.0**. Fountain **markup** target remains **1.1*
 ### Changed (polish)
 
 - **Phase 15.2:** single catalog ``FountainPackageBundledFountainFixtures`` for all bundled **`.fountain`** fixtures — shared by **Phase 7** inventory and **fast** vs **tokenPipeline** parity tests; **Phase 7** inventory now includes **`export-golden-minimal`**.
-- **Phase 15.3:** **`FountainView`** ImageRenderer regression test for **narrow proposed size** (layout stress).
+- **Phase 15.3:** **`FountainView`** ImageRenderer regression test for **narrow proposed size** (layout stress); **`PackageFixtureCorpusTests`** asserts **`export-golden-minimal`** parse kinds.
+- **Phase 15.4:** [Public-API-Surface.md](docs/Public-API-Surface.md) contributor note for bundled **`.fountain`** catalog; [SPM-Release-Checklist.md](docs/SPM-Release-Checklist.md) release step for new fixtures.

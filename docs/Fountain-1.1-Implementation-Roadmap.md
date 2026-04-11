@@ -278,9 +278,9 @@ This document turns [Project Specification- Fountain Swift (Next-Gen).md](../Pro
 | Step | Action | Done when |
 |------|--------|-----------|
 | 15.1 | **SPM-native repository:** remove **`Fountain.xcodeproj`** (and committed **`.xcworkspace`** if any); migrate **Sample Project Mac/iOS** and **`FountainTests`** to SwiftPM-native app / test targets (or document a split repo). Update **CI** if jobs used **`xcodebuild`** on the removed project; refresh [Phase-1-Xcode-SPM-Integration.md](Phase-1-Xcode-SPM-Integration.md), **README**, and **CONTRIBUTING**. | No `.xcodeproj` in tree (or archived per policy); **`swift build`** / **`swift test`** remain CI truth; contributor docs describe **File → Open** on **`Package.swift`**. |
-| 15.2 | **Parser / spec polish:** expand **``.fast``** vs **``.tokenPipeline``** parity toward exhaustive Phase **7.3** coverage; tighten **Phase 4.6** migration notes if any consumer relied on removed edge behavior. | **Partial:** shared bundled **`.fountain`** list ``FountainPackageBundledFountainFixtures`` + **Phase 7** inventory includes **`export-golden-minimal`**; Big Fish / Brick & Steel file parity remains the main **exhaustive** stretch. |
+| 15.2 | **Parser / spec polish:** expand **``.fast``** vs **``.tokenPipeline``** parity toward exhaustive Phase **7.3** coverage; tighten **Phase 4.6** migration notes if any consumer relied on removed edge behavior. | **Partial:** shared catalog + **Phase 4** ``FountainScriptElementsBuilder`` vs default **``.tokenPipeline``** parity over **all** bundled fixtures; Big Fish / Brick & Steel file parity remains the main **exhaustive** stretch. |
 | 15.3 | **Writers & preview polish:** **FDX** / **HTML** fidelity stretches; **`FountainUI`** layout, **Dynamic Type**, snapshot tests ([Phase 13](#phase-13-swiftui-and-fountainui) stretches). | **Partial:** narrow-width **``FountainView``** / **ImageRenderer** regression test; snapshots / Dynamic Type previews still stretch. |
-| 15.4 | **Docs & API hygiene:** DocC or expanded symbol docs where high-traffic types need it; [Public-API-Surface.md](Public-API-Surface.md) stays aligned with semver reality. | **Partial:** contributor note for bundled fixture catalog; DocC / symbol pass still open. |
+| 15.4 | **Docs & API hygiene:** DocC or expanded symbol docs where high-traffic types need it; [Public-API-Surface.md](Public-API-Surface.md) stays aligned with semver reality. | **Partial:** contributor notes on **Public-API-Surface** + **SPM-Release-Checklist** for bundled fixtures; DocC / symbol pass still open. |
 
 ---
 
@@ -375,7 +375,7 @@ Small, continuous improvements after numbered phases are **initial-complete**:
 | **Phase 12** | **Initial-complete:** **default** **`FNScript`** / async / stream on **`FountainParsePipeline`**; **`.fast`** explicit; expand parity matrix vs Phase 7.3 — [§ Phase 12](#phase-12-canonical-state-aware-parser-default-fnscript). |
 | **Phase 13** | **Complete (initial):** **`FountainUI`**, **`FountainView`**, typography, **13.3** inline markup — layout / snapshot polish stretch — [§ Phase 13](#phase-13-swiftui-and-fountainui). |
 | **Phase 14** | **Complete:** package **`2.0.0`** line in tree (**14.1–14.3**); Fountain **syntax** pin unchanged — [§ Phase 14](#phase-14). |
-| **Phase 15** | **Open:** SPM-only (**15.1**); **15.2–15.4** started (bundled fixture catalog, **4.6** migration blurb, **`FountainView`** narrow layout test) — [§ Phase 15](#phase-15). |
+| **Phase 15** | **Open:** SPM-only (**15.1**); **15.2–15.4** in progress (catalog, builder parity sweep, **4.6** note, **`FountainView`** + **`export-golden-minimal`** corpus checks, checklist / API-surface docs) — [§ Phase 15](#phase-15). |
 
 ---
 

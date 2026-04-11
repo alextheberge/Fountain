@@ -2,6 +2,8 @@
 
 This is a **map** of supported entry points, not a substitute for Xcode DocC. Prefer **`import Fountain`** in apps (umbrella); use **`import FountainCore`** or **`import FountainHTML`** only when you want a slimmer dependency graph.
 
+**SwiftPM test fixtures (contributors):** bundled **`.fountain`** files live under **`Tests/FountainPackageTests/Fixtures/`**; the canonical basename list is **`FountainPackageBundledFountainFixtures`** in **`FountainPackageTests`** (Phase **15.2** — keeps inventory + parity tests aligned).
+
 ## Fountain syntax vs Swift package version
 
 Do **not** mix these up in docs, JSON, or release notes:

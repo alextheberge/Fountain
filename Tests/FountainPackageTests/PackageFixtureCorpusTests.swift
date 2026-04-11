@@ -53,6 +53,16 @@ final class PackageFixtureCorpusTests: XCTestCase {
         XCTAssertEqual(script.elements.last { $0.elementType == "Action" }?.elementText.contains("after"), true)
     }
 
+    /// Minimal script used by export golden tests; default parse kinds (Phase **15.3** / **7.1**).
+    func testExportGoldenMinimalFixtureKindSequence() throws {
+        let url = try XCTUnwrap(Bundle.module.url(forResource: "export-golden-minimal", withExtension: "fountain"))
+        let text = try String(contentsOf: url, encoding: .utf8)
+        let script = FNScript(string: text)
+        let kinds = script.asFountainDocument().elements.map(\.kind)
+        XCTAssertEqual(kinds, [.sceneHeading, .character, .dialogue, .transition])
+        XCTAssertEqual(script.elements.last?.elementType, FNElementType.transition.rawValue)
+    }
+
     /// Section, synopsis, lyrics (multi-line), dialogue, bracket note, action — Phase 5 / 7.1 bundle.
     func testMixedProductionFixtureKindSequence() throws {
         let url = try XCTUnwrap(Bundle.module.url(forResource: "package-mixed-production", withExtension: "fountain"))
