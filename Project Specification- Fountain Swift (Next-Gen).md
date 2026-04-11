@@ -71,7 +71,7 @@ protocol FountainWriter {
 
 Async/Await: All parsing operations must be async to prevent UI blocking on large documents (e.g., 120-page scripts).
 
-Incremental Parsing: (Optional Advanced Feature) Ability to re-parse only affected lines during live editing.
+Incremental Parsing: (Optional Advanced Feature) Ability to re-parse only affected lines during live editing — phased as **Phase 9.4** (line→element index map) and **Phase 9.5** (`parseIncremental(newText:range:)` with safe-boundary chunking and merge) in [docs/Fountain-1.1-Implementation-Roadmap.md](docs/Fountain-1.1-Implementation-Roadmap.md); see [docs/Fountain-Incremental-Parse-Spike.md](docs/Fountain-Incremental-Parse-Spike.md).
 
 6. Development Pain Points to Resolve
 

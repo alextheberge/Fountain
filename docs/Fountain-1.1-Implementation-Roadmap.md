@@ -79,7 +79,7 @@ This document turns [Project Specification- Fountain Swift (Next-Gen).md](../Pro
 
 **Goal:** **State-aware scanning** — classify **lines** (and line continuations) into **tokens** without building the final tree yet.
 
-**Status:** **Complete (initial)** — shared title-page prescan, structural line matchers, coarse body line tokenizer (aligned with ``FastFountainParser``), and existing forced-prefix + slug helpers. Production parse remains ``FastFountainParser`` by default; **opt-in tokenizer-first load** is ``FNScript(…, parser: .tokenPipeline)`` via ``FountainParsePipeline`` (tests: ``TokenPipelineFNScriptTests``). The tokenizer is for tooling, previews, and the migration path toward a single canonical engine.
+**Status:** **Complete (initial)** — shared title-page prescan, structural line matchers, coarse body line tokenizer (aligned with ``FastFountainParser``), and existing forced-prefix + slug helpers. Production parse remains ``FastFountainParser`` by default; **opt-in tokenizer-first load** is ``FNScript(…, parser: .tokenPipeline)`` via ``FountainParsePipeline`` (tests: ``TokenPipelineFNScriptTests``). The tokenizer is for tooling, previews, and the migration path toward a single canonical engine. **Next:** [Phase 12](#phase-12-canonical-state-aware-parser-default-fnscript) flips the default to the state-aware pipeline and deprecates the line-first engine once parity work is complete.
 
 | Step | Action | Done when |
 |------|--------|-----------|
@@ -95,7 +95,7 @@ This document turns [Project Specification- Fountain Swift (Next-Gen).md](../Pro
 
 **Goal:** Tokens → **blocks** (dialogue blocks, dual dialogue, continuity).
 
-**Status:** **Complete (initial)** — dialogue line roles align with ``FastFountainParser`` parenthetical detection; dual-`^` columns match the fast parser and ``FountainScriptElementsBuilder``; token→element assembly is parity-tested against ``FNScript`` on package fixtures. Canonical production parse remains ``FNScript`` / ``FastFountainParser``; the builder proves the Phase 3 tokenizer stream can reconstruct element **types** (and merges) for the same inputs.
+**Status:** **Complete (initial)** — dialogue line roles align with ``FastFountainParser`` parenthetical detection; dual-`^` columns match the fast parser and ``FountainScriptElementsBuilder``; token→element assembly is parity-tested against ``FNScript`` on package fixtures. Canonical production parse remains ``FNScript`` / ``FastFountainParser``; the builder proves the Phase 3 tokenizer stream can reconstruct element **types** (and merges) for the same inputs. **Next:** [Phase 12](#phase-12-canonical-state-aware-parser-default-fnscript) makes that stream the **default** parse path (Project Specification *State-Aware Scanner*).
 
 | Step | Action | Done when |
 |------|--------|-----------|
@@ -172,6 +172,10 @@ This document turns [Project Specification- Fountain Swift (Next-Gen).md](../Pro
 | 9.1 | **`parse(_:)` async**: offload full parse to `Task.detached` or custom executor; **synchronous** wrapper documented as “small docs only.” | **Done:** ``FNScript.parseStringAsync`` / ``parseFileAsync`` (``Task.detached``) + class-level doc on sync vs async; `FNScriptAsyncTests` (string parity + **Brick & Steel** file parity vs sync) |
 | 9.2 | **Streaming API** (optional): `AsyncSequence` of elements for preview. | **Done:** ``FNScript.scriptElementStream(from:)`` (uses ``parseStringAsync``) / ``scriptElementStream(fromFile:)`` (``parseFileAsync`` + snapshot) → `AsyncStream<ScriptElement>`; `FountainRoadmapExtensionsTests` + `FNScriptAsyncTests` (stream vs async snapshot) |
 | 9.3 | **Incremental parse** (advanced): diff by line map; **last** after baseline is solid. | **Done (planning):** [Fountain-Incremental-Parse-Spike.md](Fountain-Incremental-Parse-Spike.md) — preconditions / risks / **explicit defer**; no incremental merge in tree until spike proves safe |
+| 9.4 | **Line → element index map** — maintain a queryable mapping from **logical line** (or UTF-16 / **`Character`** offset span per line) to **element indices** in the parsed tree (e.g. **interval tree** on line ranges, or a **flat array** of `(lineRange, elementIDRange)` / character offsets), including ambiguous regions (dialogue blocks) per the spike doc. | `- [ ]` Data structure documented in API or design note; **O(log n)** or documented linear tradeoff; unit tests on fixtures proving correct lookup for slug / dialogue / boneyard windows; [Fountain-Incremental-Parse-Spike.md](Fountain-Incremental-Parse-Spike.md) preconditions updated when satisfied. |
+| 9.5 | **`parseIncremental(newText: String, range: Range<…>)`** — given a document edit, expand **`range`** to the nearest **safe invalidation boundaries** (e.g. **blank lines**, **scene headings**, and other anchors listed in the spike), **re-tokenize / re-parse only that chunk** (prefer **`FountainParsePipeline`** once it is default — [Phase 12](#phase-12-canonical-state-aware-parser-default-fnscript)), then **merge** the new elements back into the existing **`FountainDocument`** / ``FNScript`` tree with stable IDs where defined. | `- [ ]` Public or `@_spi` API with documented boundary rules; property tests or golden tests showing full-parse == incremental on scripted edits; failure / fallback path to **full parse** documented; [Public-API-Surface.md](Public-API-Surface.md) updated if shipped. |
+
+**Implementation note:** **9.4** is a **prerequisite** for **9.5**. Ship **9.5** only after [Phase 12](#phase-12-canonical-state-aware-parser-default-fnscript) if you require a single canonical tokenizer for both cold and warm paths; otherwise prototype **9.5** may still target **`FountainParsePipeline`** behind **`parser: .tokenPipeline`** while **`.fast`** remains default.
 
 ---
 
@@ -197,6 +201,21 @@ This document turns [Project Specification- Fountain Swift (Next-Gen).md](../Pro
 | 11.2 | Remove **`NSRegularExpression`** from **`Fountain/String+Regex.swift`** completely: reimplement **`isMatchedByRegex`**, **`replacingOccurrencesOfRegex`**, **`nsRangeOfRegex`**, **`stringByMatching`**, **`componentsMatchedByRegex`** using **native Swift `Regex`** (captures, replacements, range reporting in **`String.Index`** space). Migrate **`FountainCore`** call sites as needed. | `- [ ]` File contains **no** `NSRegularExpression` (and no regex-only **`NSRange`**/`NSString` bridging left solely for those helpers); **`swift test`** green on **macOS**; **`FountainSceneHeadingMatcher`** and other dual-path code either use one Swift `Regex` implementation across supported OS versions **or** document a temporary `#available` shim with a dated removal issue; **Wasm:** run **`scripts/build-fountaincore-wasm.sh`** and record outcome in [SwiftWasm-Experimental.md](SwiftWasm-Experimental.md). |
 
 **Note:** Completing **11.2** may allow removing the **`NSRegularExpression`** fallback called out in **Phase 3.5** / **Polish § Phase 3.5** once deployment targets and CI agree on a single Swift `Regex` floor.
+
+---
+
+## Phase 12: Canonical state-aware parser (default `FNScript`)
+
+**Goal:** Finish **fast vs tokenPipeline** parity coverage, then make **`FountainParsePipeline`** (Phase 3–4 **state-aware** tokenizer + ``FountainScriptElementsBuilder``) the **default** body engine for **`FNScript.init(string:)`** / **`init(file:)`** (and matching **async** defaults). That fulfills the [Project Specification](../Project%20Specification-%20Fountain%20Swift%20(Next-Gen).md) **State-Aware Scanner** direction and retires **`FastFountainParser`** from the hot path.
+
+**Status:** **Not started** — parity tests today are **green** in **`TokenPipelineFNScriptTests`**; expand coverage and ship the switch when the checklist below is satisfied.
+
+| Step | Action | Done when |
+|------|--------|-----------|
+| 12.1 | **Complete parity tests** — extend **`TokenPipelineFNScriptTests`** (and any sibling suites you split out) so **`.tokenPipeline`** vs **`.fast`** is asserted on **every** agreed corpus: bundled fixtures, **Big Fish**, **Brick & Steel**, minimal spec rows, and any vendored external cases (Phase 7.3) you adopt. | `- [ ]` Maintainer-signed **coverage matrix** checked in or linked from this doc; **`swift test`** green; no open P0/P1 parity deltas. *(Today: **`TokenPipelineFNScriptTests`** already passing on the tracked set.)* |
+| 12.2 | **Deprecate `FastFountainParser`** as the default implementation; make **`FountainParsePipeline`** / **`FNParserType.tokenPipeline`** the default for **`FNScript(string:)`**, **`FNScript(file:)`**, and default **async** parse entry points. | `- [ ]` Default **`loadString`** / **`loadFile`** (and **`parseStringAsync`** / **`parseFileAsync`** / **`scriptElementStream`** defaults) use **`FountainParsePipeline`**; **`FastFountainParser`** reachable only via explicit **`FNParserType.fast`** (or equivalent) for a **semver-documented** transition; **`@available` deprecation** on legacy entry points if applicable; [Public-API-Surface.md](Public-API-Surface.md) + [Deprecation-And-Distribution.md](Deprecation-And-Distribution.md) updated; README “default parser” wording updated. |
+
+**Prerequisite:** Treat **12.1** as a hard gate before merging **12.2** (or ship **12.2** only behind a feature flag if you need staged rollout).
 
 ---
 
@@ -229,11 +248,15 @@ Fill as you implement. Link each row to tests.
 | Writer protocol + adapters (plain / MD / JSON / HTML / FDX / PDF) | 8 | ``FountainScriptRendering``, ``FountainHTMLWriter``, ``FountainFDXWriter``, ``FountainPDFWriter``, `FountainScriptRenderingTests` | ☑ |
 | Async full parse (string + file) | 9 | `FNScriptAsyncTests` | ☑ |
 | `scriptElementStream` preview (full parse, async load) | 9 | `FountainRoadmapExtensionsTests`, `FNScriptAsyncTests` | ☑ |
-| Incremental parse | 9 | [Fountain-Incremental-Parse-Spike.md](Fountain-Incremental-Parse-Spike.md) (deferred) | ☑ |
+| Incremental parse (spike / preconditions) | 9.3 | [Fountain-Incremental-Parse-Spike.md](Fountain-Incremental-Parse-Spike.md) | ☑ |
+| Line → element index map | 9.4 | Phase 9 incremental track (tests TBD) | ☐ |
+| `parseIncremental(newText:range:)` bounded re-parse + merge | 9.5 | Phase 9 incremental track (tests TBD) | ☐ |
 | SPM distribution + semver tagging | 10 | [SPM-Release-Checklist.md](SPM-Release-Checklist.md) | ☑ |
 | Parser free of UIKit/AppKit (core sources) | 10 | `.github/workflows/swift.yml` (Phase 10.2 grep) | ☑ |
 | Wasm **FountainCore** (optional CI) | 10 | `scripts/build-fountaincore-wasm.sh`, [SwiftWasm-Experimental.md](SwiftWasm-Experimental.md), `fountaincore-wasm.yml` | ☑ |
 | Swift **`Regex` / `RegexBuilder`** + no `NSRegularExpression` in **`String+Regex.swift`** | 11 | [§ Phase 11](#phase-11-regex-modernization-swift-native); `FountainRegexes.swift`, `String+Regex.swift`, Wasm script + [SwiftWasm-Experimental.md](SwiftWasm-Experimental.md) | ☐ |
+| **State-aware default parse** (`FountainParsePipeline`); **`FastFountainParser`** deprecated off default | 12 | [§ Phase 12](#phase-12-canonical-state-aware-parser-default-fnscript); `TokenPipelineFNScriptTests`, `FNScript`, [Public-API-Surface.md](Public-API-Surface.md) | ☐ |
+| **Fast vs tokenPipeline** parity (exhaustive, pre-default-flip) | 12 / 7 | `TokenPipelineFNScriptTests`, corpus tests, [External-Fountain-Test-References.md](External-Fountain-Test-References.md) | ☐ |
 
 ---
 
@@ -248,7 +271,8 @@ Fill as you implement. Link each row to tests.
 7. **Phase 8** — Writers / ``FountainScriptRendering`` (**initial complete**; FDX/PDF baseline shipped — refine layout vs Final Draft in follow-ups).  
 8. **Phase 9** — Async + perf.  
 9. **Phase 10** — SPM / Wasm distribution and parser–UI boundary (roadmap complete; optional Wasm CI is manual).  
-10. **Phase 11** — Regex modernization (**`FountainRegexes.swift`**, **`String+Regex.swift`**) when raising the Swift/os floor or doing a focused perf/Wasm pass.
+10. **Phase 11** — Regex modernization (**`FountainRegexes.swift`**, **`String+Regex.swift`**) when raising the Swift/os floor or doing a focused perf/Wasm pass.  
+11. **Phase 12** — **Parity-complete** token pipeline, then **default `FNScript`** on **`FountainParsePipeline`** and **deprecate `FastFountainParser`** from the default path (aligns with the Project Specification *State-Aware Scanner*).
 
 ---
 
@@ -262,10 +286,11 @@ Small, continuous improvements after numbered phases are **initial-complete**:
 | **Phase 4.3** | **Started:** ``FastFountainParser`` documents legacy whitespace-only action lines vs Fountain 1.1 ``!`` forced action. |
 | **Phase 1** | **Polish:** [Phase-1-Xcode-SPM-Integration.md](Phase-1-Xcode-SPM-Integration.md) — verification, rollback, and contributor notes (local package wiring **done** in `Fountain.xcodeproj`). |
 | **Phase 8** | Deeper HTML/CSS refactor if desired. **Polish:** ``FountainStubRendererError`` retained for future optional stubs; conforms to ``LocalizedError``. |
-| **Phase 9.3** | Incremental parse — [Fountain-Incremental-Parse-Spike.md](Fountain-Incremental-Parse-Spike.md) (deferred until preconditions met). |
+| **Phase 9.3–9.5** | **9.3** planning done — [Fountain-Incremental-Parse-Spike.md](Fountain-Incremental-Parse-Spike.md). **Implementation:** **9.4** line→element map; **9.5** `parseIncremental(newText:range:)` (safe boundaries, chunk re-tokenize, merge into ``FountainDocument``) — see Phase 9 table. |
 | **Gap analysis** | **Closed (matrix):** feature matrix all **Y** with SPM regression pointers — ``GapMatrixClosureTests`` + prior tests; see [Fountain-1.1-Gap-Analysis.md](Fountain-1.1-Gap-Analysis.md). |
 | **Structural matchers** | **Polish:** ``FountainStructuralLineMatchers`` page break / boneyard / bracket / `TO:` / all-caps cue use **string logic** (no `NSRegularExpression`). |
 | **Phase 11** | **Planned:** Swift **`Regex` / `RegexBuilder`** for **`FountainRegexes.swift`**; remove **`NSRegularExpression`** from **`String+Regex.swift`** — see [§ Phase 11](#phase-11-regex-modernization-swift-native) (Wasm + Linux performance). |
+| **Phase 12** | **Planned:** Full **`.fast`** / **`.tokenPipeline`** parity suite, then **default** **`FNScript`** on **`FountainParsePipeline`**; deprecate **`FastFountainParser`** as default — [§ Phase 12](#phase-12-canonical-state-aware-parser-default-fnscript). |
 
 ---
 
@@ -274,7 +299,7 @@ Small, continuous improvements after numbered phases are **initial-complete**:
 - [Project Specification- Fountain Swift (Next-Gen).md](../Project%20Specification-%20Fountain%20Swift%20(Next-Gen).md) — vision and constraints  
 - [README](../README.markdown) — current project state  
 - [Phase-1-Xcode-SPM-Integration.md](Phase-1-Xcode-SPM-Integration.md) — Xcode sample + test targets on local Swift package (Phase 1.2)  
-- [Fountain-Incremental-Parse-Spike.md](Fountain-Incremental-Parse-Spike.md) — Phase 9.3 incremental parse planning (decision: deferred)  
+- [Fountain-Incremental-Parse-Spike.md](Fountain-Incremental-Parse-Spike.md) — Phase 9.3 incremental parse planning; **9.4–9.5** implementation steps in Phase 9 table  
 - [SPM-Release-Checklist.md](SPM-Release-Checklist.md) — Phase 10.1 tagging / semver  
 - [SwiftWasm-Experimental.md](SwiftWasm-Experimental.md) — Phase 10.3 Wasm notes  
 - [`.github/workflows/fountaincore-wasm.yml`](../.github/workflows/fountaincore-wasm.yml) — manual **Wasm: FountainCore** CI  
