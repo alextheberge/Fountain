@@ -7,9 +7,29 @@
 
 import Foundation
 
+// MARK: - Phase 6.1 — plain vs rich entry point
+
+/// Result of ``FountainInlineMarkup/renderInline(_:mode:)`` (see ``FountainInlineRenderingMode``).
+public enum FountainInlineRenderResult: Sendable, Equatable {
+    /// Markers such as `**` remain in the string (no inline transform).
+    case plainMarkersPreserved(String)
+    /// Parsed emphasis for SwiftUI / Text / AppKit hosts; see ``FountainInlineAttributedKeys/Underline``.
+    case richAttributed(AttributedString)
+}
+
 /// Converts Fountain inline markers in a single line (or fragment) to HTML or `AttributedString`.
 public enum FountainInlineMarkup {
     // MARK: - Public
+
+    /// Phase 6.1 — choose **plain** (identity: keep markers in content) vs **rich** (``attributedFragment(from:)``).
+    public static func renderInline(_ source: String, mode: FountainInlineRenderingMode) -> FountainInlineRenderResult {
+        switch mode {
+        case .preserveMarkersInPlaintext:
+            return .plainMarkersPreserved(source)
+        case .attributedStringFromInlineMarkup:
+            return .richAttributed(attributedFragment(from: source))
+        }
+    }
 
     /// HTML equivalent of the legacy ``FNHTMLScript`` emphasis pass: `**bold**`, `*italic*`, `_underline_`, and combined `_***` / `***` forms.
     public static func htmlFragment(from source: String) -> String {
@@ -36,7 +56,7 @@ public enum FountainInlineMarkup {
         return out
     }
 
-    /// Rich-text fragment for SwiftUI/AppKit using `InlinePresentationIntent` (bold / italic). **Underline** is applied in ``htmlFragment(from:)`` only; `AttributedString` underline still depends on AppKit/UIKit attribute bridging, so combined `_underline_` may appear unadorned here while remaining correct in HTML export.
+    /// Rich-text fragment using `InlinePresentationIntent` for bold / italic, and ``FountainInlineAttributedKeys/Underline`` for Fountain `_…_` underline (including underline-only spans). HTML remains the reference for `<u>` tags; UI layers should map ``FountainInlineAttributedKeys/Underline`` to platform underline when needed.
     public static func attributedFragment(from source: String) -> AttributedString {
         var result = AttributedString()
         scan(source) { event in
@@ -208,10 +228,8 @@ public enum FountainInlineMarkup {
         if !intent.isEmpty {
             piece.inlinePresentationIntent = intent
         }
-        // Underline-only spans (no bold/italic): keep readable plain text until a portable underline attribute exists on all Apple targets without importing UI frameworks into core.
-        if underline && !bold && !italic {
-            result += AttributedString(String(inner))
-            return
+        if underline {
+            piece[FountainInlineAttributedKeys.Underline.self] = true
         }
         result += piece
     }

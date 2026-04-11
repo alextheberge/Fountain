@@ -59,6 +59,7 @@
 		AA1021000000000000000001 /* FountainDialogueBlockRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0021000000000000000001 /* FountainDialogueBlockRecognizer.swift */; };
 		AA1030000000000000000001 /* FountainScriptRendering.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0030000000000000000001 /* FountainScriptRendering.swift */; };
 		AA1031000000000000000001 /* FountainInlineMarkup.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0031000000000000000001 /* FountainInlineMarkup.swift */; };
+		AA1031500000000000000001 /* FountainInlineAttributedKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0031500000000000000001 /* FountainInlineAttributedKeys.swift */; };
 		AA1032000000000000000001 /* FountainInlineDelimiterTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0032000000000000000001 /* FountainInlineDelimiterTable.swift */; };
 		AA1033000000000000000001 /* FountainStubRenderers.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0033000000000000000001 /* FountainStubRenderers.swift */; };
 		AA1034000000000000000001 /* FountainScriptMetrics.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0034000000000000000001 /* FountainScriptMetrics.swift */; };
@@ -81,6 +82,7 @@
 		AA2021000000000000000001 /* FountainDialogueBlockRecognizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0021000000000000000001 /* FountainDialogueBlockRecognizer.swift */; };
 		AA2030000000000000000001 /* FountainScriptRendering.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0030000000000000000001 /* FountainScriptRendering.swift */; };
 		AA2031000000000000000001 /* FountainInlineMarkup.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0031000000000000000001 /* FountainInlineMarkup.swift */; };
+		AA2031500000000000000001 /* FountainInlineAttributedKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0031500000000000000001 /* FountainInlineAttributedKeys.swift */; };
 		AA2032000000000000000001 /* FountainInlineDelimiterTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0032000000000000000001 /* FountainInlineDelimiterTable.swift */; };
 		AA2033000000000000000001 /* FountainStubRenderers.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0033000000000000000001 /* FountainStubRenderers.swift */; };
 		AA2034000000000000000001 /* FountainScriptMetrics.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0034000000000000000001 /* FountainScriptMetrics.swift */; };
@@ -172,6 +174,7 @@
 		AA0021000000000000000001 /* FountainDialogueBlockRecognizer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FountainDialogueBlockRecognizer.swift; sourceTree = "<group>"; };
 		AA0030000000000000000001 /* FountainScriptRendering.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FountainScriptRendering.swift; sourceTree = "<group>"; };
 		AA0031000000000000000001 /* FountainInlineMarkup.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FountainInlineMarkup.swift; sourceTree = "<group>"; };
+		AA0031500000000000000001 /* FountainInlineAttributedKeys.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FountainInlineAttributedKeys.swift; sourceTree = "<group>"; };
 		AA0032000000000000000001 /* FountainInlineDelimiterTable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FountainInlineDelimiterTable.swift; sourceTree = "<group>"; };
 		AA0033000000000000000001 /* FountainStubRenderers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FountainStubRenderers.swift; sourceTree = "<group>"; };
 		AA0034000000000000000001 /* FountainScriptMetrics.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FountainScriptMetrics.swift; sourceTree = "<group>"; };
@@ -383,6 +386,7 @@
 				AA0021000000000000000001 /* FountainDialogueBlockRecognizer.swift */,
 				AA0030000000000000000001 /* FountainScriptRendering.swift */,
 				AA0031000000000000000001 /* FountainInlineMarkup.swift */,
+				AA0031500000000000000001 /* FountainInlineAttributedKeys.swift */,
 				AA0032000000000000000001 /* FountainInlineDelimiterTable.swift */,
 				AA0033000000000000000001 /* FountainStubRenderers.swift */,
 				AA0034000000000000000001 /* FountainScriptMetrics.swift */,
@@ -611,6 +615,7 @@
 				AA1021000000000000000001 /* FountainDialogueBlockRecognizer.swift in Sources */,
 				AA1030000000000000000001 /* FountainScriptRendering.swift in Sources */,
 				AA1031000000000000000001 /* FountainInlineMarkup.swift in Sources */,
+				AA1031500000000000000001 /* FountainInlineAttributedKeys.swift in Sources */,
 				AA1032000000000000000001 /* FountainInlineDelimiterTable.swift in Sources */,
 				AA1033000000000000000001 /* FountainStubRenderers.swift in Sources */,
 				AA1034000000000000000001 /* FountainScriptMetrics.swift in Sources */,
@@ -642,6 +647,7 @@
 				AA2021000000000000000001 /* FountainDialogueBlockRecognizer.swift in Sources */,
 				AA2030000000000000000001 /* FountainScriptRendering.swift in Sources */,
 				AA2031000000000000000001 /* FountainInlineMarkup.swift in Sources */,
+				AA2031500000000000000001 /* FountainInlineAttributedKeys.swift in Sources */,
 				AA2032000000000000000001 /* FountainInlineDelimiterTable.swift in Sources */,
 				AA2033000000000000000001 /* FountainStubRenderers.swift in Sources */,
 				AA2034000000000000000001 /* FountainScriptMetrics.swift in Sources */,

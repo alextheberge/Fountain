@@ -129,9 +129,9 @@ This document turns [Project Specification- Fountain Swift (Next-Gen).md](../Pro
 
 | Step | Action | Done when |
 |------|--------|-----------|
-| 6.1 | Document **two modes**: `plain` (preserve markers in `content`) vs `rich` (parse to `AttributedString` segments). | **Started:** `FountainInlineRenderingMode` (incl. ``attributedStringFromInlineMarkup``) + ``FountainInlineMarkup.attributedFragment(from:)`` + `FountainInlineAttributedTests` |
-| 6.2 | Implement **bold / italic / underline** (and `_` where spec applies) with **Fuzzili-safe** parsing (no catastrophic backtracking). | **Started:** shared scanner → ``htmlFragment`` / ``attributedFragment``; underline in `AttributedString` is partial (see ``attributedFragment`` doc); HTML full fidelity |
-| 6.3 | Keep **regex/constants** in one module for **Wasm** reuse. | **Started:** `FountainInlineDelimiterTable` (incl. bold/italic/underline flags per rule) + `FountainRoadmapExtensionsTests` |
+| 6.1 | Document **two modes**: `plain` (preserve markers in `content`) vs `rich` (parse to `AttributedString` segments). | **Done:** ``FountainInlineRenderingMode`` + ``FountainInlineRenderResult`` + ``FountainInlineMarkup.renderInline(_:mode:)`` + ``attributedStringFromInlineMarkup`` + ``FountainInlineMarkup.attributedFragment(from:)`` + `FountainInlineAttributedTests` + `Phase6InlinePolicyTests` |
+| 6.2 | Implement **bold / italic / underline** (and `_` where spec applies) with **Fuzzili-safe** parsing (no catastrophic backtracking). | **Done:** shared scanner → ``htmlFragment`` / ``attributedFragment``; underline on `AttributedString` via ``FountainInlineAttributedKeys.Underline`` (core-only, no UIKit/AppKit); HTML full fidelity + `FountainInlineMarkupTests` / `Phase6InlinePolicyTests` |
+| 6.3 | Keep **regex/constants** in one module for **Wasm** reuse. | **Done:** `FountainInlineDelimiterTable` (bold/italic/underline flags per rule) + `FountainRoadmapExtensionsTests` |
 
 ---
 

@@ -8,14 +8,18 @@ import Foundation
 
 // MARK: - Inline markup policy (Phase 6.1)
 
-/// How inline emphasis markers (`*bold*`, `_italic_`, etc.) are expected to flow through the stack.
+/// How inline emphasis markers (`**bold**`, `*italic*`, `_underline_`, etc.) flow through the stack (Phase 6.1).
 ///
-/// The **fast parser** keeps markers inside ``FNElement`` / ``ScriptElement`` text; HTML export uses
-/// ``FountainInlineMarkup.htmlFragment(from:)``; rich UI can use ``FountainInlineMarkup.attributedFragment(from:)`` per line.
+/// | Mode | Meaning |
+/// |------|--------|
+/// | ``preserveMarkersInPlaintext`` | **Plain** — keep Fountain markers in stored ``FNElement`` / ``ScriptElement`` text; use ``FountainInlineMarkup/htmlFragment(from:)`` only when emitting HTML. |
+/// | ``attributedStringFromInlineMarkup`` | **Rich** — parse a fragment to ``AttributedString`` via ``FountainInlineMarkup/attributedFragment(from:)`` (intents + ``FountainInlineAttributedKeys/Underline``). |
+///
+/// Use ``FountainInlineMarkup/renderInline(_:mode:)`` to branch on this policy without duplicating `switch`es.
 public enum FountainInlineRenderingMode: String, Sendable, CaseIterable {
-    /// Current default: markers remain in stored text; renderers strip or convert.
+    /// Plain mode: markers remain in content; no automatic `AttributedString` conversion.
     case preserveMarkersInPlaintext
-    /// Use ``FountainInlineMarkup.attributedFragment(from:)`` for `AttributedString` with intents + underline.
+    /// Rich mode: parse markers to ``AttributedString`` (bold/italic intents; underline via ``FountainInlineAttributedKeys/Underline``).
     case attributedStringFromInlineMarkup
 }
 

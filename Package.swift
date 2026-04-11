@@ -62,6 +62,7 @@ let package = Package(
                 "FountainDialogueBlockRecognizer.swift",
                 "FountainScriptRendering.swift",
                 "FountainInlineMarkup.swift",
+                "FountainInlineAttributedKeys.swift",
                 "FountainInlineDelimiterTable.swift",
                 "FountainStubRenderers.swift",
                 "FountainScriptMetrics.swift",
