@@ -79,18 +79,9 @@ final class TokenPipelineFNScriptTests: XCTestCase {
         XCTAssertEqual(viaPipeline.elements.map(\.elementText), viaBuilder.map(\.elementText))
     }
 
-    /// Every bundled `.fountain` under `Fixtures/` must keep **fast** vs **tokenPipeline** parity.
+    /// Every bundled `.fountain` under `Fixtures/` must keep **fast** vs **tokenPipeline** parity (see ``FountainPackageBundledFountainFixtures``).
     func testTokenPipelineParityAllBundledFountainFixtures() throws {
-        let names = [
-            "package-boneyard-sandwich",
-            "package-dual-dialogue",
-            "package-forced-block",
-            "package-mixed-production",
-            "package-roundtrip-sample",
-            "package-scene-pagebreak",
-            "export-golden-minimal",
-        ]
-        for base in names {
+        for base in FountainPackageBundledFountainFixtures.basenames {
             let url = try XCTUnwrap(
                 Bundle.module.url(forResource: base, withExtension: "fountain"),
                 "Missing fixture \(base).fountain"

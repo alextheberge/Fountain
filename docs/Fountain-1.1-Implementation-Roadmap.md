@@ -273,14 +273,14 @@ This document turns [Project Specification- Fountain Swift (Next-Gen).md](../Pro
 
 **Goal:** Incremental **quality, ergonomics, and fidelity** after the **2.0.0** line — **without** requiring a new Fountain **syntax** generation unless you explicitly scope one.
 
-**Status:** **Open** — first milestone is repository **SPM-native** migration; other rows are **parallel** polish streams (pick by priority).
+**Status:** **Open** — **15.2** / **15.3** / **15.4** in progress in small slices; **15.1** (SPM-only) remains the largest lift.
 
 | Step | Action | Done when |
 |------|--------|-----------|
 | 15.1 | **SPM-native repository:** remove **`Fountain.xcodeproj`** (and committed **`.xcworkspace`** if any); migrate **Sample Project Mac/iOS** and **`FountainTests`** to SwiftPM-native app / test targets (or document a split repo). Update **CI** if jobs used **`xcodebuild`** on the removed project; refresh [Phase-1-Xcode-SPM-Integration.md](Phase-1-Xcode-SPM-Integration.md), **README**, and **CONTRIBUTING**. | No `.xcodeproj` in tree (or archived per policy); **`swift build`** / **`swift test`** remain CI truth; contributor docs describe **File → Open** on **`Package.swift`**. |
-| 15.2 | **Parser / spec polish:** expand **``.fast``** vs **``.tokenPipeline``** parity toward exhaustive Phase **7.3** coverage; tighten **Phase 4.6** migration notes if any consumer relied on removed edge behavior. | Roadmap / gap analysis updated; tests extended where gaps are found. |
-| 15.3 | **Writers & preview polish:** **FDX** / **HTML** fidelity stretches; **`FountainUI`** layout, **Dynamic Type**, snapshot tests ([Phase 13](#phase-13-swiftui-and-fountainui) stretches). | Documented acceptance per sub-effort; golden fixtures updated when export shape changes intentionally. |
-| 15.4 | **Docs & API hygiene:** DocC or expanded symbol docs where high-traffic types need it; [Public-API-Surface.md](Public-API-Surface.md) stays aligned with semver reality. | PRs scoped; no “silent” public API drift. |
+| 15.2 | **Parser / spec polish:** expand **``.fast``** vs **``.tokenPipeline``** parity toward exhaustive Phase **7.3** coverage; tighten **Phase 4.6** migration notes if any consumer relied on removed edge behavior. | **Partial:** shared bundled **`.fountain`** list ``FountainPackageBundledFountainFixtures`` + **Phase 7** inventory includes **`export-golden-minimal`**; Big Fish / Brick & Steel file parity remains the main **exhaustive** stretch. |
+| 15.3 | **Writers & preview polish:** **FDX** / **HTML** fidelity stretches; **`FountainUI`** layout, **Dynamic Type**, snapshot tests ([Phase 13](#phase-13-swiftui-and-fountainui) stretches). | **Partial:** narrow-width **``FountainView``** / **ImageRenderer** regression test; snapshots / Dynamic Type previews still stretch. |
+| 15.4 | **Docs & API hygiene:** DocC or expanded symbol docs where high-traffic types need it; [Public-API-Surface.md](Public-API-Surface.md) stays aligned with semver reality. | **Partial:** contributor note for bundled fixture catalog; DocC / symbol pass still open. |
 
 ---
 
@@ -327,7 +327,7 @@ Fill as you implement. Link each row to tests.
 | **FountainCore** CoreGraphics / CoreText only in PDF writer (CI) | 10.4 | `.github/workflows/swift.yml` (Phase 10.4 grep); ``FountainPDFWriter.swift`` + [SwiftWasm-Experimental.md](SwiftWasm-Experimental.md) § **10.4** | ☑ |
 | Swift **`Regex`** + no `NSRegularExpression` in **`String+Regex.swift`**; **`FountainRegexes`** Swift-compatible patterns | 11 | [§ Phase 11](#phase-11-regex-modernization-swift-native); `FountainRegexes.swift`, `String+Regex.swift`, `FountainSceneHeadingMatcher.swift`; **stretch:** Wasm script note + **`RegexBuilder`** | ☑ |
 | **State-aware default parse** (`FountainParsePipeline`); **`FastFountainParser`** off default (explicit **`.fast`**) | 12 | [§ Phase 12](#phase-12-canonical-state-aware-parser-default-fnscript); `TokenPipelineFNScriptTests`, `FNScript`, [Public-API-Surface.md](Public-API-Surface.md) | ☑ |
-| **Fast vs tokenPipeline** parity (exhaustive, pre-default-flip) | 12 / 7 | `TokenPipelineFNScriptTests` (incl. Big Fish + **Brick & Steel** file parity), corpus tests, [External-Fountain-Test-References.md](External-Fountain-Test-References.md) | ☐ |
+| **Fast vs tokenPipeline** parity (exhaustive, pre-default-flip) | 12 / 7 / **15.2** | `TokenPipelineFNScriptTests` (bundled fixtures via ``FountainPackageBundledFountainFixtures`` + Big Fish + **Brick & Steel** file parity), corpus tests, [External-Fountain-Test-References.md](External-Fountain-Test-References.md) | ☐ *(bundled **`.fountain`** set unified — feature-length files + external corpora still the stretch)* |
 | **SwiftUI** `FountainView` + **`FountainUI`** SPM target | 13 | [§ Phase 13](#phase-13-swiftui-and-fountainui); `FountainUIPackageTests` | ☑ *(initial — richer layout / snapshot stretch)* |
 | **Bonus:** Inline markup → **`AttributedString`** for SwiftUI | 13.3 / 6 | ``FountainInlineMarkup``, ``FountainUIScriptElementLineContent``, `FountainUI` | ☑ *(initial — underline / snapshot stretch)* |
 | **`2.0.0`** package release (breaking) | 14.1 | [SPM-Release-Checklist.md](SPM-Release-Checklist.md), [CHANGELOG.md](../CHANGELOG.md) | ☑ *(in tree; tag when publishing)* |
@@ -375,7 +375,7 @@ Small, continuous improvements after numbered phases are **initial-complete**:
 | **Phase 12** | **Initial-complete:** **default** **`FNScript`** / async / stream on **`FountainParsePipeline`**; **`.fast`** explicit; expand parity matrix vs Phase 7.3 — [§ Phase 12](#phase-12-canonical-state-aware-parser-default-fnscript). |
 | **Phase 13** | **Complete (initial):** **`FountainUI`**, **`FountainView`**, typography, **13.3** inline markup — layout / snapshot polish stretch — [§ Phase 13](#phase-13-swiftui-and-fountainui). |
 | **Phase 14** | **Complete:** package **`2.0.0`** line in tree (**14.1–14.3**); Fountain **syntax** pin unchanged — [§ Phase 14](#phase-14). |
-| **Phase 15** | **Open:** SPM-only (**15.1**), parser parity / **4.6** notes (**15.2**), writers + **`FountainUI`** (**15.3**), docs/API (**15.4**) — [§ Phase 15](#phase-15). |
+| **Phase 15** | **Open:** SPM-only (**15.1**); **15.2–15.4** started (bundled fixture catalog, **4.6** migration blurb, **`FountainView`** narrow layout test) — [§ Phase 15](#phase-15). |
 
 ---
 

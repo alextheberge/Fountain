@@ -24,6 +24,8 @@ This is the **baseline policy** for the Swift next-gen roadmap. Breaking removal
 
 **Feature flags:** The default `FNScript` initializers use **``.tokenPipeline``** (``FountainParsePipeline``). **`parser: .fast`** is explicit; no separate feature flag is required.
 
+**Phase 4.6 (whitespace-only “action”):** Standalone lines that are **only** whitespace are **no longer** emitted as **Action** elements (they behave like blanks / dialogue continuations per parser rules). Consumers that relied on whitespace-only rows as visible **Action** beats should use **forced action** (`!`) per [Fountain 1.1](https://fountain.io/syntax/). Tracked under **Phase 15.2** polish.
+
 ---
 
 ## Legacy Objective-C and RegexKitLite (removed from tree)

@@ -4,17 +4,9 @@ import Fountain
 /// Phase 7.1–7.2 — bundled fixture inventory plus minimal end-to-end ``FNScript`` rows
 /// that complement ``SpecTraceabilityTests`` / ``PackageFixtureCorpusTests`` (official-style compliance matrix).
 final class Phase7ComplianceTests: XCTestCase {
-    /// Every `.fountain` processed under ``Tests/FountainPackageTests/Fixtures`` (update when adding files).
+    /// Every `.fountain` processed under ``Tests/FountainPackageTests/Fixtures`` (update ``FountainPackageBundledFountainFixtures`` when adding files).
     func testBundledFixtureInventory() throws {
-        let bases = [
-            "package-boneyard-sandwich",
-            "package-dual-dialogue",
-            "package-forced-block",
-            "package-mixed-production",
-            "package-roundtrip-sample",
-            "package-scene-pagebreak",
-        ]
-        for base in bases {
+        for base in FountainPackageBundledFountainFixtures.basenames {
             let url = try XCTUnwrap(
                 Bundle.module.url(forResource: base, withExtension: "fountain"),
                 "Missing \(base).fountain — add under Fixtures/ and ensure Package.swift `.process(\"Fixtures\")`."

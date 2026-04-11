@@ -4,6 +4,8 @@
 
 **Not package SemVer:** **1.1** here is **markup / syntax** coverage. The **Swift package** may ship **2.0.0**, **2.1.0**, etc. independently — see ``FountainPackageVersion`` and [CHANGELOG.md](../CHANGELOG.md) § Version axes.
 
+**Phase 4.6 migration:** If you depended on **whitespace-only** lines becoming standalone **Action** elements, switch to **`!` forced action**; see [Deprecation-And-Distribution.md](Deprecation-And-Distribution.md) (Phase **15.2** polish note).
+
 **Purpose:** Track what the **current** Swift stack implements vs full 1.1, to drive [Fountain-1.1-Implementation-Roadmap.md](Fountain-1.1-Implementation-Roadmap.md).
 
 **Update rule:** Change this file in the same PR as parser or model changes that affect compliance.

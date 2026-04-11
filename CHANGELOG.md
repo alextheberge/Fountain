@@ -39,3 +39,8 @@ SwiftPM **library** release **2.0.0**. Fountain **markup** target remains **1.1*
 ### Planned
 
 - **Phase 15.1** — SPM-native repository: remove **`Fountain.xcodeproj`**, migrate **Sample Project Mac/iOS** and **`FountainTests`** to SwiftPM-native targets (or a documented split repo), refresh CI and [Phase-1-Xcode-SPM-Integration.md](docs/Phase-1-Xcode-SPM-Integration.md) / **README** / **CONTRIBUTING**. *(Carried from the closed Phase 14 scope.)*
+
+### Changed (polish)
+
+- **Phase 15.2:** single catalog ``FountainPackageBundledFountainFixtures`` for all bundled **`.fountain`** fixtures — shared by **Phase 7** inventory and **fast** vs **tokenPipeline** parity tests; **Phase 7** inventory now includes **`export-golden-minimal`**.
+- **Phase 15.3:** **`FountainView`** ImageRenderer regression test for **narrow proposed size** (layout stress).
