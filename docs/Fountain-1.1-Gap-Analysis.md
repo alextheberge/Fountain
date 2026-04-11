@@ -8,6 +8,28 @@
 
 ---
 
+## Phase 0 — Baseline complete
+
+**Phase 0 (baseline and inventory)** is **complete** for this repository: parsers and regex usage are catalogued below, gaps vs Fountain 1.1 are captured in the feature matrix, **Phase 0.2** (Swift `FountainRegexes.swift`) is classified, **Phase 0.3** deprecation policy is **decided** in [Deprecation-And-Distribution.md](Deprecation-And-Distribution.md) § Phase 0.3, and **Phase 0.4** is implemented as `FountainSyntaxPin` + README link.
+
+This document **remains living**: as Phases 2–7 advance, update the matrix and fixture map so “baseline” does not drift from code.
+
+**Where full 1.1 compliance is tracked:** Roadmap **Phase 7** (tests + traceability), not Phase 0. Phase 0 answers *what we have and where the risks are*.
+
+---
+
+## Parser inventory (Phase 0.1)
+
+| Component | Entry point | Role | SwiftPM |
+|-----------|-------------|------|---------|
+| **Fast parser** | `FNScript(string:)` / `init(file:)` (default) | `FastFountainParser` — line-first body, title page heuristics; primary target for 1.1 work | Yes |
+| **Regex parser (Swift)** | `FNScript(..., parser: .regex)` | `FountainParser` — legacy `NSRegularExpression` pipeline; parity for older integrations | Yes |
+| **Legacy Objective-C** | Not exposed in package API | `Fountain/Legacy/*.m` — RegexKitLite-era implementation | **Excluded** |
+
+**Gaps vs Fountain 1.1** are enumerated in § Feature matrix (Y / P / N). **P** items are not “unknown”; they are tracked risks to close under later roadmap phases (see § Next steps).
+
+---
+
 ## Parser implementation
 
 | Path | Role |
@@ -41,6 +63,8 @@ Roadmap Phase 0.2 — how patterns are used today. **Spec-critical** patterns pa
 | `NEWLINE_REPLACEMENT` / `NEWLINE_RESTORE` | Pipeline | Temp newline encoding inside regex pipeline |
 
 `FastFountainParser` uses **separate** inline patterns (`FastFountainParser.swift`) for title-page heuristics plus line-first body rules; it does **not** use most of the table above directly.
+
+**Objective-C / `.m` patterns:** Not duplicated in this doc. Anything not in `FountainRegexes.swift` lives under `Fountain/Legacy/` and is out of SwiftPM scope (Phase 0.2 covers the **Swift** inventory).
 
 ---
 
@@ -77,9 +101,9 @@ Legend: **Y** = supported in practice, **P** = partial / edge-case risk, **N** =
 
 | Item | Status |
 |------|--------|
-| Xcode project | Y — primary |
-| SwiftPM `Package.swift` | **Started** — `swift build` / `swift test`; `FountainCore` / `FountainHTML` / umbrella `Fountain`; CI on `master` via GitHub Actions; release checklist [SPM-Release-Checklist.md](SPM-Release-Checklist.md) |
-| Contributor workflow | **Started** — [CONTRIBUTING.md](../CONTRIBUTING.md); `FountainScriptRendering` protocol for pluggable writers (Phase 8.1); API map [Public-API-Surface.md](Public-API-Surface.md) |
+| Xcode project | Y — sample apps + `FountainTests`; compiles `Fountain/` inline until Phase 1.2 package wiring |
+| SwiftPM `Package.swift` | Y — **authoritative for CI** (`swift build` / `swift test` on `master`); products `FountainCore` / `FountainHTML` / `Fountain`; [SPM-Release-Checklist.md](SPM-Release-Checklist.md) |
+| Contributor workflow | Y — [CONTRIBUTING.md](../CONTRIBUTING.md); [Public-API-Surface.md](Public-API-Surface.md) |
 
 ---
 

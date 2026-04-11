@@ -32,14 +32,16 @@ This document turns [Project Specification- Fountain Swift (Next-Gen).md](../Pro
 
 **Goal:** Know what you have and what “1.1 done” means in this codebase.
 
+**Status:** **Complete.** Baseline inventory and policy are documented; the gap analysis file stays **living** as implementation progresses (see § Phase 0 in [Fountain-1.1-Gap-Analysis.md](Fountain-1.1-Gap-Analysis.md)).
+
 | Step | Action | Done when |
 |------|--------|-----------|
-| 0.1 | Inventory current parsers (`FastFountainParser`, `FountainParser`, legacy ObjC) and **list gaps vs Fountain 1.1** (forced rules, boneyard, notes, dual dialogue, etc.). | **Started:** [Fountain-1.1-Gap-Analysis.md](Fountain-1.1-Gap-Analysis.md) |
-| 0.2 | Inventory **all regex patterns** (`FountainRegexes.swift` / `.m`) and mark which are **spec-critical** vs **styling-only**. | **Done (Swift):** table in [Fountain-1.1-Gap-Analysis.md](Fountain-1.1-Gap-Analysis.md) § Regex pattern inventory |
-| 0.3 | Decide **deprecation policy**: keep legacy targets for one release, feature-flag, or hard cut. | **Started:** README + [Deprecation-And-Distribution.md](Deprecation-And-Distribution.md) |
-| 0.4 | Add **pin** to Fountain syntax version you’re targeting (1.1 + any errata). | **Done:** `FountainSyntaxPin` + README link |
+| 0.1 | Inventory current parsers (`FastFountainParser`, `FountainParser`, legacy ObjC) and **list gaps vs Fountain 1.1** (forced rules, boneyard, notes, dual dialogue, etc.). | **Done:** [Fountain-1.1-Gap-Analysis.md](Fountain-1.1-Gap-Analysis.md) § Parser inventory + feature matrix + fixture map |
+| 0.2 | Inventory **all regex patterns** (`FountainRegexes.swift` / `.m`) and mark which are **spec-critical** vs **styling-only**. | **Done (Swift):** table in [Fountain-1.1-Gap-Analysis.md](Fountain-1.1-Gap-Analysis.md) § Regex pattern inventory (`.m` out of package; see gap analysis note) |
+| 0.3 | Decide **deprecation policy**: keep legacy targets for one release, feature-flag, or hard cut. | **Done:** [Deprecation-And-Distribution.md](Deprecation-And-Distribution.md) § Phase 0.3 — Deprecation policy (decided) |
+| 0.4 | Add **pin** to Fountain syntax version you’re targeting (1.1 + any errata). | **Done:** `FountainSyntaxPin` + README link; optional errata URL in release notes when locking compliance |
 
-**Deliverable:** `docs/Fountain-1.1-Gap-Analysis.md` (short, living document).
+**Deliverable:** `docs/Fountain-1.1-Gap-Analysis.md` (living document; Phase 0 baseline section marks completion).
 
 ---
 

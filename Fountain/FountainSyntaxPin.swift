@@ -9,7 +9,8 @@ import Foundation
 /// Canonical Fountain syntax reference and version label this codebase targets.
 ///
 /// When locking a release for 1.1 compliance, record the spec revision (e.g. archive date or
-/// changelog URL) in release notes; the live site may drift.
+/// changelog URL) in release notes; the live site may drift. Phase 0.4 is satisfied by this URL +
+/// ``targetVersionLabel``; add errata links only when you publish a compliance snapshot.
 public enum FountainSyntaxPin {
     /// Human-facing syntax documentation (Fountain 1.x).
     public static let specificationURL = URL(string: "https://fountain.io/syntax/")!
