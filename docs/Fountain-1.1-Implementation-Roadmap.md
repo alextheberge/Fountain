@@ -246,7 +246,7 @@ Small, continuous improvements after numbered phases are **initial-complete**:
 | **Phase 1** | **Polish:** [Phase-1-Xcode-SPM-Integration.md](Phase-1-Xcode-SPM-Integration.md) — prerequisites, verification, rollback (optional Xcode → local package still open). |
 | **Phase 8** | Real FDX/PDF exporters (replace stubs); deeper HTML refactor if desired. **Polish:** ``FountainStubRendererError`` now conforms to ``LocalizedError``. |
 | **Phase 9.3** | Incremental parse — [Fountain-Incremental-Parse-Spike.md](Fountain-Incremental-Parse-Spike.md) (deferred until preconditions met). |
-| **Gap analysis** | Burn down **P** rows — **started:** ``PolishStructuralAndGapTests`` (section depth `###`, forced `@`, multi-line lyrics, bracket note parse + structural matcher shapes). |
+| **Gap analysis** | **Closed (matrix):** feature matrix all **Y** with SPM regression pointers — ``GapMatrixClosureTests`` + prior tests; see [Fountain-1.1-Gap-Analysis.md](Fountain-1.1-Gap-Analysis.md). |
 | **Structural matchers** | **Polish:** ``FountainStructuralLineMatchers`` page break / boneyard / bracket / `TO:` / all-caps cue use **string logic** (no `NSRegularExpression`). |
 
 ---

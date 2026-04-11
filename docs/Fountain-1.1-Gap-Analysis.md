@@ -80,7 +80,7 @@ Roadmap Phase 0.2 — how patterns are used today. **Spec-critical** patterns pa
 
 ## Feature matrix (Swift `FastFountainParser` + model)
 
-Legend: **Y** = supported in practice, **P** = partial / edge-case risk, **N** = not implemented or wrong, **—** = not reviewed in this pass.
+Legend: **Y** = supported in practice with **SPM regression tests** named below; **N** = not implemented or wrong; **—** = not reviewed in this pass. *(Former **P** rows were closed by ``GapMatrixClosureTests`` + existing corpus tests.)*
 
 | Fountain 1.1 area | Status | Notes |
 |-------------------|--------|--------|
@@ -90,20 +90,20 @@ Legend: **Y** = supported in practice, **P** = partial / edge-case risk, **N** =
 | Action | Y | |
 | Forced action `!` | Y | |
 | Character / dialogue | Y | |
-| Forced character `@` | Y | SPM regression: ``PolishStructuralAndGapTests`` / ``SpecTraceabilityTests`` (forced cue + dialogue) |
+| Forced character `@` | Y | ``PolishStructuralAndGapTests`` / ``SpecTraceabilityTests`` |
 | Parenthetical | Y | |
-| Dual dialogue `^` | P | Column `0`/`1` in metadata; HTML grid smoke: `FountainScriptRenderingTests.testFNHTMLScriptDualDialogueContainsGridClasses` |
-| Lyrics `~` | Y | SPM regression: ``PolishStructuralAndGapTests`` (multi-line `~` + slug) |
-| Transition `TO:` | Y | |
-| Forced transition `>` | P | vs centered `> ... <` |
-| Centered `> ... <` | Y | |
-| Page break `===` | Y | |
-| Section `#` / `##` | Y | Depth: ``PolishStructuralAndGapTests`` / ``StructuredComplianceTests`` (`###` → metadata depth 3) |
-| Synopsis `=` | P | |
-| Boneyard `/* */` | P | Metrics/export semantics |
-| Notes `[[ ]]` | Y | SPM: ``PolishStructuralAndGapTests`` + ``Phase5ProductionFeaturesTests`` |
-| Scene numbers `#..#` on slug | P | |
-| Inline bold/italic/underline | P | `FountainInlineMarkup.htmlFragment` + `attributedFragment` (bold/italic via `InlinePresentationIntent`; underline-only / portable underline on `AttributedString` still limited) |
+| Dual dialogue `^` | Y | ``GapMatrixClosureTests`` (columns + metadata + caret whitespace); HTML: ``FountainScriptRenderingTests`` / `package-dual-dialogue.fountain` |
+| Lyrics `~` | Y | ``PolishStructuralAndGapTests`` (multi-line `~` + slug); ``SpecTraceabilityTests`` |
+| Transition `TO:` | Y | ``FountainStructuralLineMatchers`` / ``PolishStructuralAndGapTests``; ``FountainScriptMetricsTests`` |
+| Forced transition `>` | Y | ``GapMatrixClosureTests`` (bare forced line, `> … TO:` vs slug); ``ParseStructureTests`` (centered vs `> CUT TO:`) |
+| Centered `> ... <` | Y | ``ParseStructureTests``; ``GapMatrixClosureTests`` |
+| Page break `===` | Y | ``Phase5ProductionFeaturesTests``; ``PolishStructuralAndGapTests`` |
+| Section `#` / `##` | Y | ``PolishStructuralAndGapTests`` / ``StructuredComplianceTests`` (`###` → depth 3) |
+| Synopsis `=` | Y | ``GapMatrixClosureTests`` (after section); ``Phase5ProductionFeaturesTests`` / ``FountainScriptMetricsTests`` |
+| Boneyard `/* */` | Y | ``GapMatrixClosureTests`` (multiline + metrics + ``elementsExcludingBoneyard``); ``Phase5ProductionFeaturesTests``; ``FountainScriptMetricsTests`` |
+| Notes `[[ ]]` | Y | ``PolishStructuralAndGapTests`` + ``Phase5ProductionFeaturesTests`` |
+| Scene numbers `#..#` on slug | Y | ``GapMatrixClosureTests`` + ``Phase5ProductionFeaturesTests`` |
+| Inline bold/italic/underline | Y | ``FountainInlineMarkupTests``; ``Phase6InlinePolicyTests``; ``FountainInlineAttributedTests``; ``GapMatrixClosureTests`` (HTML + rich underline/italic) |
 
 ---
 
@@ -137,3 +137,4 @@ Legend: **Y** = supported in practice, **P** = partial / edge-case risk, **N** =
 2. Phase 2 (Swift): **`FNElement`** is a **`Codable` `struct`** with stable **`id`** (see roadmap). **Objective-C** `FNElement` under `Fountain/Legacy/` remains a class for unmigrated targets.
 3. Phase 3–4: line tokenizer + block builder; retire regex-only body parse incrementally.
 4. Phase 8 (writers): **initial complete** — prefer ``FountainScriptRendering`` conformers over ad hoc ``FountainWriter`` + HTML; real FDX/PDF remain future work (stubs throw ``FountainStubRendererError``).
+5. Feature matrix: **P → Y closure** — maintain **Y** when changing parse/export; add a **minimal** test in ``GapMatrixClosureTests`` (or adjacent suites) when fixing a spec regression.
