@@ -71,6 +71,8 @@ let package = Package(
                 "FountainPDFWriter.swift",
                 "FountainParsePipeline.swift",
                 "FountainLineToElementIndexMap.swift",
+                "FountainEditRangeExpansion.swift",
+                "FountainIncrementalParse.swift",
                 "FountainTextMeasuring.swift",
             ],
             sources: [

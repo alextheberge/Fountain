@@ -41,6 +41,7 @@ public enum FNParserType: Sendable, Equatable {
 /// That is appropriate for **small** documents, unit tests, and tooling that already runs off the main thread.
 /// For **large** screenplays—or any full parse from the main thread—prefer ``parseStringAsync(_:)`` / ``parseFileAsync(_:)``
 /// (Phase 9.1: parse work runs in a detached task). Use ``parseStringAsync(_:parser:)`` / ``parseFileAsync(_:parser:)`` to run the same async path with **`.tokenPipeline`** or **`.regex`**. Use ``asFountainDocument()`` for JSON/tooling via `FountainDocument`.
+/// After edits, ``parseIncremental(newText:editedUTF16Range:parser:)`` (Phase 9.5) performs a **full** re-parse while preserving matching prefix/suffix ``FNElement/id`` values and returning an expanded invalidation UTF-16 span (see ``FountainEditRangeExpansion``).
 public class FNScript: CustomStringConvertible {
     public var filename: String?
     public var elements: [FNElement] = []

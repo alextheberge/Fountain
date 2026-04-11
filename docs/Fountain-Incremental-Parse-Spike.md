@@ -1,6 +1,6 @@
 # Incremental parse spike (Phase 9.3)
 
-**Status:** **Planning complete — implementation deferred.** Phase 9.3 is satisfied by recording preconditions, risks, and an explicit **no-ship** decision until a dedicated spike proves merge safety. Production path remains **full parse** via ``FNScript.parseStringAsync`` / ``parseFileAsync`` and preview via ``FNScript.scriptElementStream(from:)``.
+**Status:** **Planning complete — chunk merge still deferred.** Phase 9.3 is satisfied by recording preconditions, risks, and an explicit **no chunk-only re-parse** decision until merge safety is proven. **Phase 9.4–9.5 (initial)** add line/UTF-16 indexing, invalidation expansion, and ``FNScript/parseIncremental`` (**full** parse + ID merge); production hot paths remain **full parse** via ``FNScript.parseStringAsync`` / ``parseFileAsync`` and preview via ``FNScript.scriptElementStream(from:)`` unless you adopt ``parseIncremental`` deliberately.
 
 ## Goal
 
@@ -9,15 +9,15 @@ Re-parse only changed line ranges during live editing instead of scanning the fu
 ## Preconditions (go)
 
 - [x] Phase 4.5 round-trip tests cover the element kinds you care about for editing (`Phase45RoundTripTests`, `GoldenDocumentTests`, corpus JSON checks — baseline stable for **full** parse).
-- [ ] A **line → element index** map exists (or can be derived) without ambiguity for dialogue blocks — **partial:** ``FountainLineToElementIndexMap`` (logical body-line → element index) is implemented; **UTF-16 / character spans**, dialogue ambiguity, and boneyard/title scopes remain **TBD**. **Roadmap:** [Fountain-1.1-Implementation-Roadmap.md](Fountain-1.1-Implementation-Roadmap.md) **Phase 9.4**.
+- [x] A **line → element index** map exists (or can be derived) for **body** elements — ``FountainLineToElementIndexMap`` (logical body-line → element index) plus **UTF-16** / ``String/Index`` spans in canonical ``syntheticBodyLineText``. **Still TBD for warm merge proofs:** dialogue ambiguity across edits, boneyard/title scopes in the same line space. **Roadmap:** [Fountain-1.1-Implementation-Roadmap.md](Fountain-1.1-Implementation-Roadmap.md) **Phase 9.4**.
 - [x] Clear definition of **invalidation boundaries**: scene headings, blank lines, boneyard open/close, title page (documented below; title page still implies full pre-scan for edits near the top).
 
 ## Roadmap implementation steps (after 9.3 planning)
 
 Tracked in the main roadmap **Phase 9** table:
 
-- [ ] **9.4** — **Line → element** index (interval tree or array of character / line offsets per logical line).
-- [ ] **9.5** — **`parseIncremental(newText: String, range: …)`** — expand to nearest safe boundaries, re-tokenize the chunk only, merge into **`FountainDocument`** / ``FNScript``.
+- [x] **9.4** — **Line → element** index + **UTF-16** spans per logical line (``FountainLineToElementIndexMap``); interval tree / title-page line space still optional.
+- [x] **9.5** — **Initial** ``FNScript/parseIncremental(newText:editedUTF16Range:parser:)`` + ``FountainEditRangeExpansion`` — structural expansion + **full** re-parse + prefix/suffix **ID** merge; **chunk-only** re-tokenize + element merge remains future work.
 
 ## No-go signals
 
@@ -35,6 +35,6 @@ Tracked in the main roadmap **Phase 9** table:
 
 | Decision | Date | Notes |
 |----------|------|--------|
-| **Defer incremental parse** | 2026-04 | No prototype merged. **Phase 9** ships **async full parse** + **streaming snapshot** only. Revisit when a line→element map and invalidation proofs exist; until then, UIs should use ``parseFileAsync`` / ``parseStringAsync`` and optionally ``scriptElementStream`` for progressive display after one full parse. **Follow-up:** implementation broken out as roadmap **9.4** (index map) and **9.5** (`parseIncremental`). |
+| **Defer incremental parse** | 2026-04 | **Update (Phase 9 close):** **9.4** line map + UTF-16 spans and **9.5** ``parseIncremental`` (**full** re-parse + ID merge + expansion API) are merged for tooling and future chunk work; **chunk-only** re-parse + merge is still **not** shipped — UIs should still treat production parse as **full** unless/until stretch goals in § suggested spike are proven. **Original:** no chunk merge prototype. **Follow-up:** chunked tokenizer re-parse + merge + golden proofs. |
 
 Implementation checklist: [Fountain-1.1-Implementation-Roadmap.md](Fountain-1.1-Implementation-Roadmap.md) — **Phase 9** table (**9.4**, **9.5**).

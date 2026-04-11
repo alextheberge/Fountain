@@ -26,4 +26,25 @@ final class FountainLineToElementIndexMapTests: XCTestCase {
         }
         XCTAssertEqual(hits, expectedLines)
     }
+
+    func testSyntheticBodyJoinsElementsAndUTF16RangesRoundTrip() {
+        let script = FNScript(string: "\nINT. X - DAY\n\nLine one.\nLine two.\n", parser: .fast)
+        let map = FountainLineToElementIndexMap(elements: script.elements)
+        let synthetic = map.syntheticBodyLineText
+        let lines = synthetic.components(separatedBy: "\n")
+        XCTAssertEqual(lines.count, map.totalBodyLines)
+        for i in 0 ..< map.totalBodyLines {
+            guard let utf = map.utf16HalfOpenRange(forBodyLine: i),
+                let strR = map.stringIndexRange(forBodyLine: i)
+            else {
+                XCTFail("line \(i)")
+                continue
+            }
+            let slice = String(synthetic[strR])
+            XCTAssertEqual(slice, lines[i])
+            let ns = synthetic as NSString
+            let viaNS = ns.substring(with: NSRange(location: utf.lowerBound, length: utf.upperBound - utf.lowerBound))
+            XCTAssertEqual(viaNS, lines[i])
+        }
+    }
 }
