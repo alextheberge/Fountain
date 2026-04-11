@@ -8,6 +8,12 @@
 
 ---
 
+## Phase 1 — SwiftPM and boundaries complete
+
+**Phase 1** is **complete**: `Package.swift` defines **FountainCore** / **FountainHTML** / umbrella **Fountain**; GitHub Actions runs **`swift build`** / **`swift test`** on macOS; [Public-API-Surface.md](Public-API-Surface.md) documents stability tiers. Xcode sample apps still compile **`Fountain/*.swift` inline** (same tree as SPM, not a forked codebase). Optional follow-up: [Phase-1-Xcode-SPM-Integration.md](Phase-1-Xcode-SPM-Integration.md).
+
+---
+
 ## Phase 0 — Baseline complete
 
 **Phase 0 (baseline and inventory)** is **complete** for this repository: parsers and regex usage are catalogued below, gaps vs Fountain 1.1 are captured in the feature matrix, **Phase 0.2** (Swift `FountainRegexes.swift`) is classified, **Phase 0.3** deprecation policy is **decided** in [Deprecation-And-Distribution.md](Deprecation-And-Distribution.md) § Phase 0.3, and **Phase 0.4** is implemented as `FountainSyntaxPin` + README link.
@@ -102,8 +108,8 @@ Legend: **Y** = supported in practice, **P** = partial / edge-case risk, **N** =
 | Item | Status |
 |------|--------|
 | Xcode project | Y — sample apps + `FountainTests`; compiles `Fountain/` inline until Phase 1.2 package wiring |
-| SwiftPM `Package.swift` | Y — **authoritative for CI** (`swift build` / `swift test` on `master`); products `FountainCore` / `FountainHTML` / `Fountain`; [SPM-Release-Checklist.md](SPM-Release-Checklist.md) |
-| Contributor workflow | Y — [CONTRIBUTING.md](../CONTRIBUTING.md); [Public-API-Surface.md](Public-API-Surface.md) |
+| SwiftPM `Package.swift` | Y — **authoritative for CI** (`swift build` / `swift test` on `master`); products `FountainCore` / `FountainHTML` / `Fountain`; Phase **1** closed; [SPM-Release-Checklist.md](SPM-Release-Checklist.md) |
+| Contributor workflow | Y — [CONTRIBUTING.md](../CONTRIBUTING.md); [Public-API-Surface.md](Public-API-Surface.md); optional Xcode→SPM: [Phase-1-Xcode-SPM-Integration.md](Phase-1-Xcode-SPM-Integration.md) |
 
 ---
 

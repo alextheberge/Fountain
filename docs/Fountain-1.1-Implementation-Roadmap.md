@@ -49,12 +49,14 @@ This document turns [Project Specification- Fountain Swift (Next-Gen).md](../Pro
 
 **Goal:** A **SwiftPM library** that can be used by macOS/iOS apps **and** future tooling without Xcode-only coupling.
 
+**Status:** **Complete** for library distribution, CI, module split, and documented public API. **Optional follow-up:** wire Xcode sample targets to the **local** Swift package instead of compiling `Fountain/*.swift` inline — see [Phase-1-Xcode-SPM-Integration.md](Phase-1-Xcode-SPM-Integration.md).
+
 | Step | Action | Done when |
 |------|--------|-----------|
-| 1.1 | Create `Package.swift` with **`FountainCore`** + **`FountainHTML`** + umbrella **`Fountain`** — core has **no** UI frameworks; HTML target holds AppKit/UIKit usage. | **Done (initial):** `swift build` + `swift test` at repo root; products `Fountain`, `FountainCore`, `FountainHTML` |
-| 1.2 | Move or duplicate **model + parse + write** into the package; keep sample apps consuming the package (or same sources via careful symlink — prefer package as source of truth). | **Started:** README + [Deprecation-And-Distribution.md](Deprecation-And-Distribution.md) (SPM vs Xcode table) |
-| 1.3 | Define **public API surface** (`FNScript`, element types, errors). Mark experimental APIs `@_spi` or nested `FountainCore.Experimental` if needed. | **Started:** [Public-API-Surface.md](Public-API-Surface.md) + doc comments on core types |
-| 1.4 | **CI:** `swift build` + `swift test` on macOS (Linux where possible; Wasm later). | **Done:** `.github/workflows/swift.yml` |
+| 1.1 | Create `Package.swift` with **`FountainCore`** + **`FountainHTML`** + umbrella **`Fountain`** — core has **no** UI frameworks; HTML target holds AppKit/UIKit usage. | **Done:** `swift build` + `swift test` at repo root; products `Fountain`, `FountainCore`, `FountainHTML` |
+| 1.2 | Move or duplicate **model + parse + write** into the package; keep sample apps consuming the package (or same sources via careful symlink — prefer package as source of truth). | **Done:** Single **`Fountain/`** source tree; **no** second copy of library sources. **SPM** defines the canonical module graph; Xcode samples compile the **same files** inline (optional package link: [Phase-1-Xcode-SPM-Integration.md](Phase-1-Xcode-SPM-Integration.md)) |
+| 1.3 | Define **public API surface** (`FNScript`, element types, errors). Mark experimental APIs `@_spi` or nested `FountainCore.Experimental` if needed. | **Done:** [Public-API-Surface.md](Public-API-Surface.md) — stability tiers + experimental list; **`@_spi`** reserved for when churn drops (not required to close Phase 1) |
+| 1.4 | **CI:** `swift build` + `swift test` on macOS (Linux where possible; Wasm later). | **Done:** `.github/workflows/swift.yml` on **macOS**; Linux/Wasm not in matrix because package platforms are **macOS 12+** / **iOS 15+** only (see Phase 10 for Wasm stretch) |
 
 ---
 
@@ -218,6 +220,7 @@ Fill as you implement. Link each row to tests.
 
 - [Project Specification- Fountain Swift (Next-Gen).md](../Project%20Specification-%20Fountain%20Swift%20(Next-Gen).md) — vision and constraints  
 - [README](../README.markdown) — current project state  
+- [Phase-1-Xcode-SPM-Integration.md](Phase-1-Xcode-SPM-Integration.md) — optional Xcode sample → local Swift package wiring  
 - [Fountain-Incremental-Parse-Spike.md](Fountain-Incremental-Parse-Spike.md) — Phase 9.3 incremental parse planning  
 - [SPM-Release-Checklist.md](SPM-Release-Checklist.md) — Phase 10.1 tagging / semver  
 - [SwiftWasm-Experimental.md](SwiftWasm-Experimental.md) — Phase 10.3 Wasm notes  

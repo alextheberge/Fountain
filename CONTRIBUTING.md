@@ -1,5 +1,7 @@
 # Contributing to Fountain (Swift)
 
+**Packaging:** Phase **1** is complete — prefer **`swift test`** at the repo root and **`Package.swift`** for library work. Xcode sample targets compile the same `Fountain/` sources inline; see [docs/Phase-1-Xcode-SPM-Integration.md](docs/Phase-1-Xcode-SPM-Integration.md) if you link the local package from Xcode.
+
 ## Parser and format regressions (Phase 7.4)
 
 When you fix a bug in **`FastFountainParser`**, **`FountainWriter`**, or the **`FountainDocument`** mapping:

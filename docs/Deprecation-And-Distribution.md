@@ -1,4 +1,12 @@
-# Deprecation and distribution (Phases 0.3 & 1.2)
+# Deprecation and distribution (Phases 0.3, 1.2 & 1.2 follow-up)
+
+## Phase 1.2 — Package vs Xcode (baseline complete)
+
+- **SwiftPM (`Package.swift`)** defines **FountainCore**, **FountainHTML**, and umbrella **Fountain**; CI at the repo root is authoritative.
+- **Library sources** live only under **`Fountain/`** (and **`Sources/Fountain/`** for the umbrella shim). There is no forked second codebase for the Swift library.
+- **Xcode sample apps** still add each `Fountain/*.swift` file to **Compile Sources** for **Sample Project Mac** / **Sample Project iOS**. That is a **build-system duplicate**, not a duplicate tree. Optional: link the **local package** per [Phase-1-Xcode-SPM-Integration.md](Phase-1-Xcode-SPM-Integration.md).
+
+---
 
 ## Phase 0.3 — Deprecation policy (decided)
 
@@ -9,7 +17,7 @@ This is the **baseline policy** for the Swift next-gen roadmap. It does not sche
 | **`FastFountainParser`** | **Default** | All new behavior, performance work, and Fountain 1.1 alignment target this parser. |
 | **`FountainParser`** (`FNParserType.regex`) | **Legacy Swift path** | Kept for apps that still depend on the regex pipeline. **Bugfixes only** unless a security or data-loss issue forces a larger change. No new Fountain 1.1 features are required to land here first. |
 | **`Fountain/Legacy/*.m`** + **RegexKitLite** | **Out of package** | Not built by SwiftPM. **Reference-only.** No new development; do not extend for new syntax. |
-| **Xcode inline `Fountain/` sources** vs **SPM** | **Dual build (interim)** | Until Phase 1.2 wires samples to the local package, **CI and API truth** follow **`swift build` / `swift test`** on `Package.swift`. Edit the same files under `Fountain/` for both. |
+| **Xcode inline `Fountain/` sources** vs **SPM** | **Dual build (Phase 1 complete)** | **CI and API truth** follow **`swift build` / `swift test`** on `Package.swift`. Same files under **`Fountain/`**; optional Xcode→local package: [Phase-1-Xcode-SPM-Integration.md](Phase-1-Xcode-SPM-Integration.md). |
 
 **Feature flags:** The default `FNScript` initializers already use the fast parser. Opting into **`parser: .regex`** is explicit; no separate feature flag is required.
 
@@ -27,17 +35,14 @@ This is the **baseline policy** for the Swift next-gen roadmap. It does not sche
 
 | Path | Use when |
 |------|----------|
-| **SwiftPM** (`Package.swift`) | Libraries, CI, package-first development (`swift build`, `swift test`). Source of truth for **`FountainCore`** / **`FountainHTML`** / umbrella **`Fountain`**. |
-| **Xcode `Fountain.xcodeproj`** | Sample apps (**Sample Project Mac/iOS**) and **`FountainTests`** hosted in the Mac sample. Targets compile **`Fountain/`** Swift files **inline** (not yet as an SPM dependency). |
+| **SwiftPM** (`Package.swift`) | Libraries, CI, package-first development (`swift build`, `swift test`). **Canonical** module graph for **`FountainCore`** / **`FountainHTML`** / umbrella **`Fountain`**. |
+| **Xcode `Fountain.xcodeproj`** | Sample apps (**Sample Project Mac/iOS**) and **`FountainTests`**. Targets compile **`Fountain/`** Swift files **inline** (same paths as SPM; optional package link: [Phase-1-Xcode-SPM-Integration.md](Phase-1-Xcode-SPM-Integration.md)). |
 
-### Wiring samples to the local package (future)
+### Wiring samples to the local package (optional)
 
-Migrating `.xcodeproj` to depend on the local package would simplify duplication but requires:
+See **[Phase-1-Xcode-SPM-Integration.md](Phase-1-Xcode-SPM-Integration.md)** for a migration checklist (`@testable import`, `ScriptCSS.css` / `Bundle.module`).
 
-- Resolving **`FountainTests`** `@testable import` / host app **`PRODUCT_MODULE_NAME`** expectations.
-- Ensuring **`ScriptCSS.css`** and **`Bundle.module`** behave the same for **`FountainHTML`** when linked as a package product.
-
-Until that migration, treat **SPM** as authoritative for API and CI; keep Xcode changes in sync by editing the same files under **`Fountain/`**.
+Until that migration, **SPM** remains authoritative for API and CI; keep Xcode in sync by editing the same files under **`Fountain/`**.
 
 ## What “deprecated” means here
 

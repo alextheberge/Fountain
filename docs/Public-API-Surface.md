@@ -2,6 +2,17 @@
 
 This is a **map** of supported entry points, not a substitute for Xcode DocC. Prefer **`import Fountain`** in apps (umbrella); use **`import FountainCore`** or **`import FountainHTML`** only when you want a slimmer dependency graph.
 
+**Phase 1.3 status:** **Complete** for documentation and stability expectations below. **`@_spi(…)`** is not applied in source yet; when a subsystem stabilizes, you may narrow visibility without changing runtime behavior.
+
+## API tiers (semver guidance)
+
+| Tier | Treat as | Examples |
+|------|-----------|----------|
+| **Stable intent** | Avoid breaking changes in patch releases; deprecate before removal. | `FNScript` default initializers, `FNElement` / `elementType` strings, `FountainWriter`, `FastFountainParser` as used by `FNScript` |
+| **Preferred interchange** | Additive fields/keys OK in minor releases. | `FountainDocument`, `ScriptElement`, `ScriptElementKind`, `FountainMetadataKey` |
+| **Evolving** | May change more freely; document in release notes. | `FountainScriptMetrics` fields, new `FountainScriptRendering` conformers |
+| **Experimental** | Not semver-stable; may change or be removed. | Streaming APIs, `FountainMarkdownWriter`, stub `FountainFDXWriter` / `FountainPDFWriter` |
+
 ## Modules
 
 | Module | Contents |
