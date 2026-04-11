@@ -18,6 +18,7 @@ Keep Xcode **`FountainTests`** and SPM tests aligned when behavior changes; pref
 
 - Run **`swift build`** and **`swift test`** from the repository root.
 - If you use the Xcode project, build **Sample Project Mac** (and tests if you touched shared sources).
+- Optional: after deep parser changes, run the **Wasm: FountainCore** workflow (Actions tab) or see [docs/SwiftWasm-Experimental.md](docs/SwiftWasm-Experimental.md).
 
 ## Code style
 

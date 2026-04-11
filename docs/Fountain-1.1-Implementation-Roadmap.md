@@ -177,9 +177,9 @@ This document turns [Project Specification- Fountain Swift (Next-Gen).md](../Pro
 
 | Step | Action | Done when |
 |------|--------|-----------|
-| 10.1 | **SPM** is default distribution; tag semver. | **Started:** [SPM-Release-Checklist.md](SPM-Release-Checklist.md) |
-| 10.2 | **Conditional compilation:** `#if canImport(UIKit)` only in **render** or **sample** targets, not in parser. | **Started:** `.github/workflows/swift.yml` greps `Fountain/*.swift` excluding `Platform` / `FNPaginator` / `FNHTMLScript` |
-| 10.3 | **SwiftWasm** (stretch): build script + CI matrix entry; document unsupported APIs. | **Started:** [SwiftWasm-Experimental.md](SwiftWasm-Experimental.md) (CI Wasm not enabled yet) |
+| 10.1 | **SPM** is default distribution; tag semver. | **Done:** [SPM-Release-Checklist.md](SPM-Release-Checklist.md) (default distribution, products table, tagging flow); consumers use package URL + **`import Fountain`** / **`FountainCore`** |
+| 10.2 | **Conditional compilation:** `#if canImport(UIKit)` only in **render** or **sample** targets, not in parser. | **Done:** `.github/workflows/swift.yml` greps `Fountain/*.swift` (excluding `Platform` / `FNPaginator` / `FNHTMLScript`) for `canImport(UIKit\|AppKit)` **and** stray `import UIKit` / `import AppKit` |
+| 10.3 | **SwiftWasm** (stretch): build script + CI matrix entry; document unsupported APIs. | **Done:** `scripts/build-fountaincore-wasm.sh` + [SwiftWasm-Experimental.md](SwiftWasm-Experimental.md) + manual workflow [`.github/workflows/fountaincore-wasm.yml`](../.github/workflows/fountaincore-wasm.yml) (Actions → **Wasm: FountainCore**) |
 
 ---
 
@@ -212,6 +212,9 @@ Fill as you implement. Link each row to tests.
 | Async full parse (string + file) | 9 | `FNScriptAsyncTests` | ☑ |
 | `scriptElementStream` preview (full parse, async load) | 9 | `FountainRoadmapExtensionsTests`, `FNScriptAsyncTests` | ☑ |
 | Incremental parse | 9 | [Fountain-Incremental-Parse-Spike.md](Fountain-Incremental-Parse-Spike.md) (deferred) | ☑ |
+| SPM distribution + semver tagging | 10 | [SPM-Release-Checklist.md](SPM-Release-Checklist.md) | ☑ |
+| Parser free of UIKit/AppKit (core sources) | 10 | `.github/workflows/swift.yml` (Phase 10.2 grep) | ☑ |
+| Wasm **FountainCore** (optional CI) | 10 | `scripts/build-fountaincore-wasm.sh`, [SwiftWasm-Experimental.md](SwiftWasm-Experimental.md), `fountaincore-wasm.yml` | ☑ |
 
 ---
 
@@ -225,7 +228,7 @@ Fill as you implement. Link each row to tests.
 6. **Phase 6** — Rich text when core parse is stable.  
 7. **Phase 8** — Writers refactor.  
 8. **Phase 9** — Async + perf.  
-9. **Phase 10** — Wasm / distribution hardening.
+9. **Phase 10** — SPM / Wasm distribution and parser–UI boundary (roadmap complete; optional Wasm CI is manual).
 
 ---
 
@@ -237,6 +240,7 @@ Fill as you implement. Link each row to tests.
 - [Fountain-Incremental-Parse-Spike.md](Fountain-Incremental-Parse-Spike.md) — Phase 9.3 incremental parse planning (decision: deferred)  
 - [SPM-Release-Checklist.md](SPM-Release-Checklist.md) — Phase 10.1 tagging / semver  
 - [SwiftWasm-Experimental.md](SwiftWasm-Experimental.md) — Phase 10.3 Wasm notes  
+- [`.github/workflows/fountaincore-wasm.yml`](../.github/workflows/fountaincore-wasm.yml) — manual **Wasm: FountainCore** CI  
 - [Deprecation-And-Distribution.md](Deprecation-And-Distribution.md) — Phases 0.3 & 1.2  
 - [Public-API-Surface.md](Public-API-Surface.md) — Phase 1.3  
 - [External-Fountain-Test-References.md](External-Fountain-Test-References.md) — Phase 7.3 external parsers / vendoring notes  

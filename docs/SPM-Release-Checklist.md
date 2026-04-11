@@ -1,6 +1,16 @@
 # Swift Package release checklist (Phase 10.1)
 
-The **source of truth** for library code is SwiftPM (`Package.swift`). Xcode sample targets may still compile `Fountain/` inline; consumers should depend on tagged SPM versions.
+**Phase 10.1 (distribution):** SwiftPM is the **default** distribution surface for the next-gen stack. The Xcode project and sample apps compile the same `Fountain/*.swift` tree **inline** for local demos only; **library consumers should depend on this package by URL** (or a fork) and prefer **semver tags** (`X.Y.Z`) for reproducible builds.
+
+The manifest **package name** is **`FountainSwiftPM`** so the umbrella **library** product can be named `Fountain` without SPM resolver cycles. Apps still **`import Fountain`** when using the umbrella product.
+
+## Products (consumer choice)
+
+| Product | Use when |
+|---------|----------|
+| **`Fountain`** | One import: parse + HTML + JSON/plain writers. |
+| **`FountainCore`** | Parse, `FountainDocument`, metrics, plaintext/JSON writers — **no** UIKit/AppKit at link time from HTML stack. |
+| **`FountainHTML`** | `FNHTMLScript`, pagination, CSS resource — Apple platforms. |
 
 ## Before tagging
 
@@ -25,6 +35,4 @@ git push origin X.Y.Z
 - Optional: attach **GitHub Release** notes (highlights + migration tips).
 - If breaking: document in release notes and bump **major**.
 
-## Distribution note
-
-Products: `Fountain` (umbrella), `FountainCore`, `FountainHTML`. Apps that only need parse + plain export can depend on `FountainCore`; HTML export requires `FountainHTML` (and thus UI frameworks at link time on Apple platforms).
+Stability expectations for these products: [Public-API-Surface.md](Public-API-Surface.md).

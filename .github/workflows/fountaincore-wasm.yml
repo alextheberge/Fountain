@@ -1,0 +1,24 @@
+# Phase 10.3 — optional WebAssembly compile of **FountainCore** (not on every push).
+# Run from the Actions tab → "Wasm: FountainCore" → Run workflow.
+name: Wasm FountainCore
+
+on:
+  workflow_dispatch:
+
+jobs:
+  wasm:
+    name: Build FountainCore (wasm32)
+    runs-on: ubuntu-latest
+    container: swift:6.0.3-noble
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: swiftwasm/setup-swiftwasm@v2
+        id: wasm
+        with:
+          target: wasm32-unknown-wasi
+
+      - name: Build FountainCore for WebAssembly
+        env:
+          SWIFT_SDK_ID: ${{ steps.wasm.outputs.swift-sdk-id }}
+        run: bash ./scripts/build-fountaincore-wasm.sh

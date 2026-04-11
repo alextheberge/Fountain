@@ -24,6 +24,8 @@ This document **remains living**: as Phases 2–7 advance, update the matrix and
 
 **Phase 9** is **roadmap-complete** for **async full parse** and **streaming snapshots**; **incremental** re-parse remains out of scope until [Fountain-Incremental-Parse-Spike.md](Fountain-Incremental-Parse-Spike.md) preconditions are met.
 
+**Phase 10** is **roadmap-complete** for **SPM-first distribution**, **CI enforcement** of the parser vs UIKit/AppKit boundary, and an **optional Wasm** path (`scripts/build-fountaincore-wasm.sh` + manual Actions workflow — see [SwiftWasm-Experimental.md](SwiftWasm-Experimental.md)).
+
 ---
 
 ## Parser inventory (Phase 0.1)

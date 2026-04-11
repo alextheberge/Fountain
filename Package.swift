@@ -1,5 +1,5 @@
 // swift-tools-version: 5.9
-// Fountain Swift Package — core vs HTML split + umbrella `Fountain` (see docs/Fountain-1.1-Implementation-Roadmap.md).
+// Fountain Swift Package — core vs HTML split + umbrella `Fountain` (see docs/Fountain-1.1-Implementation-Roadmap.md, Phase 10 distribution).
 // Syntax target: `FountainSyntaxPin.targetVersionLabel` (currently 1.1).
 import PackageDescription
 

@@ -27,4 +27,8 @@ jobs:
               echo "ERROR: $f must not reference UIKit/AppKit — keep UI in HTML/pagination sources only."
               exit 1
             fi
+            if grep -E '^[[:space:]]*import[[:space:]]+(UIKit|AppKit)[[:space:]]*$' "$f"; then
+              echo "ERROR: $f must not import UIKit/AppKit at file scope — keep UI in HTML/pagination sources only."
+              exit 1
+            fi
           done
