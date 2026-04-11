@@ -16,13 +16,14 @@ The manifest **package name** is **`FountainSwiftPM`** so the umbrella **library
 ## Before tagging
 
 1. Run **`swift build`** and **`swift test`** on the oldest supported Xcode / Swift toolchain you claim.
-2. Confirm **`FountainSyntaxPin.targetVersionLabel`** matches the Fountain spec level documented in the README.
-3. Review **SemVer** impact:
+2. Update **[CHANGELOG.md](../CHANGELOG.md)** (move **Unreleased** into a versioned section for **major** bumps).
+3. Confirm **`FountainSyntaxPin.targetVersionLabel`** matches the Fountain spec level documented in the README.
+4. Review **SemVer** impact:
    - **Major:** breaking public API or behavior changes to parse output.
    - **Minor:** additive API, new element metadata keys, new optional writers.
    - **Patch:** bug fixes, docs, tests only.
-4. Update **README** “Fountain 1.1 (Swift next-gen)” / version note if present.
-5. Ensure **CI** (`.github/workflows/swift.yml`) is green on `master`.
+5. Update **README** “Fountain 1.1 (Swift next-gen)” / version note if present.
+6. Ensure **CI** (`.github/workflows/swift.yml`) is green on `master`.
 
 ## Tagging
 

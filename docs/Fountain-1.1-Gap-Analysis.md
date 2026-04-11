@@ -34,8 +34,6 @@ This document **remains living**: when parser, model, or export behavior changes
 |-----------|-------------|------|---------|
 | **Tokenizer pipeline (default)** | `FNScript(string:)` / `init(file:)` (no `parser:`) | `FountainParsePipeline` — state-aware tokenizer + element builder; primary target for 1.1 work | Yes |
 | **Fast parser (explicit)** | `FNScript(..., parser: .fast)` | `FastFountainParser` — line-first body, title page heuristics; parity / migration | Yes |
-| **Regex parser (Swift)** | `FNScript(..., parser: .regex)` | `FountainParser` — legacy `NSRegularExpression` pipeline; parity for older integrations | Yes |
-| **Legacy Objective-C** | Not exposed in package API | `Fountain/Legacy/*.m` — RegexKitLite-era implementation | **Excluded** |
 
 **Gaps vs Fountain 1.1** are enumerated in § Feature matrix (Y / P / N). **P** items are not “unknown”; they are tracked risks to close under later roadmap phases (see § Next steps).
 
@@ -47,14 +45,12 @@ This document **remains living**: when parser, model, or export behavior changes
 |------|------|
 | `FountainParsePipeline.swift` (via `FNParserType.tokenPipeline`) | Default in `FNScript`; tokenizer-first path |
 | `FastFountainParser.swift` | Explicit `FNScript(..., parser: .fast)`; line-oriented scanner + `NSRegularExpression` where needed |
-| `FountainParser.swift` | Legacy regex pipeline; `FNScript` `parser: .regex` |
-| `Fountain/Legacy/*.m` | Obj-C + RegexKitLite (not in SwiftPM target) |
 
 ---
 
 ## Regex pattern inventory (`Fountain/FountainRegexes.swift`)
 
-Roadmap Phase 0.2 — how patterns are used today. **Spec-critical** patterns participate in structure (sluglines, dialogue, breaks, title page). **Styling** affects inline emphasis for HTML/FDX-style export. **Pipeline** = internal to the legacy regex HTML pipeline (`FountainParser`), not the fast line parser.
+Roadmap Phase 0.2 — how patterns are used today. **Spec-critical** patterns participate in structure (sluglines, dialogue, breaks, title page). **Styling** affects inline emphasis for HTML/FDX-style export. Some constants still support **HTML** / string styling paths; the tokenizer + **`.fast`** parsers do not use the full legacy regex document pipeline.
 
 | Symbol | Classification | Used for |
 |--------|----------------|----------|
@@ -78,7 +74,7 @@ Roadmap Phase 0.2 — how patterns are used today. **Spec-critical** patterns pa
 
 **Planned migration:** Refactor **`FountainRegexes.swift`** to **Swift 5.7+ `Regex` / `RegexBuilder`** (including **`/…/` literals** where appropriate) and **remove `NSRegularExpression` entirely** from **`String+Regex.swift`** so shared helpers are faster, typed, and free of **`NSString`**/`NSRange` bridging (important for **WebAssembly** and **Linux**). Tracked as **Phase 11** in [Fountain-1.1-Implementation-Roadmap.md](Fountain-1.1-Implementation-Roadmap.md#phase-11-regex-modernization-swift-native).
 
-**Objective-C / `.m` patterns:** Not duplicated in this doc. Anything not in `FountainRegexes.swift` lives under `Fountain/Legacy/` and is out of SwiftPM scope (Phase 0.2 covers the **Swift** inventory).
+**Objective-C / `.m` patterns:** The **`Fountain/Legacy/`** reference tree was **removed** (Phase **14.2**). Historical patterns exist only in **git history** or forks; this doc inventories **Swift** sources only.
 
 ---
 

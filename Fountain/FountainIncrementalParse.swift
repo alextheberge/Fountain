@@ -34,7 +34,7 @@ extension FNScript {
     /// - Parameters:
     ///   - newText: Full screenplay source after the edit.
     ///   - editedUTF16Range: Half-open UTF-16 offsets in `newText` covering the editor’s changed region.
-    ///   - parser: Parser engine (``.tokenPipeline`` is supported for parity experiments).
+    ///   - parser: Parser engine (``.tokenPipeline`` or ``FNParserType/fast``).
     @discardableResult
     public func parseIncremental(
         newText: String,

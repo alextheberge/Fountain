@@ -45,7 +45,6 @@
 		AA1003000000000000000001 /* FountainRegexes.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0003000000000000000001 /* FountainRegexes.swift */; };
 		AA1004000000000000000001 /* FNElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0004000000000000000001 /* FNElement.swift */; };
 		AA1005000000000000000001 /* FastFountainParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0005000000000000000001 /* FastFountainParser.swift */; };
-		AA1006000000000000000001 /* FountainParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0006000000000000000001 /* FountainParser.swift */; };
 		AA1007000000000000000001 /* FountainWriter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0007000000000000000001 /* FountainWriter.swift */; };
 		AA1008000000000000000001 /* FNScript.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0008000000000000000001 /* FNScript.swift */; };
 		AA1009000000000000000001 /* FNPaginator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0009000000000000000001 /* FNPaginator.swift */; };
@@ -68,7 +67,6 @@
 		AA2003000000000000000001 /* FountainRegexes.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0003000000000000000001 /* FountainRegexes.swift */; };
 		AA2004000000000000000001 /* FNElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0004000000000000000001 /* FNElement.swift */; };
 		AA2005000000000000000001 /* FastFountainParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0005000000000000000001 /* FastFountainParser.swift */; };
-		AA2006000000000000000001 /* FountainParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0006000000000000000001 /* FountainParser.swift */; };
 		AA2007000000000000000001 /* FountainWriter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0007000000000000000001 /* FountainWriter.swift */; };
 		AA2008000000000000000001 /* FNScript.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0008000000000000000001 /* FNScript.swift */; };
 		AA2009000000000000000001 /* FNPaginator.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA0009000000000000000001 /* FNPaginator.swift */; };
@@ -179,7 +177,6 @@
 		AA0033000000000000000001 /* FountainStubRenderers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FountainStubRenderers.swift; sourceTree = "<group>"; };
 		AA0034000000000000000001 /* FountainScriptMetrics.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FountainScriptMetrics.swift; sourceTree = "<group>"; };
 		AA0005000000000000000001 /* FastFountainParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FastFountainParser.swift; sourceTree = "<group>"; };
-		AA0006000000000000000001 /* FountainParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FountainParser.swift; sourceTree = "<group>"; };
 		AA0007000000000000000001 /* FountainWriter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FountainWriter.swift; sourceTree = "<group>"; };
 		AA000B000000000000000001 /* FountainCodable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FountainCodable.swift; sourceTree = "<group>"; };
 		AA0008000000000000000001 /* FNScript.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FNScript.swift; sourceTree = "<group>"; };
@@ -378,7 +375,6 @@
 				AA0004000000000000000001 /* FNElement.swift */,
 				AA000C000000000000000001 /* FNElementType.swift */,
 				AA0005000000000000000001 /* FastFountainParser.swift */,
-				AA0006000000000000000001 /* FountainParser.swift */,
 				AA0007000000000000000001 /* FountainWriter.swift */,
 				AA000B000000000000000001 /* FountainCodable.swift */,
 				AA000F000000000000000001 /* FountainForcedPrefix.swift */,

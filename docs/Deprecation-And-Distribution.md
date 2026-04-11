@@ -10,27 +10,24 @@
 
 ## Phase 0.3 — Deprecation policy (decided)
 
-This is the **baseline policy** for the Swift next-gen roadmap. It does not schedule removals; it tells contributors and app authors what to rely on.
+This is the **baseline policy** for the Swift next-gen roadmap. Breaking removals are listed in **[CHANGELOG.md](../CHANGELOG.md)** and tagged on **`main`** per [SPM-Release-Checklist.md](SPM-Release-Checklist.md).
 
 | Asset | Status | Rule |
 |-------|--------|------|
 | **`FountainParsePipeline`** / **``.tokenPipeline``** | **Default** | **``FNScript``** sync, async, and stream entry points without an explicit **`parser:`** use the tokenizer-first pipeline (Phases **3–4**). New Fountain 1.1 behavior and parity tests target this path first. |
 | **`FastFountainParser`** (**``.fast``**) | **Explicit opt-in** | Line-first engine for regression, benchmarks, or apps that still depend on its exact behavior. Not the default initializer path. |
-| **`FountainParser`** (`FNParserType.regex`) | **Legacy Swift path** | Kept for apps that still depend on the regex pipeline. **Bugfixes only** unless a security or data-loss issue forces a larger change. No new Fountain 1.1 features are required to land here first. |
-| **`Fountain/Legacy/*.m`** + **RegexKitLite** | **Out of package** | Not built by SwiftPM. **Reference-only.** No new development; do not extend for new syntax. |
 | **Xcode vs SwiftPM** | **Single library graph (Phase 1.2)** | **CI and API truth** follow **`swift build` / `swift test`** on `Package.swift`. Xcode sample + test targets consume the **Fountain** package product from the same repo — [Phase-1-Xcode-SPM-Integration.md](Phase-1-Xcode-SPM-Integration.md). |
 
-**Feature flags:** The default `FNScript` initializers use **``.tokenPipeline``** (``FountainParsePipeline``). **`parser: .fast`** and **`parser: .regex`** are explicit; no separate feature flag is required.
+**Removed (Phase 14.2–14.3, pre-`2.0.0` tag):** **`Fountain/Legacy/`** (Objective-C + RegexKitLite reference tree) and the Swift **`FountainParser`** pipeline / **`FNParserType.regex`**. Consumers that still need RegexKitLite-era sources must vendor them from git history.
 
-**Hard cut:** There is **no** committed date to delete `FountainParser` or the Legacy folder. Revisit when a **major** semantic version documents breaking API/model changes (see [SPM-Release-Checklist.md](SPM-Release-Checklist.md)).
+**Feature flags:** The default `FNScript` initializers use **``.tokenPipeline``** (``FountainParsePipeline``). **`parser: .fast`** is explicit; no separate feature flag is required.
 
 ---
 
-## Legacy Objective-C and RegexKitLite
+## Legacy Objective-C and RegexKitLite (removed from tree)
 
-- Sources under **`Fountain/Legacy/`** are **reference-only**. They are **not** compiled by SwiftPM (`Package.swift` excludes `Legacy/`).
-- The **`FountainParser`** Swift class (regex pipeline) remains available via `FNScript(..., parser: .regex)` for compatibility. New features and bug fixes should target **`FountainParsePipeline`** / **``.tokenPipeline``** unless you are unblocking a legacy app (then **``.fast``** or **``.regex``** as appropriate).
-- **RegexKitLite** and **`-licucore`** apply only if you build the old `.m` stack by hand. The Swift package path does not use them.
+- **`Fountain/Legacy/`** has been **deleted** from the repository. **SwiftPM** never compiled it; archived copies may exist in **git history** or forks.
+- **`FountainRegexes.swift`** and **`String+Regex.swift`** remain for **HTML** export, inline markup, and related string helpers — not for a second full-document Swift parser.
 
 ## Two ways to work with the same Swift sources
 
@@ -47,7 +44,7 @@ See **[Phase-1-Xcode-SPM-Integration.md](Phase-1-Xcode-SPM-Integration.md)** for
 
 ## What “deprecated” means here
 
-See **§ Phase 0.3** above for the authoritative rules. In short: nothing is **removed** yet. Legacy paths (`FountainParser` / RegexKitLite-era `.m`) get **bugfixes only** where necessary; prefer **`FountainCore`**, the default **tokenizer pipeline**, and **`FountainDocument`** for new work.
+See **§ Phase 0.3** above for the authoritative rules. Prefer **`FountainCore`**, the default **tokenizer pipeline**, and **`FountainDocument`** for new work. **`CHANGELOG.md`** records parser removals and migration notes.
 
 ---
 

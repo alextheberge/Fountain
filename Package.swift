@@ -39,7 +39,6 @@ let package = Package(
             name: "FountainCore",
             path: "Fountain",
             exclude: [
-                "Legacy",
                 "ScriptCSS.css",
                 "AppKitFountainTextMeasurer.swift",
                 "FNHTMLScript.swift",
@@ -52,12 +51,10 @@ let package = Package(
             dependencies: ["FountainCore"],
             path: "Fountain",
             exclude: [
-                "Legacy",
                 "String+Regex.swift",
                 "FountainRegexes.swift",
                 "FNElement.swift",
                 "FastFountainParser.swift",
-                "FountainParser.swift",
                 "FountainWriter.swift",
                 "FNScript.swift",
                 "FountainCodable.swift",

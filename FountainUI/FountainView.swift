@@ -10,7 +10,8 @@ import SwiftUI
 ///
 /// Uses system typography (serif body for readability). **Dual dialogue:** rows with
 /// ``FountainMetadataKey/dualDialogueColumn`` `1` are inset toward the trailing edge; pair with
-/// Dynamic Type in previews. Inline **bold/italic** from Fountain markup is not expanded here — see Phase **13.3**.
+/// Dynamic Type in previews. **Inline emphasis** (``FountainInlineMarkup`` → ``AttributedString`` → ``Text``) is applied
+/// per ``FountainUIScriptElementLineContent/usesAttributedInline(for:)`` (Phase **13.3**).
 public struct FountainView: View {
     private let document: FountainDocument
 
@@ -80,7 +81,7 @@ struct FountainScriptElementRow: View {
         if element.kind == .sceneHeading, let sn = element.metadata[FountainMetadataKey.sceneNumber.rawValue], !sn.isEmpty {
             Text("\(element.text)  #\(sn)#")
         } else {
-            Text(element.text)
+            FountainUIScriptElementLineContent.text(for: element)
         }
     }
 }

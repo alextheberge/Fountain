@@ -31,7 +31,7 @@ public enum FountainLineSplitter {
 
 /// Logical line classifications for a state-aware tokenizer (Phase 3 — universal parser).
 ///
-/// This enum is the **vocabulary** only; the current production parser remains ``FastFountainParser``.
+/// This enum is the **vocabulary** only; production default parsing is ``FountainParsePipeline`` (**``.tokenPipeline``**), with ``FastFountainParser`` as **``.fast``**.
 /// Expand cases as the tokenizer lands; keep raw values stable for logging and tests.
 public enum FountainTokenKind: String, Sendable, CaseIterable {
     case blank

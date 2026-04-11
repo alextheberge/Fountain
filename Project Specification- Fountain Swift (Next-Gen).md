@@ -92,6 +92,8 @@ Conditional Compilation: Use #if canImport(UIKit) or #if os(macOS) only for the 
 
 Wasm Support: Ensure the library compiles with SwiftWasm for browser-based tool integration.
 
+**Note (Phase 14):** The **`Fountain/Legacy/`** Objective-C + RegexKitLite reference tree and the Swift **`FountainParser`** / **`FNParserType.regex`** pipeline have been **removed** from the repository; see **[CHANGELOG.md](CHANGELOG.md)**.
+
 Swift Regex stack: Refactor `FountainRegexes.swift` to Swift 5.7+ `Regex` / `RegexBuilder` (including `/…/` literals where helpful) and remove `NSRegularExpression` from `String+Regex.swift` entirely — native `Regex` is faster, strictly typed at capture boundaries, and avoids `NSString`/`NSRange` bridging, which matters for Wasm and Linux. Phased as **Phase 11** in [docs/Fountain-1.1-Implementation-Roadmap.md](docs/Fountain-1.1-Implementation-Roadmap.md#phase-11-regex-modernization-swift-native).
 
 ---
