@@ -107,7 +107,8 @@ public class FastFountainParser {
                 continue
             }
 
-            // Multiple spaces = action
+            // Whitespace-only lines of 2+ spaces are classified as Action (legacy compatibility).
+            // Fountain 1.1 prefers explicit forced action with `!`; see roadmap Phase 4.3 — do not rely on this for new scripts.
             if line.isMatchedByRegex("^\\s{2,}$") {
                 elements.append(FNElement.element(ofType: "Action", text: line))
                 newlinesBefore = 0

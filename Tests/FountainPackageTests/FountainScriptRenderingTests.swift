@@ -73,6 +73,9 @@ final class FountainScriptRenderingTests: XCTestCase {
         let script = FNScript(string: "INT. S - DAY\n\nX.\n")
         XCTAssertThrowsError(try FountainFDXWriter().render(script)) { err in
             XCTAssertEqual(err as? FountainStubRendererError, .notImplemented("FountainFDXWriter"))
+            let localized = err as? LocalizedError
+            XCTAssertNotNil(localized?.errorDescription)
+            XCTAssertTrue(localized?.errorDescription?.contains("FountainFDXWriter") ?? false)
         }
         XCTAssertThrowsError(try FountainPDFWriter().render(script)) { err in
             XCTAssertEqual(err as? FountainStubRendererError, .notImplemented("FountainPDFWriter"))

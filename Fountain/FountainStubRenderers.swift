@@ -7,8 +7,15 @@
 import Foundation
 
 /// Thrown by stub exporters until real writers ship.
-public enum FountainStubRendererError: Error, Equatable, Sendable {
+public enum FountainStubRendererError: Error, Equatable, Sendable, LocalizedError {
     case notImplemented(String)
+
+    public var errorDescription: String? {
+        switch self {
+        case .notImplemented(let name):
+            return "\(name) is not implemented. Use FountainPlaintextWriter, FountainJSONWriter, or FountainHTMLWriter for supported export."
+        }
+    }
 }
 
 /// Final Draft XML export (not implemented).

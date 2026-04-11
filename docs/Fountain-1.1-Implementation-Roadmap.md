@@ -87,7 +87,7 @@ This document turns [Project Specification- Fountain Swift (Next-Gen).md](../Pro
 | 3.2 | Implement **line splitter** honoring Fountain newline rules; normalize `\r\n` once at input. | **Done:** `FountainLineEndingNormalizer` / `FountainLineSplitter` + `LineSplitterTests` |
 | 3.3 | Implement **title page pre-scan** (before body) consistent with 1.1; **do not** mis-classify body lines like `FADE IN:` as title keys (regression from current fast parser fixes). | **Done:** `FountainTitlePagePrescan` (used by ``FastFountainParser``) + `TitlePageRegressionTests` + `Phase3TokenizationTests` |
 | 3.4 | Map **forced prefixes** to tokens: `.` scene, `!` action, `@` character, `~` lyrics, `>` transition (non-centered), etc. | **Done:** `FountainForcedPrefixScanner` + `ForcedPrefixScannerTests`; body tokenizer applies full line order including forced lines |
-| 3.5 | Replace fragile regex-only checks with **scanner + Regex hybrid**: use `Regex` for **localized** patterns (e.g. scene heading stem), not whole-document substitution. | **Done:** `FountainSceneHeadingMatcher` + `FountainStructuralLineMatchers` + corpus smoke (`BigFishCorpusTests`); slug stem remains localized `NSRegularExpression` (Swift `Regex` optional follow-up) |
+| 3.5 | Replace fragile regex-only checks with **scanner + Regex hybrid**: use `Regex` for **localized** patterns (e.g. scene heading stem), not whole-document substitution. | **Done:** `FountainSceneHeadingMatcher` + `FountainStructuralLineMatchers` + corpus smoke (`BigFishCorpusTests`); **polish:** Swift `Regex` slug stem on **macOS 13+ / iOS 16+**, `NSRegularExpression` fallback for package floors (macOS 12 / iOS 15) |
 
 ---
 
@@ -232,6 +232,22 @@ Fill as you implement. Link each row to tests.
 7. **Phase 8** — Writers / ``FountainScriptRendering`` (**initial complete**; real FDX/PDF later).  
 8. **Phase 9** — Async + perf.  
 9. **Phase 10** — SPM / Wasm distribution and parser–UI boundary (roadmap complete; optional Wasm CI is manual).
+
+---
+
+## Polish & maintenance (post–Phase 10)
+
+Small, continuous improvements after numbered phases are **initial-complete**:
+
+| Item | Notes |
+|------|--------|
+| **Phase 3.5** | Prefer Swift ``Regex`` for **localized** slug checks — **started:** ``FountainSceneHeadingMatcher`` uses Swift `Regex` on **macOS 13+ / iOS 16+** and the same rule via `NSRegularExpression` on older OS (package still supports macOS 12 / iOS 15). |
+| **Phase 4.3** | **Started:** ``FastFountainParser`` documents legacy whitespace-only action lines vs Fountain 1.1 ``!`` forced action. |
+| **Phase 1** | **Polish:** [Phase-1-Xcode-SPM-Integration.md](Phase-1-Xcode-SPM-Integration.md) — prerequisites, verification, rollback (optional Xcode → local package still open). |
+| **Phase 8** | Real FDX/PDF exporters (replace stubs); deeper HTML refactor if desired. **Polish:** ``FountainStubRendererError`` now conforms to ``LocalizedError``. |
+| **Phase 9.3** | Incremental parse — [Fountain-Incremental-Parse-Spike.md](Fountain-Incremental-Parse-Spike.md) (deferred until preconditions met). |
+| **Gap analysis** | Burn down **P** rows — **started:** ``PolishStructuralAndGapTests`` (section depth `###`, forced `@`, multi-line lyrics, bracket note parse + structural matcher shapes). |
+| **Structural matchers** | **Polish:** ``FountainStructuralLineMatchers`` page break / boneyard / bracket / `TO:` / all-caps cue use **string logic** (no `NSRegularExpression`). |
 
 ---
 

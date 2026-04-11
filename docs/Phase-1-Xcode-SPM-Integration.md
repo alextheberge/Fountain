@@ -18,3 +18,19 @@ The **Xcode** project (`Fountain.xcodeproj`) still compiles the same `Fountain/*
 5. **`FountainTests`** uses `@testable import Fountain`. After linking the package, confirm the test target’s dependency enables **testable** access in your Xcode version (local packages usually support this for debug test runs). If not, switch tests to `import Fountain` and test only public API, or move remaining tests into **`Tests/FountainPackageTests/`** under SPM.
 
 Until this migration is done, **editing `Fountain/*.swift` once** still updates both SPM and Xcode, because both compile the same paths.
+
+## Prerequisites
+
+- **Same repo clone** used by Xcode and `swift test` (so `Package.swift` paths resolve).
+- **Xcode 15+** (or the same major Swift as `swift-tools-version` in `Package.swift`) for local package support.
+- After migration, **new Swift files** under `Fountain/` must be added only in **`Package.swift`** (and excluded lists if split between Core/HTML); Xcode targets must **not** list duplicate `Fountain/*.swift` sources.
+
+## Quick verification
+
+1. **Product → Clean Build Folder**, then build **Sample Project Mac** / **iOS**.
+2. Run **FountainTests** from the Xcode scheme (or rely on **`swift test`** at repo root for CI parity).
+3. Launch the sample app and open **Big Fish** (or a small `.fountain`) — HTML should still load from **`FountainHTML`**’s `Bundle.module` (`ScriptCSS.css`).
+
+## Rollback
+
+If package wiring breaks signing or resource lookup: remove the local package dependency from the sample targets, **re-add** `Fountain/*.swift` to **Compile Sources** from the project navigator (same paths as today), and restore any copied **`ScriptCSS.css`** in the app target until you debug bundle loading.

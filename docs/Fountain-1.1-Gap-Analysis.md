@@ -72,7 +72,7 @@ Roadmap Phase 0.2 — how patterns are used today. **Spec-critical** patterns pa
 | `BOLD_*`, `ITALIC_*`, `UNDERLINE_*` (and combos) | Styling | Inline emphasis → HTML (`FNHTMLScript`) |
 | `NEWLINE_REPLACEMENT` / `NEWLINE_RESTORE` | Pipeline | Temp newline encoding inside regex pipeline |
 
-`FastFountainParser` uses **separate** inline patterns (`FastFountainParser.swift`) for title-page heuristics plus line-first body rules; it does **not** use most of the table above directly.
+`FastFountainParser` uses **separate** inline patterns (`FastFountainParser.swift`) for title-page heuristics plus line-first body rules; it does **not** use most of the table above directly. **Polish:** ``FountainSceneHeadingMatcher`` uses Swift ``Regex`` on **macOS 13+ / iOS 16+** and `NSRegularExpression` on older deployment targets (Phase 3.5). **Polish:** ``FountainStructuralLineMatchers`` avoids `NSRegularExpression` for page breaks, boneyard shapes, bracket notes, `TO:` transitions, and all-caps cues (string scans).
 
 **Objective-C / `.m` patterns:** Not duplicated in this doc. Anything not in `FountainRegexes.swift` lives under `Fountain/Legacy/` and is out of SwiftPM scope (Phase 0.2 covers the **Swift** inventory).
 
@@ -90,18 +90,18 @@ Legend: **Y** = supported in practice, **P** = partial / edge-case risk, **N** =
 | Action | Y | |
 | Forced action `!` | Y | |
 | Character / dialogue | Y | |
-| Forced character `@` | P | Verify all spec cases |
+| Forced character `@` | Y | SPM regression: ``PolishStructuralAndGapTests`` / ``SpecTraceabilityTests`` (forced cue + dialogue) |
 | Parenthetical | Y | |
 | Dual dialogue `^` | P | Column `0`/`1` in metadata; HTML grid smoke: `FountainScriptRenderingTests.testFNHTMLScriptDualDialogueContainsGridClasses` |
-| Lyrics `~` | P | |
+| Lyrics `~` | Y | SPM regression: ``PolishStructuralAndGapTests`` (multi-line `~` + slug) |
 | Transition `TO:` | Y | |
 | Forced transition `>` | P | vs centered `> ... <` |
 | Centered `> ... <` | Y | |
 | Page break `===` | Y | |
-| Section `#` / `##` | P | Depth |
+| Section `#` / `##` | Y | Depth: ``PolishStructuralAndGapTests`` / ``StructuredComplianceTests`` (`###` → metadata depth 3) |
 | Synopsis `=` | P | |
 | Boneyard `/* */` | P | Metrics/export semantics |
-| Notes `[[ ]]` | P | |
+| Notes `[[ ]]` | Y | SPM: ``PolishStructuralAndGapTests`` + ``Phase5ProductionFeaturesTests`` |
 | Scene numbers `#..#` on slug | P | |
 | Inline bold/italic/underline | P | `FountainInlineMarkup.htmlFragment` + `attributedFragment` (bold/italic via `InlinePresentationIntent`; underline-only / portable underline on `AttributedString` still limited) |
 
