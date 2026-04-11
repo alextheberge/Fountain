@@ -49,12 +49,12 @@ This document turns [Project Specification- Fountain Swift (Next-Gen).md](../Pro
 
 **Goal:** A **SwiftPM library** that can be used by macOS/iOS apps **and** future tooling without Xcode-only coupling.
 
-**Status:** **Complete** for library distribution, CI, module split, and documented public API. **Optional follow-up:** wire Xcode sample targets to the **local** Swift package instead of compiling `Fountain/*.swift` inline — see [Phase-1-Xcode-SPM-Integration.md](Phase-1-Xcode-SPM-Integration.md).
+**Status:** **Complete** for library distribution, CI, module split, documented public API, and **Phase 1.2** — Xcode sample apps and **`FountainTests`** link the **local** Swift package (no duplicate `Fountain/*.swift` compile in those targets). Details: [Phase-1-Xcode-SPM-Integration.md](Phase-1-Xcode-SPM-Integration.md).
 
 | Step | Action | Done when |
 |------|--------|-----------|
 | 1.1 | Create `Package.swift` with **`FountainCore`** + **`FountainHTML`** + umbrella **`Fountain`** — core has **no** UI frameworks; HTML target holds AppKit/UIKit usage. | **Done:** `swift build` + `swift test` at repo root; products `Fountain`, `FountainCore`, `FountainHTML` |
-| 1.2 | Move or duplicate **model + parse + write** into the package; keep sample apps consuming the package (or same sources via careful symlink — prefer package as source of truth). | **Done:** Single **`Fountain/`** source tree; **no** second copy of library sources. **SPM** defines the canonical module graph; Xcode samples compile the **same files** inline (optional package link: [Phase-1-Xcode-SPM-Integration.md](Phase-1-Xcode-SPM-Integration.md)) |
+| 1.2 | Move or duplicate **model + parse + write** into the package; keep sample apps consuming the package (or same sources via careful symlink — prefer package as source of truth). | **Done:** Single **`Fountain/`** source tree; **no** second copy of library sources. **SPM** defines the canonical module graph; **Xcode** sample targets and **`FountainTests`** link the **local** package product **Fountain** (see [Phase-1-Xcode-SPM-Integration.md](Phase-1-Xcode-SPM-Integration.md)). |
 | 1.3 | Define **public API surface** (`FNScript`, element types, errors). Mark experimental APIs `@_spi` or nested `FountainCore.Experimental` if needed. | **Done:** [Public-API-Surface.md](Public-API-Surface.md) — stability tiers + experimental list; **`@_spi`** reserved for when churn drops (not required to close Phase 1) |
 | 1.4 | **CI:** `swift build` + `swift test` on macOS (Linux where possible; Wasm later). | **Done:** `.github/workflows/swift.yml` on **macOS**; Linux/Wasm not in matrix because package platforms are **macOS 12+** / **iOS 15+** only (see Phase 10 for Wasm stretch) |
 
@@ -243,7 +243,7 @@ Small, continuous improvements after numbered phases are **initial-complete**:
 |------|--------|
 | **Phase 3.5** | Prefer Swift ``Regex`` for **localized** slug checks — **started:** ``FountainSceneHeadingMatcher`` uses Swift `Regex` on **macOS 13+ / iOS 16+** and the same rule via `NSRegularExpression` on older OS (package still supports macOS 12 / iOS 15). |
 | **Phase 4.3** | **Started:** ``FastFountainParser`` documents legacy whitespace-only action lines vs Fountain 1.1 ``!`` forced action. |
-| **Phase 1** | **Polish:** [Phase-1-Xcode-SPM-Integration.md](Phase-1-Xcode-SPM-Integration.md) — prerequisites, verification, rollback (optional Xcode → local package still open). |
+| **Phase 1** | **Polish:** [Phase-1-Xcode-SPM-Integration.md](Phase-1-Xcode-SPM-Integration.md) — verification, rollback, and contributor notes (local package wiring **done** in `Fountain.xcodeproj`). |
 | **Phase 8** | Deeper HTML/CSS refactor if desired. **Polish:** ``FountainStubRendererError`` retained for future optional stubs; conforms to ``LocalizedError``. |
 | **Phase 9.3** | Incremental parse — [Fountain-Incremental-Parse-Spike.md](Fountain-Incremental-Parse-Spike.md) (deferred until preconditions met). |
 | **Gap analysis** | **Closed (matrix):** feature matrix all **Y** with SPM regression pointers — ``GapMatrixClosureTests`` + prior tests; see [Fountain-1.1-Gap-Analysis.md](Fountain-1.1-Gap-Analysis.md). |
@@ -255,7 +255,7 @@ Small, continuous improvements after numbered phases are **initial-complete**:
 
 - [Project Specification- Fountain Swift (Next-Gen).md](../Project%20Specification-%20Fountain%20Swift%20(Next-Gen).md) — vision and constraints  
 - [README](../README.markdown) — current project state  
-- [Phase-1-Xcode-SPM-Integration.md](Phase-1-Xcode-SPM-Integration.md) — optional Xcode sample → local Swift package wiring  
+- [Phase-1-Xcode-SPM-Integration.md](Phase-1-Xcode-SPM-Integration.md) — Xcode sample + test targets on local Swift package (Phase 1.2)  
 - [Fountain-Incremental-Parse-Spike.md](Fountain-Incremental-Parse-Spike.md) — Phase 9.3 incremental parse planning (decision: deferred)  
 - [SPM-Release-Checklist.md](SPM-Release-Checklist.md) — Phase 10.1 tagging / semver  
 - [SwiftWasm-Experimental.md](SwiftWasm-Experimental.md) — Phase 10.3 Wasm notes  

@@ -18,9 +18,9 @@
 
 **Phase 0 (baseline and inventory)** is **complete** for this repository: parsers and regex usage are catalogued below, gaps vs Fountain 1.1 are captured in the feature matrix, **Phase 0.2** (Swift `FountainRegexes.swift`) is classified, **Phase 0.3** deprecation policy is **decided** in [Deprecation-And-Distribution.md](Deprecation-And-Distribution.md) § Phase 0.3, and **Phase 0.4** is implemented as `FountainSyntaxPin` + README link.
 
-This document **remains living**: as Phases 2–7 advance, update the matrix and fixture map so “baseline” does not drift from code.
+This document **remains living**: when parser, model, or export behavior changes, update the matrix and fixture map in the **same PR** so “baseline” does not drift from code.
 
-**Where full 1.1 compliance is tracked:** Roadmap **Phase 7** (tests + traceability), not Phase 0. Phase 0 answers *what we have and where the risks are*. **Phase 7** is **roadmap-complete** (fixtures, structured assertions, external references doc, regression policy); the **feature matrix** below still tracks spec gaps until every **N** / **P** is closed.
+**Where full 1.1 compliance is tracked:** Roadmap **Phase 7** (tests + traceability), not Phase 0. Phase 0 answers *what we have and where the risks are*. **Phase 7** is **roadmap-complete** (fixtures, structured assertions, external references doc, regression policy); the **feature matrix** below is **all Y** for the Swift fast parser — keep it accurate when behavior changes.
 
 **Phase 9** is **roadmap-complete** for **async full parse** and **streaming snapshots**; **incremental** re-parse remains out of scope until [Fountain-Incremental-Parse-Spike.md](Fountain-Incremental-Parse-Spike.md) preconditions are met.
 
@@ -131,10 +131,10 @@ Legend: **Y** = supported in practice with **SPM regression tests** named below;
 | Large screenplay | `FountainTests/Big Fish.fountain` | `BigFishCorpusTests` |
 | Reference dual + title | `FountainTests/Brick And Steel.txt` | `BrickSteelCorpusTests`, async + stream parity |
 
-## Next steps (from roadmap)
+## Next steps (prioritized maintenance)
 
-1. Keep this table in sync when adding `Fixtures/*.fountain` or corpus tests.
-2. Phase 2 (Swift): **`FNElement`** is a **`Codable` `struct`** with stable **`id`** (see roadmap). **Objective-C** `FNElement` under `Fountain/Legacy/` remains a class for unmigrated targets.
-3. Phase 3–4: line tokenizer + block builder; retire regex-only body parse incrementally.
-4. Phase 8 (writers): **FDX + PDF** — ``FountainFDXWriter`` (minimal .fdx) and ``FountainPDFWriter`` (PDF `Data` or base64 `String` via ``FountainScriptRendering``); prefer ``FountainScriptRendering`` over ad hoc ``FountainWriter`` + HTML for new export paths.
-5. Feature matrix: **P → Y closure** — maintain **Y** when changing parse/export; add a **minimal** test in ``GapMatrixClosureTests`` (or adjacent suites) when fixing a spec regression.
+1. **Fixtures and tests** — When adding `Tests/FountainPackageTests/Fixtures/*.fountain` or corpus tests, extend **`Phase7ComplianceTests`** (fixture inventory) where applicable and keep § Fixture / test map above aligned.
+2. **Export regressions** — If you change ``FountainFDXWriter`` output shape, update **`export-golden-minimal.fdx`** and run **`ExportGoldenFixtureTests`**. PDF: prefer ``FountainPDFWriter/renderPDFData(_:)`` for files; contract is documented in [Public-API-Surface.md](Public-API-Surface.md) § FDX and PDF export.
+3. **Parser architecture (long horizon)** — Production parse remains **`FastFountainParser`** / **`FNScript`**; the tokenizer → builder path is parity-tested. Promoting it to the single canonical path is a deliberate, test-heavy migration — not a doc-only change.
+4. **Incremental parse** — Still **deferred** until [Fountain-Incremental-Parse-Spike.md](Fountain-Incremental-Parse-Spike.md) preconditions are met.
+5. **Spec edge policy** — Fountain 1.1 **`!` forced action** vs legacy whitespace-only “action” lines: today accepted in ``FastFountainParser`` (see roadmap § Polish Phase 4.3). Tightening behavior is a **product decision** plus tests, not an undocumented tweak.

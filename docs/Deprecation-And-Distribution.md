@@ -1,10 +1,10 @@
-# Deprecation and distribution (Phases 0.3, 1.2 & 1.2 follow-up)
+# Deprecation and distribution (Phases 0.3 & 1.2)
 
-## Phase 1.2 — Package vs Xcode (baseline complete)
+## Phase 1.2 — Package vs Xcode (complete)
 
 - **SwiftPM (`Package.swift`)** defines **FountainCore**, **FountainHTML**, and umbrella **Fountain**; CI at the repo root is authoritative.
 - **Library sources** live only under **`Fountain/`** (and **`Sources/Fountain/`** for the umbrella shim). There is no forked second codebase for the Swift library.
-- **Xcode sample apps** still add each `Fountain/*.swift` file to **Compile Sources** for **Sample Project Mac** / **Sample Project iOS**. That is a **build-system duplicate**, not a duplicate tree. Optional: link the **local package** per [Phase-1-Xcode-SPM-Integration.md](Phase-1-Xcode-SPM-Integration.md).
+- **Xcode (`Fountain.xcodeproj`)** links the **local** Swift package for **Sample Project Mac**, **Sample Project iOS**, and **`FountainTests`** — those targets **do not** list `Fountain/*.swift` in **Compile Sources**. Library code is built once through SwiftPM. Details and rollback: [Phase-1-Xcode-SPM-Integration.md](Phase-1-Xcode-SPM-Integration.md).
 
 ---
 
@@ -17,7 +17,7 @@ This is the **baseline policy** for the Swift next-gen roadmap. It does not sche
 | **`FastFountainParser`** | **Default** | All new behavior, performance work, and Fountain 1.1 alignment target this parser. |
 | **`FountainParser`** (`FNParserType.regex`) | **Legacy Swift path** | Kept for apps that still depend on the regex pipeline. **Bugfixes only** unless a security or data-loss issue forces a larger change. No new Fountain 1.1 features are required to land here first. |
 | **`Fountain/Legacy/*.m`** + **RegexKitLite** | **Out of package** | Not built by SwiftPM. **Reference-only.** No new development; do not extend for new syntax. |
-| **Xcode inline `Fountain/` sources** vs **SPM** | **Dual build (Phase 1 complete)** | **CI and API truth** follow **`swift build` / `swift test`** on `Package.swift`. Same files under **`Fountain/`**; optional Xcode→local package: [Phase-1-Xcode-SPM-Integration.md](Phase-1-Xcode-SPM-Integration.md). |
+| **Xcode vs SwiftPM** | **Single library graph (Phase 1.2)** | **CI and API truth** follow **`swift build` / `swift test`** on `Package.swift`. Xcode sample + test targets consume the **Fountain** package product from the same repo — [Phase-1-Xcode-SPM-Integration.md](Phase-1-Xcode-SPM-Integration.md). |
 
 **Feature flags:** The default `FNScript` initializers already use the fast parser. Opting into **`parser: .regex`** is explicit; no separate feature flag is required.
 
@@ -31,18 +31,18 @@ This is the **baseline policy** for the Swift next-gen roadmap. It does not sche
 - The **`FountainParser`** Swift class (regex pipeline) remains available via `FNScript(..., parser: .regex)` for compatibility. New features and bug fixes should target **`FastFountainParser`** unless you are unblocking a legacy app.
 - **RegexKitLite** and **`-licucore`** apply only if you build the old `.m` stack by hand. The Swift package path does not use them.
 
-## Two ways to build the same Swift sources
+## Two ways to work with the same Swift sources
 
 | Path | Use when |
 |------|----------|
 | **SwiftPM** (`Package.swift`) | Libraries, CI, package-first development (`swift build`, `swift test`). **Canonical** module graph for **`FountainCore`** / **`FountainHTML`** / umbrella **`Fountain`**. |
-| **Xcode `Fountain.xcodeproj`** | Sample apps (**Sample Project Mac/iOS**) and **`FountainTests`**. Targets compile **`Fountain/`** Swift files **inline** (same paths as SPM; optional package link: [Phase-1-Xcode-SPM-Integration.md](Phase-1-Xcode-SPM-Integration.md)). |
+| **Xcode `Fountain.xcodeproj`** | Sample apps (**Sample Project Mac/iOS**) and **`FountainTests`**. Targets link the **local** **Fountain** product (see [Phase-1-Xcode-SPM-Integration.md](Phase-1-Xcode-SPM-Integration.md)); app/test host sources live outside the package tree paths above. |
 
-### Wiring samples to the local package (optional)
+### Xcode + local package (done)
 
-See **[Phase-1-Xcode-SPM-Integration.md](Phase-1-Xcode-SPM-Integration.md)** for a migration checklist (`@testable import`, `ScriptCSS.css` / `Bundle.module`).
+See **[Phase-1-Xcode-SPM-Integration.md](Phase-1-Xcode-SPM-Integration.md)** for verification steps, `@testable import` notes, and rollback if package wiring must be reverted.
 
-Until that migration, **SPM** remains authoritative for API and CI; keep Xcode in sync by editing the same files under **`Fountain/`**.
+**SPM** remains authoritative for API and CI; **library** edits are made under **`Fountain/`** and **`Package.swift`** only — Xcode picks them up through the package dependency.
 
 ## What “deprecated” means here
 
