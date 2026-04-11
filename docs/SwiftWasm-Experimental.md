@@ -4,9 +4,9 @@
 
 ## Current reality
 
-- `Package.swift` declares **Apple** platforms (`macOS(.v12)`, `iOS(.v15)`). Cross-compiling with a **Swift SDK for Wasm** is still the supported experiment path; there is no `SupportedPlatform.wasi` entry in this manifest yet.
+- `Package.swift` declares **Apple** platforms (**macOS 13+**, **iOS 16+** — Phase **11** Swift `Regex` floor). Cross-compiling with a **Swift SDK for Wasm** is still the supported experiment path; there is no `SupportedPlatform.wasi` entry in this manifest yet.
 - **`FountainHTML`** depends on **UIKit/AppKit** (`Platform.swift`, `FNHTMLScript`, `FNPaginator`) and is **not** Wasm-viable as-is — exclude from Wasm builds (same split as today’s `FountainCore` / `FountainHTML` targets).
-- **`FountainCore`** uses **Foundation** (today: **`NSRegularExpression`** via **`String+Regex.swift`**, plus file paths in `FNScript.init(file:)`). **Roadmap [Phase 11: Regex modernization](Fountain-1.1-Implementation-Roadmap.md#phase-11-regex-modernization-swift-native)** targets **Swift-native `Regex`** for **`FountainRegexes.swift`** and **removing `NSRegularExpression` from `String+Regex.swift`** to reduce bridging cost and improve performance on **Wasm** and any future **Linux** CI. A Wasm deployment should still treat **file URL** entry points as unsupported or bridge from JS (see below). **PDF:** ``FountainPDFWriter`` is a stub when **CoreGraphics / CoreText** are unavailable (including **wasm32**); use ``FountainFDXWriter`` / plaintext / JSON — see [ADR-008-PDF-CoreGraphics-availability.md](ADR-008-PDF-CoreGraphics-availability.md).
+- **`FountainCore`** uses **Foundation** (file paths in `FNScript.init(file:)`, etc.). **`String+Regex.swift`** (Phase **11**) uses Swift **`Regex`** first and falls back to **`NSRegularExpression`** only when Swift rejects a pattern (e.g. negative lookbehind in ``ITALIC_PATTERN``). **`FountainRegexes`** body-parser patterns avoid lookbehind so they stay on the Swift path. A Wasm deployment should still treat **file URL** entry points as unsupported or bridge from JS (see below). **PDF:** ``FountainPDFWriter`` is a stub when **CoreGraphics / CoreText** are unavailable (including **wasm32**); use ``FountainFDXWriter`` / plaintext / JSON — see [ADR-008-PDF-CoreGraphics-availability.md](ADR-008-PDF-CoreGraphics-availability.md).
 
 ## Build script (local or CI)
 
@@ -29,7 +29,7 @@ Uses **`swift:6.0.3-noble`** + **`swiftwasm/setup-swiftwasm@v2`** + the script a
 | **`FountainHTML`** (`FNHTMLScript`, `FNPaginator`, `Platform`) | UIKit/AppKit — **omit** from Wasm products. |
 | **``FNPaginator`` / ``FountainTextMeasuring``** | On a **native** host that compiles **FountainHTML**, prefer ``init(script:textMeasurer:)`` with ``CourierPitchMonospaceTextMeasurer`` or ``AppKitFountainTextMeasurer``. For a **hypothetical** Wasm+HTML port, you would supply ``init(script:layoutLineHeight:measureHeight:)`` with a closure implemented in JS (e.g. Canvas **measureText**) or a fixed pitch model — not shipped in-repo. |
 | **Paginated PDF** (`FountainPDFPagination`) | Umbrella **Fountain** only; needs **FountainHTML** + CoreGraphics — **omit** on Wasm; see [ADR-008-PDF-CoreGraphics-availability.md](ADR-008-PDF-CoreGraphics-availability.md). |
-| **`NSRegularExpression` / `NSString` regex bridging** | Temporary; remove per **Phase 11** (`String+Regex.swift`, `FountainRegexes.swift`) — see [roadmap](Fountain-1.1-Implementation-Roadmap.md#phase-11-regex-modernization-swift-native). |
+| **`NSRegularExpression` / `NSString` regex bridging** | **Mostly removed** from **`String+Regex.swift`** (Phase **11**): Swift **`Regex`** first; tiny **`NSRegularExpression`** fallback only when Swift cannot compile a pattern (e.g. lookbehind). Other Foundation APIs may still bridge `NSString` where unavoidable. |
 | **`Task.detached`** (Phase 9.1 async parse) | Verify against your SwiftWasm concurrency/runtime version; prefer cooperative tasks if issues appear. |
 | **Full `swift test` on Wasm** | Not in CI yet; tests assume Apple test bundles and fixtures. |
 

@@ -29,16 +29,16 @@ NSString * const UNIVERSAL_LINE_BREAKS_TEMPLATE = @"\n";
 
 #pragma mark - Patterns
 
-NSString * const SCENE_HEADER_PATTERN       = @"(?<=\\n)(([iI][nN][tT]|[eE][xX][tT]|[^\\w][eE][sS][tT]|\\.|[iI]\\.?\\/[eE]\\.?)([^\\n]+))\\n";
+NSString * const SCENE_HEADER_PATTERN       = @"\\n(([iI][nN][tT]|[eE][xX][tT]|[^\\w][eE][sS][tT]|\\.|[iI]\\.?\\/[eE]\\.?)([^\\n]+))\\n";
 NSString * const ACTION_PATTERN             = @"([^<>]*?)(\\n{2}|\\n<)";
 NSString * const MULTI_LINE_ACTION_PATTERN  = @"\n{2}(([^a-z\\n:]+?[\\.\\?,\\s!\\*_]*?)\n{2}){1,2}";
-NSString * const CHARACTER_CUE_PATTERN      = @"(?<=\\n)([ \\t]*[^<>a-z\\s\\/\\n][^<>a-z:!\\?\\n]*[^<>a-z\\(!\\?:,\\n\\.][ \\t]?)\\n{1}(?!\\n)";
+NSString * const CHARACTER_CUE_PATTERN      = @"\\n([ \\t]*[^<>a-z\\s\\/\\n][^<>a-z:!\\?\\n]*[^<>a-z\\(!\\?:,\\n\\.][ \\t]?)\\n(?!\\n)";
 NSString * const DIALOGUE_PATTERN           = @"(<(Character|Parenthetical)>[^<>\\n]+<\\/(Character|Parenthetical)>)([^<>]*?)(?=\\n{2}|\\n{1}<Parenthetical>)";
 NSString * const PARENTHETICAL_PATTERN      = @"(\\([^<>]*?\\)[\\s]?)\n";
 NSString * const TRANSITION_PATTERN         = @"\\n([\\*_]*([^<>\\na-z]*TO:|FADE TO BLACK\\.|FADE OUT\\.|CUT TO BLACK\\.)[\\*_]*)\\n";
 NSString * const FORCED_TRANSITION_PATTERN  = @"\\n((&gt;|>)\\s*[^<>\\n]+)\\n";     // need to look for &gt; pattern because we run this regex against marked up content
 NSString * const FALSE_TRANSITION_PATTERN  = @"\\n((&gt;|>)\\s*[^<>\\n]+(&lt;\\s*))\\n";     // need to look for &gt; pattern because we run this regex against marked up content
-NSString * const PAGE_BREAK_PATTERN         = @"(?<=\\n)(\\s*[\\=\\-\\_]{3,8}\\s*)\\n{1}";
+NSString * const PAGE_BREAK_PATTERN         = @"\\n(\\s*[\\=\\-\\_]{3,8}\\s*)\\n";
 NSString * const CLEANUP_PATTERN            = @"<Action>\\s*<\\/Action>";
 NSString * const FIRST_LINE_ACTION_PATTERN  = @"^\\n\\n([^<>\\n#]*?)\\n";
 NSString * const SCENE_NUMBER_PATTERN       = @"(\\#([0-9A-Za-z\\.\\)-]+)\\#)";

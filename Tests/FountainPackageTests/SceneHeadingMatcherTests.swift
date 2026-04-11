@@ -1,7 +1,7 @@
 import XCTest
 import Fountain
 
-/// Phase 3.5 polish — ``FountainSceneHeadingMatcher`` matches standard sluglines (Swift `Regex` on newer OS, `NSRegularExpression` fallback; both case-insensitive).
+/// Phase 3.5 / 11 — ``FountainSceneHeadingMatcher`` matches standard sluglines (Swift `Regex`, case-insensitive).
 final class SceneHeadingMatcherTests: XCTestCase {
     func testStandardSlugs() {
         XCTAssertTrue(FountainSceneHeadingMatcher.matchesStandardSlugLine("INT. HOUSE - DAY"))

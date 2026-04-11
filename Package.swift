@@ -11,9 +11,9 @@ import PackageDescription
 let package = Package(
     name: "FountainSwiftPM",
     platforms: [
-        // Apple-only today; Wasm cross-compile uses a Swift SDK (Phase 10.3) without adding `.wasi` here yet.
-        .macOS(.v12),
-        .iOS(.v15),
+        // Phase 11 — Swift `Regex` / `String` matching APIs require macOS 13 / iOS 16+ (see roadmap §11).
+        .macOS(.v13),
+        .iOS(.v16),
     ],
     products: [
         .library(
