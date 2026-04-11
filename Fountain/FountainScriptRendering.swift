@@ -23,11 +23,14 @@ public enum FountainInlineRenderingMode: String, Sendable, CaseIterable {
     case attributedStringFromInlineMarkup
 }
 
-// MARK: - Script rendering protocol (Phase 8.1)
+// MARK: - Script rendering protocol (Phase 8)
 
-/// Renders a parsed ``FNScript`` to a textual (or later binary) product.
+/// Pluggable screenplay export from ``FNScript`` (Phase 8 — replaces ad hoc “call `FountainWriter` then HTML separately” for new code).
+///
+/// **FountainCore** ships: ``FountainPlaintextWriter`` (Fountain plain text), ``FountainMarkdownWriter``, ``FountainJSONWriter``, and stub exporters ``FountainFDXWriter`` / ``FountainPDFWriter`` (throw ``FountainStubRendererError`` until implemented).
+/// **FountainHTML** ships: ``FountainHTMLWriter`` and ``FNHTMLScript`` — both produce the same full HTML document (grid CSS, dual dialogue, title page).
 public protocol FountainScriptRendering {
-    /// Produce output from the in-memory model (e.g. Fountain plain text, HTML, Markdown).
+    /// Produce output from the in-memory model (e.g. Fountain plain text, HTML, Markdown, JSON).
     func render(_ script: FNScript) throws -> String
 }
 

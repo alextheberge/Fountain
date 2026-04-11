@@ -242,3 +242,16 @@ extension FNHTMLScript: FountainScriptRendering {
         return doc.html()
     }
 }
+
+// MARK: - Phase 8.2 (named HTML writer)
+
+/// Default HTML export through ``FNHTMLScript`` (`ScriptCSS.css`, dual-dialogue grid, title page).
+///
+/// Prefer this over constructing ``FNHTMLScript`` directly when you only need a one-shot full-document render; use ``FNHTMLScript`` when you need font tuning or repeated ``html()`` calls on the same script.
+public struct FountainHTMLWriter: FountainScriptRendering, Sendable {
+    public init() {}
+
+    public func render(_ script: FNScript) throws -> String {
+        try FNHTMLScript(script: script).render(script)
+    }
+}

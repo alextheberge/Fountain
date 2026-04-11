@@ -1,6 +1,7 @@
 import XCTest
 import Fountain
 
+/// Phase 8 — ``FountainScriptRendering`` conformers (plaintext, JSON, Markdown, HTML, stubs).
 final class FountainScriptRenderingTests: XCTestCase {
     func testPlaintextWriterRoundTripBody() throws {
         let script = FNScript(string: "\nINT. Z - DAY\n\nHello.\n")
@@ -58,7 +59,26 @@ final class FountainScriptRenderingTests: XCTestCase {
         XCTAssertTrue(out.contains("<em>emphasis</em>"))
     }
 
+    /// Phase 8.2 — ``FountainHTMLWriter`` is the thin ``FountainScriptRendering`` adapter over ``FNHTMLScript``.
+    func testFountainHTMLWriterMatchesFreshFNHTMLScript() throws {
+        let script = FNScript(string: "\nINT. HW - DAY\n\n**bold** act.\n")
+        let viaWriter = try FountainHTMLWriter().render(script)
+        let viaClass = try FNHTMLScript(script: script).render(script)
+        XCTAssertEqual(viaWriter, viaClass)
+        XCTAssertTrue(viaWriter.contains("<strong>bold</strong>"))
+    }
+
     /// Phase 8.2 — dual dialogue must emit grid markup (`ScriptCSS.css` / `FNHTMLScript`).
+    func testStubWritersThrowNotImplemented() throws {
+        let script = FNScript(string: "INT. S - DAY\n\nX.\n")
+        XCTAssertThrowsError(try FountainFDXWriter().render(script)) { err in
+            XCTAssertEqual(err as? FountainStubRendererError, .notImplemented("FountainFDXWriter"))
+        }
+        XCTAssertThrowsError(try FountainPDFWriter().render(script)) { err in
+            XCTAssertEqual(err as? FountainStubRendererError, .notImplemented("FountainPDFWriter"))
+        }
+    }
+
     func testFNHTMLScriptDualDialogueContainsGridClasses() throws {
         let url = try XCTUnwrap(Bundle.module.url(forResource: "package-dual-dialogue", withExtension: "fountain"))
         let text = try String(contentsOf: url, encoding: .utf8)

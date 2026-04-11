@@ -1,7 +1,7 @@
 //
 //  FountainStubRenderers.swift
 //
-//  Phase 8.4 — placeholder renderers so call sites can depend on ``FountainScriptRendering`` before FDX/PDF land.
+//  Phase 8.4 — stub renderers (roadmap-complete): throw ``FountainStubRendererError`` until real FDX/PDF exporters are implemented as separate milestones.
 //
 
 import Foundation

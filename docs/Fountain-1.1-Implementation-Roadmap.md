@@ -152,12 +152,14 @@ This document turns [Project Specification- Fountain Swift (Next-Gen).md](../Pro
 
 **Goal:** **Eliminate monolithic HTML** in core; multiple backends.
 
+**Status:** **Complete (initial)** — unified ``FountainScriptRendering`` API; plaintext / Markdown / JSON / HTML + **stub** FDX/PDF with tests. Legacy ``FountainWriter`` remains for Fountain body/title string export; new call sites should prefer protocol conformers.
+
 | Step | Action | Done when |
 |------|--------|-----------|
-| 8.1 | Define `FountainWriter` (or `ScriptRenderer`) protocol: `func render(_ document: FNScript) throws -> String` (or associated type for binary PDF). | **Started:** `FountainScriptRendering` + `FountainPlaintextWriter` (`FountainScriptRendering.swift`); parity test vs ``FountainWriter.documentFromScript`` (`FountainScriptRenderingTests`) |
-| 8.2 | **`HTMLWriter`**: migrate from `FNHTMLScript`; modern CSS (grid/flex); keep **CSS as resource** or string template. | **Started:** ``FNHTMLScript`` + ``FountainScriptRendering``; `ScriptCSS.css` dual-dialogue **grid** + title `.notes` typo fix; `FountainScriptRenderingTests.testFNHTMLScriptDualDialogueContainsGridClasses` (`package-dual-dialogue.fountain`) |
-| 8.3 | **`MarkdownWriter`**: useful for LLM/tooling pipelines. | **Started:** `FountainMarkdownWriter` + **`FountainJSONWriter`** (`FountainScriptRendering`) + `FountainScriptRenderingTests` (lyrics + bracket notes) |
-| 8.4 | **`FDXWriter`** / **`PDFWriter`**: stub behind feature flags or separate products to avoid bloating core. | **Started:** `FountainFDXWriter` / `FountainPDFWriter` + `FountainStubRendererError` |
+| 8.1 | Define `FountainWriter` (or `ScriptRenderer`) protocol: `func render(_ document: FNScript) throws -> String` (or associated type for binary PDF). | **Done:** ``FountainScriptRendering`` + ``FountainPlaintextWriter``; parity vs ``FountainWriter.documentFromScript`` (``FountainScriptRenderingTests`` / ``testFountainPlaintextWriterMatchesFountainWriterDocument``) |
+| 8.2 | **`HTMLWriter`**: migrate from `FNHTMLScript`; modern CSS (grid/flex); keep **CSS as resource** or string template. | **Done:** ``FNHTMLScript`` conforms to ``FountainScriptRendering``; ``FountainHTMLWriter`` (thin adapter in **FountainHTML**); `ScriptCSS.css` resource + dual-dialogue grid tests (`FountainScriptRenderingTests`) |
+| 8.3 | **`MarkdownWriter`**: useful for LLM/tooling pipelines. | **Done:** ``FountainMarkdownWriter`` + ``FountainJSONWriter`` + `FountainScriptRenderingTests` (lyrics + bracket notes + JSON shape) |
+| 8.4 | **`FDXWriter`** / **`PDFWriter`**: stub behind feature flags or separate products to avoid bloating core. | **Done:** ``FountainFDXWriter`` / ``FountainPDFWriter`` throw ``FountainStubRendererError`` until real exporters ship (``FountainScriptRenderingTests`` / ``testStubWritersThrowNotImplemented``) |
 
 ---
 
@@ -209,6 +211,7 @@ Fill as you implement. Link each row to tests.
 | Script metrics (scenes / transitions / page breaks / boneyard / sections / synopses / notes) | 5 | `FountainScriptMetricsTests` | ☑ |
 | Scene numbers + page break | 5 | `package-scene-pagebreak.fountain`, `PackageFixtureCorpusTests` | ☑ |
 | Dual dialogue HTML (grid CSS) | 8 | `package-dual-dialogue.fountain`, `FountainScriptRenderingTests` | ☑ |
+| Writer protocol + adapters (plain / MD / JSON / HTML / stub FDX·PDF) | 8 | ``FountainScriptRendering``, ``FountainHTMLWriter``, `FountainScriptRenderingTests` | ☑ |
 | Async full parse (string + file) | 9 | `FNScriptAsyncTests` | ☑ |
 | `scriptElementStream` preview (full parse, async load) | 9 | `FountainRoadmapExtensionsTests`, `FNScriptAsyncTests` | ☑ |
 | Incremental parse | 9 | [Fountain-Incremental-Parse-Spike.md](Fountain-Incremental-Parse-Spike.md) (deferred) | ☑ |
@@ -226,7 +229,7 @@ Fill as you implement. Link each row to tests.
 4. **Phases 3 → 5** — New parser pipeline (core engineering).  
 5. **Phase 7** — Tests tightened **continuously** (don’t defer to end).  
 6. **Phase 6** — Rich text when core parse is stable.  
-7. **Phase 8** — Writers refactor.  
+7. **Phase 8** — Writers / ``FountainScriptRendering`` (**initial complete**; real FDX/PDF later).  
 8. **Phase 9** — Async + perf.  
 9. **Phase 10** — SPM / Wasm distribution and parser–UI boundary (roadmap complete; optional Wasm CI is manual).
 

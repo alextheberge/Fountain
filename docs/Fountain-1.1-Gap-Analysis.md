@@ -136,3 +136,4 @@ Legend: **Y** = supported in practice, **P** = partial / edge-case risk, **N** =
 1. Keep this table in sync when adding `Fixtures/*.fountain` or corpus tests.
 2. Phase 2 (Swift): **`FNElement`** is a **`Codable` `struct`** with stable **`id`** (see roadmap). **Objective-C** `FNElement` under `Fountain/Legacy/` remains a class for unmigrated targets.
 3. Phase 3–4: line tokenizer + block builder; retire regex-only body parse incrementally.
+4. Phase 8 (writers): **initial complete** — prefer ``FountainScriptRendering`` conformers over ad hoc ``FountainWriter`` + HTML; real FDX/PDF remain future work (stubs throw ``FountainStubRendererError``).
