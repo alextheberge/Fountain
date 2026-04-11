@@ -30,6 +30,19 @@ final class PackageFixtureCorpusTests: XCTestCase {
         XCTAssertTrue(script.elements.first { $0.elementType == "Action" }?.elementText.contains("!Forced") ?? false)
     }
 
+    /// Scene numbers on slugs + page break between scenes (Phase 5.1 + 5.2 + 7.1).
+    func testSceneNumbersWithPageBreakFixture() throws {
+        let url = try XCTUnwrap(Bundle.module.url(forResource: "package-scene-pagebreak", withExtension: "fountain"))
+        let text = try String(contentsOf: url, encoding: .utf8)
+        let script = FNScript(string: text)
+        let kinds = script.asFountainDocument().elements.map(\.kind)
+        XCTAssertEqual(kinds, [.sceneHeading, .pageBreak, .sceneHeading, .action])
+        let slugs = script.elements.filter { $0.elementType == "Scene Heading" }
+        XCTAssertEqual(slugs.count, 2)
+        XCTAssertEqual(slugs[0].sceneNumber, "1")
+        XCTAssertEqual(slugs[1].sceneNumber, "2")
+    }
+
     /// Boneyard between two action lines; body after `*/` must parse as action (Phase 5.3 + 7.1).
     func testBoneyardSandwichFixture() throws {
         let url = try XCTUnwrap(Bundle.module.url(forResource: "package-boneyard-sandwich", withExtension: "fountain"))

@@ -58,7 +58,7 @@ Legend: **Y** = supported in practice, **P** = partial / edge-case risk, **N** =
 | Character / dialogue | Y | |
 | Forced character `@` | P | Verify all spec cases |
 | Parenthetical | Y | |
-| Dual dialogue `^` | P | Column `0`/`1` in metadata; verify pairing / HTML |
+| Dual dialogue `^` | P | Column `0`/`1` in metadata; HTML grid smoke: `FountainScriptRenderingTests.testFNHTMLScriptDualDialogueContainsGridClasses` |
 | Lyrics `~` | P | |
 | Transition `TO:` | Y | |
 | Forced transition `>` | P | vs centered `> ... <` |
@@ -93,6 +93,7 @@ Legend: **Y** = supported in practice, **P** = partial / edge-case risk, **N** =
 | Section, synopsis, lyrics, `[[ note ]]`, action | `package-mixed-production.fountain` | `PackageFixtureCorpusTests` |
 | Production features (page break, `#` scene nums, boneyard, notes, sections) | inline strings | `Phase5ProductionFeaturesTests` |
 | Boneyard between action lines | `package-boneyard-sandwich.fountain` | `PackageFixtureCorpusTests` |
+| Scene numbers + page break | `package-scene-pagebreak.fountain` | `PackageFixtureCorpusTests` |
 | Large screenplay | `FountainTests/Big Fish.fountain` | `BigFishCorpusTests` |
 | Reference dual + title | `FountainTests/Brick And Steel.txt` | `BrickSteelCorpusTests`, async + stream parity |
 

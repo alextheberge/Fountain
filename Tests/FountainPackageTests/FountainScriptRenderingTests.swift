@@ -57,4 +57,17 @@ final class FountainScriptRenderingTests: XCTestCase {
         XCTAssertTrue(out.hasPrefix("<!DOCTYPE html>"))
         XCTAssertTrue(out.contains("<em>emphasis</em>"))
     }
+
+    /// Phase 8.2 — dual dialogue must emit grid markup (`ScriptCSS.css` / `FNHTMLScript`).
+    func testFNHTMLScriptDualDialogueContainsGridClasses() throws {
+        let url = try XCTUnwrap(Bundle.module.url(forResource: "package-dual-dialogue", withExtension: "fountain"))
+        let text = try String(contentsOf: url, encoding: .utf8)
+        let script = FNScript(string: text)
+        let htmlGen = FNHTMLScript(script: script)
+        let out = try htmlGen.render(script)
+        XCTAssertTrue(out.contains("class='dual-dialogue'"), "wrapper div")
+        XCTAssertTrue(out.contains("dual-dialogue-left"))
+        XCTAssertTrue(out.contains("dual-dialogue-right"))
+        XCTAssertTrue(out.contains("ADAM") && out.contains("EVE"))
+    }
 }

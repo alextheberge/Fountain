@@ -18,6 +18,10 @@ public struct FountainScriptMetrics: Sendable, Equatable {
     public var sceneHeadingCount: Int
     /// Transitions (`Transition` elements).
     public var transitionCount: Int
+    /// Character cues (`Character` elements).
+    public var characterCueCount: Int
+    /// Dialogue elements (one block per element; multi-line dialogue may be one element).
+    public var dialogueElementCount: Int
 
     public init(
         wordCountExcludingBoneyard: Int,
@@ -25,7 +29,9 @@ public struct FountainScriptMetrics: Sendable, Equatable {
         elementCount: Int,
         elementCountExcludingBoneyard: Int,
         sceneHeadingCount: Int,
-        transitionCount: Int
+        transitionCount: Int,
+        characterCueCount: Int,
+        dialogueElementCount: Int
     ) {
         self.wordCountExcludingBoneyard = wordCountExcludingBoneyard
         self.dialogueWordCount = dialogueWordCount
@@ -33,6 +39,8 @@ public struct FountainScriptMetrics: Sendable, Equatable {
         self.elementCountExcludingBoneyard = elementCountExcludingBoneyard
         self.sceneHeadingCount = sceneHeadingCount
         self.transitionCount = transitionCount
+        self.characterCueCount = characterCueCount
+        self.dialogueElementCount = dialogueElementCount
     }
 }
 
@@ -45,13 +53,17 @@ extension FNScript {
         let dialogueWords = tokenCount(in: dialoguePieces.map(\.elementText).joined(separator: "\n"))
         let scenes = elements.filter { $0.elementType == FNElementType.sceneHeading.rawValue }.count
         let transitions = elements.filter { $0.elementType == FNElementType.transition.rawValue }.count
+        let characterCues = elements.filter { $0.elementType == FNElementType.character.rawValue }.count
+        let dialogueElements = elements.filter { $0.elementType == FNElementType.dialogue.rawValue }.count
         return FountainScriptMetrics(
             wordCountExcludingBoneyard: wordCount,
             dialogueWordCount: dialogueWords,
             elementCount: elements.count,
             elementCountExcludingBoneyard: body.count,
             sceneHeadingCount: scenes,
-            transitionCount: transitions
+            transitionCount: transitions,
+            characterCueCount: characterCues,
+            dialogueElementCount: dialogueElements
         )
     }
 
