@@ -1,0 +1,248 @@
+Title: Fountain 1.1 — Single-File Syntax Reference
+Credit: Written by
+Author: Fountain Swift (Next-Gen)
+Draft date: 2026-04-11
+Contact: https://fountain.io/syntax/
+Copyright: (c) Reference layout — not a real screenplay
+
+[[ This file is a syntax cookbook. Each [[...]] block is a Fountain NOTE. Open in any Fountain-aware editor or parse with FNScript. ]]
+
+
+[[ ========== TITLE PAGE (above first blank line) ========== ]]
+
+[[ Keys commonly used: Title, Credit, Author(s), Source, Draft date, Contact, Copyright. Multiple lines per key are allowed on the title page. ]]
+
+
+[[ ========== BODY OPENER (after title page) ========== ]]
+
+FADE IN:
+
+
+[[ ========== SCENE HEADINGS ========== ]]
+
+INT. COFFEE SHOP - DAY #1#
+
+A normal interior slug with scene number at end.
+
+EXT. PARKING LOT - NIGHT #2#
+
+Exterior slug.
+
+INT. WAREHOUSE - CONTINUOUS
+
+Slug without scene number.
+
+.INT. FORCED SLUG - ANY TIME
+
+Leading dot forces a scene heading even if the line would otherwise parse as something else.
+
+INT. KITCHEN - LATER #3#
+
+EST. CITY SKYLINE - MAGIC HOUR
+
+Establishing shot slug (EST.).
+
+INT./EXT. TUNNEL - CONTINUOUS
+
+Combined interior/exterior slug (I/E, INT/EXT, INT./EXT., etc. — see Fountain slug rules).
+
+I/E. BORDER - DAY
+
+Alternate combined form.
+
+
+[[ ========== ACTION ========== ]]
+
+Plain action is any paragraph that does not match a stronger rule.
+
+!Forced action line — exclamation prefix forces ACTION even if the line looks like ALL CAPS.
+
+Action can run several lines
+when there is no blank line between them — soft line breaks merge into one action block until a blank line or a recognized cue.
+
+*Italic*, **bold**, and _underline_ markers are preserved in the source for downstream renderers (inline emphasis).
+
+
+[[ ========== CHARACTER & DIALOGUE ========== ]]
+
+MARTA
+Simple dialogue after a CHARACTER cue in ALL CAPS.
+
+MARTA (O.S.)
+(off-screen extension in parentheses)
+
+MARTA (CONT'D)
+(continued — extension text is convention, not parsed specially)
+
+MARTA
+(beat)
+Parenthetical on its own line between CHARACTER and DIALOGUE.
+
+MARTA
+Dialogue can span
+multiple lines until a blank line ends the block.
+
+@McLowcase
+Leading @ forces CHARACTER even if the name is mixed case.
+
+@SOMEONE (V.O.)
+Forced character with extension.
+
+LEO
+First speech.
+
+LEO
+(wry)
+Parenthetical element: starts with ( after character, no blank line before it.
+
+LEO
+Second speech after parenthetical.
+
+[[ In-dialogue blank: between the two dialogue lines below, the middle line is exactly two ASCII spaces (U+0020 twice) — merged into one Dialogue element in this parser. ]]
+
+NINA
+Dialogue line one.
+  
+Dialogue line two continues the same cue after the two-space-only line.
+
+
+[[ ========== DUAL DIALOGUE ========== ]]
+
+ADAM
+Left column line one.
+
+EVE ^
+Right column — caret after the SECOND character's name marks dual dialogue.
+
+ADAM
+Left continues.
+
+EVE ^
+Right continues until the block ends.
+
+
+[[ ========== LYRICS ========== ]]
+
+~♪ Row, row, row your boat
+~Gently down the stream
+
+~Forced lyrics line even when not starting with a musical symbol
+
+
+[[ ========== TRANSITIONS ========== ]]
+
+CUT TO:
+
+SMASH CUT TO:
+
+FADE OUT.
+
+>FORCED TRANSITION LINE
+
+> OMITTED SEQUENCE
+
+OUT OF HERE TO:
+
+[[ Lines whose trimmed text ends in TO: parse as transitions. Known bare transitions include FADE OUT., CUT TO BLACK., FADE TO BLACK. ]]
+
+
+[[ ========== CENTERED TEXT ========== ]]
+
+> THE END <
+
+> TITLE CARD TEXT <
+
+> CENTERED ACTION LINE <
+
+[[ Centered action: line starts with > AND ends with < on the same line. Same line without a closing < is a forced transition, e.g.: ]]
+
+> THIS IS A FORCED TRANSITION NOT CENTERED
+
+
+[[ ========== SECTION HEADINGS & SYNOPSES ========== ]]
+
+# ACT ONE
+
+= One-line synopsis for Act One (synopsis follows section heading when written this way.)
+
+## SEQUENCE A
+
+= Deeper synopsis under a level-2 section.
+
+### BEAT — INTRO
+
+= Level-three section with synopsis.
+
+
+[[ ========== BRACKET NOTES ========== ]]
+
+[[ This is a Fountain NOTE — double brackets, often used for editor comments. ]]
+
+INT. AFTER NOTE - DAY
+
+[[ Notes can appear between other elements if surrounded by blank lines as the spec expects for body notes. ]]
+
+
+[[ ========== BONEYARD (OMITTED FROM OUTPUT) ========== ]]
+
+/* One-line boneyard can open and close on the same row. */
+
+/*
+
+Everything between slash-stars is boneyard — omitted from screenplay output in most renderers.
+
+INT. THIS LINE LOOKS LIKE A SLUG - BUT IT IS INSIDE BONEYARD
+
+It can span many lines.
+
+*/
+
+INT. BACK IN THE REAL SCRIPT - DAY
+
+Visible action after boneyard closes.
+
+
+[[ ========== PAGE BREAK ========== ]]
+
+===
+
+[[ Three equals on their own line — page break. ]]
+
+INT. AFTER PAGE BREAK - DAY
+
+
+[[ ========== SYNOPSIS LINE (BODY) ========== ]]
+
+= Standalone synopsis line not tied to a # section header (when used alone in body context per your parser).
+
+
+[[ ========== SCENE NUMBERS (slug suffix) ========== ]]
+
+INT. NUMBERED AGAIN - DUSK #42#
+
+[[ Scene numbers in hashes at end of slug; may be stripped from element text in structured export. ]]
+
+
+[[ ========== FORCED SCENE PREFIXES & SPECIAL CASES ========== ]]
+
+!This line is forced ACTION, not dialogue.
+
+.INT. ANOTHER FORCED SLUG - MAGIC HOUR
+
+
+[[ ========== WHITESPACE & DELIMITERS ========== ]]
+
+INT. FINAL BEAT - NIGHT
+
+One blank line above separates blocks.
+
+Two blank lines above can change pacing; Fountain still uses blank lines as structural separators.
+
+MAN
+Use a blank line after dialogue before the next element.
+
+> FADE OUT.
+
+[[ Whitespace-only lines (spaces/tabs only) are not emitted as standalone Action in this stack (Phase 4.6); they still affect dialogue-block continuation when inside dialogue. ]]
+
+[[ End of reference. For full normative rules see https://fountain.io/syntax/ ]]

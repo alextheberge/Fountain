@@ -80,4 +80,39 @@ final class PackageFixtureCorpusTests: XCTestCase {
             ]
         )
     }
+
+    /// `docs/Fountain-1.1-Syntax-Reference.fountain` — single-file syntax cookbook; must parse and include every body kind this stack emits.
+    func testFountain11SyntaxReferenceInRepoParsesAndCoversKinds() throws {
+        let thisFile = URL(fileURLWithPath: #filePath)
+        let repoRoot = thisFile
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+        let docURL = repoRoot.appending(path: "docs/Fountain-1.1-Syntax-Reference.fountain")
+        XCTAssertTrue(
+            FileManager.default.fileExists(atPath: docURL.path),
+            "Expected syntax reference at \(docURL.path) (run tests from repo checkout)"
+        )
+        let text = try String(contentsOf: docURL, encoding: .utf8)
+        let script = FNScript(string: text)
+        XCTAssertFalse(script.elements.isEmpty)
+        XCTAssertFalse(script.titlePage.isEmpty, "Title page block should parse")
+        let kinds = Set(script.asFountainDocument().elements.map(\.kind))
+        for required: ScriptElementKind in [
+            .sceneHeading,
+            .action,
+            .character,
+            .dialogue,
+            .parenthetical,
+            .transition,
+            .lyrics,
+            .sectionHeading,
+            .synopsis,
+            .pageBreak,
+            .boneyard,
+            .comment,
+        ] {
+            XCTAssertTrue(kinds.contains(required), "Missing \(required) — got \(kinds.sorted(by: { $0.rawValue < $1.rawValue }))")
+        }
+    }
 }
