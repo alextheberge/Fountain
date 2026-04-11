@@ -136,5 +136,5 @@ Legend: **Y** = supported in practice with **SPM regression tests** named below;
 1. Keep this table in sync when adding `Fixtures/*.fountain` or corpus tests.
 2. Phase 2 (Swift): **`FNElement`** is a **`Codable` `struct`** with stable **`id`** (see roadmap). **Objective-C** `FNElement` under `Fountain/Legacy/` remains a class for unmigrated targets.
 3. Phase 3–4: line tokenizer + block builder; retire regex-only body parse incrementally.
-4. Phase 8 (writers): **initial complete** — prefer ``FountainScriptRendering`` conformers over ad hoc ``FountainWriter`` + HTML; real FDX/PDF remain future work (stubs throw ``FountainStubRendererError``).
+4. Phase 8 (writers): **FDX + PDF** — ``FountainFDXWriter`` (minimal .fdx) and ``FountainPDFWriter`` (PDF `Data` or base64 `String` via ``FountainScriptRendering``); prefer ``FountainScriptRendering`` over ad hoc ``FountainWriter`` + HTML for new export paths.
 5. Feature matrix: **P → Y closure** — maintain **Y** when changing parse/export; add a **minimal** test in ``GapMatrixClosureTests`` (or adjacent suites) when fixing a spec regression.

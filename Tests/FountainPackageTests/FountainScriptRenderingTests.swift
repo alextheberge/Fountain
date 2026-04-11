@@ -68,18 +68,32 @@ final class FountainScriptRenderingTests: XCTestCase {
         XCTAssertTrue(viaWriter.contains("<strong>bold</strong>"))
     }
 
-    /// Phase 8.2 — dual dialogue must emit grid markup (`ScriptCSS.css` / `FNHTMLScript`).
-    func testStubWritersThrowNotImplemented() throws {
-        let script = FNScript(string: "INT. S - DAY\n\nX.\n")
-        XCTAssertThrowsError(try FountainFDXWriter().render(script)) { err in
-            XCTAssertEqual(err as? FountainStubRendererError, .notImplemented("FountainFDXWriter"))
-            let localized = err as? LocalizedError
-            XCTAssertNotNil(localized?.errorDescription)
-            XCTAssertTrue(localized?.errorDescription?.contains("FountainFDXWriter") ?? false)
-        }
-        XCTAssertThrowsError(try FountainPDFWriter().render(script)) { err in
-            XCTAssertEqual(err as? FountainStubRendererError, .notImplemented("FountainPDFWriter"))
-        }
+    /// Phase 8.4 — FDX is well-formed XML Final Draft can import; PDF is base64-encoded bytes.
+    func testFDXWriterEmitsFinalDraftXML() throws {
+        let script = FNScript(string: "INT. S - DAY\n\nBOB\nHello.\n\n> FADE OUT.\n")
+        let fdx = try FountainFDXWriter().render(script)
+        XCTAssertTrue(fdx.hasPrefix("<?xml"))
+        XCTAssertTrue(fdx.contains("<FinalDraft"))
+        XCTAssertTrue(fdx.contains("DocumentType=\"Script\""))
+        XCTAssertTrue(fdx.contains("<Paragraph Type=\"Scene Heading\">"))
+        XCTAssertTrue(fdx.contains("INT. S - DAY"))
+        XCTAssertTrue(fdx.contains("<Paragraph Type=\"Character\">"))
+        XCTAssertTrue(fdx.contains("BOB"))
+        XCTAssertTrue(fdx.contains("<Paragraph Type=\"Dialogue\">"))
+        XCTAssertTrue(fdx.contains("Hello."))
+        XCTAssertTrue(fdx.contains("<Paragraph Type=\"Transition\">"))
+        XCTAssertTrue(fdx.contains("FADE OUT."))
+    }
+
+    func testPDFWriterProducesValidPDFBytes() throws {
+        let script = FNScript(string: "INT. P - DAY\n\nAction here.\n")
+        let writer = FountainPDFWriter()
+        let b64 = try writer.render(script)
+        let data = try XCTUnwrap(Data(base64Encoded: b64))
+        XCTAssertGreaterThan(data.count, 500)
+        XCTAssertTrue(data.starts(with: [0x25, 0x50, 0x44, 0x46]), "PDF magic %PDF")
+        let data2 = try writer.renderPDFData(script)
+        XCTAssertTrue(data2.starts(with: [0x25, 0x50, 0x44, 0x46]))
     }
 
     func testFNHTMLScriptDualDialogueContainsGridClasses() throws {

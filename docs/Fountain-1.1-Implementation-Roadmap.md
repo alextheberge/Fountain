@@ -152,14 +152,14 @@ This document turns [Project Specification- Fountain Swift (Next-Gen).md](../Pro
 
 **Goal:** **Eliminate monolithic HTML** in core; multiple backends.
 
-**Status:** **Complete (initial)** — unified ``FountainScriptRendering`` API; plaintext / Markdown / JSON / HTML + **stub** FDX/PDF with tests. Legacy ``FountainWriter`` remains for Fountain body/title string export; new call sites should prefer protocol conformers.
+**Status:** **Complete (initial)** — unified ``FountainScriptRendering`` API; plaintext / Markdown / JSON / HTML + **FDX / PDF** exporters with tests. Legacy ``FountainWriter`` remains for Fountain body/title string export; new call sites should prefer protocol conformers.
 
 | Step | Action | Done when |
 |------|--------|-----------|
 | 8.1 | Define `FountainWriter` (or `ScriptRenderer`) protocol: `func render(_ document: FNScript) throws -> String` (or associated type for binary PDF). | **Done:** ``FountainScriptRendering`` + ``FountainPlaintextWriter``; parity vs ``FountainWriter.documentFromScript`` (``FountainScriptRenderingTests`` / ``testFountainPlaintextWriterMatchesFountainWriterDocument``) |
 | 8.2 | **`HTMLWriter`**: migrate from `FNHTMLScript`; modern CSS (grid/flex); keep **CSS as resource** or string template. | **Done:** ``FNHTMLScript`` conforms to ``FountainScriptRendering``; ``FountainHTMLWriter`` (thin adapter in **FountainHTML**); `ScriptCSS.css` resource + dual-dialogue grid tests (`FountainScriptRenderingTests`) |
 | 8.3 | **`MarkdownWriter`**: useful for LLM/tooling pipelines. | **Done:** ``FountainMarkdownWriter`` + ``FountainJSONWriter`` + `FountainScriptRenderingTests` (lyrics + bracket notes + JSON shape) |
-| 8.4 | **`FDXWriter`** / **`PDFWriter`**: stub behind feature flags or separate products to avoid bloating core. | **Done:** ``FountainFDXWriter`` / ``FountainPDFWriter`` throw ``FountainStubRendererError`` until real exporters ship (``FountainScriptRenderingTests`` / ``testStubWritersThrowNotImplemented``) |
+| 8.4 | **`FDXWriter`** / **`PDFWriter`**: Final Draft XML + PDF export. | **Done:** ``FountainFDXWriter`` emits minimal importable .fdx; ``FountainPDFWriter`` renders US Letter PDF via CoreGraphics/CoreText (``render`` = base64, ``renderPDFData`` = `Data`). Tests: ``FountainScriptRenderingTests`` (`testFDXWriterEmitsFinalDraftXML`, `testPDFWriterProducesValidPDFBytes`). |
 
 ---
 
@@ -211,7 +211,7 @@ Fill as you implement. Link each row to tests.
 | Script metrics (scenes / transitions / page breaks / boneyard / sections / synopses / notes) | 5 | `FountainScriptMetricsTests` | ☑ |
 | Scene numbers + page break | 5 | `package-scene-pagebreak.fountain`, `PackageFixtureCorpusTests` | ☑ |
 | Dual dialogue HTML (grid CSS) | 8 | `package-dual-dialogue.fountain`, `FountainScriptRenderingTests` | ☑ |
-| Writer protocol + adapters (plain / MD / JSON / HTML / stub FDX·PDF) | 8 | ``FountainScriptRendering``, ``FountainHTMLWriter``, `FountainScriptRenderingTests` | ☑ |
+| Writer protocol + adapters (plain / MD / JSON / HTML / FDX / PDF) | 8 | ``FountainScriptRendering``, ``FountainHTMLWriter``, ``FountainFDXWriter``, ``FountainPDFWriter``, `FountainScriptRenderingTests` | ☑ |
 | Async full parse (string + file) | 9 | `FNScriptAsyncTests` | ☑ |
 | `scriptElementStream` preview (full parse, async load) | 9 | `FountainRoadmapExtensionsTests`, `FNScriptAsyncTests` | ☑ |
 | Incremental parse | 9 | [Fountain-Incremental-Parse-Spike.md](Fountain-Incremental-Parse-Spike.md) (deferred) | ☑ |
@@ -229,7 +229,7 @@ Fill as you implement. Link each row to tests.
 4. **Phases 3 → 5** — New parser pipeline (core engineering).  
 5. **Phase 7** — Tests tightened **continuously** (don’t defer to end).  
 6. **Phase 6** — Rich text when core parse is stable.  
-7. **Phase 8** — Writers / ``FountainScriptRendering`` (**initial complete**; real FDX/PDF later).  
+7. **Phase 8** — Writers / ``FountainScriptRendering`` (**initial complete**; FDX/PDF baseline shipped — refine layout vs Final Draft in follow-ups).  
 8. **Phase 9** — Async + perf.  
 9. **Phase 10** — SPM / Wasm distribution and parser–UI boundary (roadmap complete; optional Wasm CI is manual).
 
@@ -244,7 +244,7 @@ Small, continuous improvements after numbered phases are **initial-complete**:
 | **Phase 3.5** | Prefer Swift ``Regex`` for **localized** slug checks — **started:** ``FountainSceneHeadingMatcher`` uses Swift `Regex` on **macOS 13+ / iOS 16+** and the same rule via `NSRegularExpression` on older OS (package still supports macOS 12 / iOS 15). |
 | **Phase 4.3** | **Started:** ``FastFountainParser`` documents legacy whitespace-only action lines vs Fountain 1.1 ``!`` forced action. |
 | **Phase 1** | **Polish:** [Phase-1-Xcode-SPM-Integration.md](Phase-1-Xcode-SPM-Integration.md) — prerequisites, verification, rollback (optional Xcode → local package still open). |
-| **Phase 8** | Real FDX/PDF exporters (replace stubs); deeper HTML refactor if desired. **Polish:** ``FountainStubRendererError`` now conforms to ``LocalizedError``. |
+| **Phase 8** | Deeper HTML/CSS refactor if desired. **Polish:** ``FountainStubRendererError`` retained for future optional stubs; conforms to ``LocalizedError``. |
 | **Phase 9.3** | Incremental parse — [Fountain-Incremental-Parse-Spike.md](Fountain-Incremental-Parse-Spike.md) (deferred until preconditions met). |
 | **Gap analysis** | **Closed (matrix):** feature matrix all **Y** with SPM regression pointers — ``GapMatrixClosureTests`` + prior tests; see [Fountain-1.1-Gap-Analysis.md](Fountain-1.1-Gap-Analysis.md). |
 | **Structural matchers** | **Polish:** ``FountainStructuralLineMatchers`` page break / boneyard / bracket / `TO:` / all-caps cue use **string logic** (no `NSRegularExpression`). |

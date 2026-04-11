@@ -60,11 +60,11 @@ protocol FountainWriter {
     func write(script: FNScript) -> String
 }
 
-// Implementations:
-// - HTMLWriter (using modern CSS Grid/Flexbox)
-// - FDXWriter (Final Draft XML)
-// - PDFWriter (Canvas-based rendering)
-// - MarkdownWriter (Standard Markdown conversion)
+// Implementations (in-repo):
+// - HTMLWriter — `FNHTMLScript` / `FountainHTMLWriter` (`FountainScriptRendering`), CSS Grid/Flexbox
+// - FDXWriter — `FountainFDXWriter` → Final Draft `.fdx` XML (minimal importable structure)
+// - PDFWriter — `FountainPDFWriter` → CoreGraphics/CoreText US Letter PDF (`render` returns base64; `renderPDFData` → Data)
+// - MarkdownWriter — `FountainMarkdownWriter`
 
 
 5. Performance and Concurrency

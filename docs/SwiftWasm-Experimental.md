@@ -6,7 +6,7 @@
 
 - `Package.swift` declares **Apple** platforms (`macOS(.v12)`, `iOS(.v15)`). Cross-compiling with a **Swift SDK for Wasm** is still the supported experiment path; there is no `SupportedPlatform.wasi` entry in this manifest yet.
 - **`FountainHTML`** depends on **UIKit/AppKit** (`Platform.swift`, `FNHTMLScript`, `FNPaginator`) and is **not** Wasm-viable as-is — exclude from Wasm builds (same split as today’s `FountainCore` / `FountainHTML` targets).
-- **`FountainCore`** uses **Foundation** (`NSString`, `NSRegularExpression`, file paths in `FNScript.init(file:)`). A Wasm deployment should treat **file URL** entry points as unsupported or bridge from JS (see below).
+- **`FountainCore`** uses **Foundation** (`NSString`, `NSRegularExpression`, file paths in `FNScript.init(file:)`). A Wasm deployment should treat **file URL** entry points as unsupported or bridge from JS (see below). **PDF:** ``FountainPDFWriter`` is a stub on **wasm32** (CoreGraphics/CoreText are unavailable); use ``FountainFDXWriter`` / plaintext / JSON instead.
 
 ## Build script (local or CI)
 
