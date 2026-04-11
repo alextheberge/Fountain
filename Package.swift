@@ -68,6 +68,7 @@ let package = Package(
                 "FountainScriptMetrics.swift",
                 "FountainFDXWriter.swift",
                 "FountainPDFWriter.swift",
+                "FountainParsePipeline.swift",
             ],
             sources: [
                 "FNHTMLScript.swift",

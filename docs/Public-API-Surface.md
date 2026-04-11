@@ -10,7 +10,7 @@ This is a **map** of supported entry points, not a substitute for Xcode DocC. Pr
 |------|-----------|----------|
 | **Stable intent** | Avoid breaking changes in patch releases; deprecate before removal. | `FNScript` default initializers, `FNElement` (value type: `id` + `elementType` / `elementText` fields), `FountainWriter`, `FastFountainParser` as used by `FNScript` |
 | **Preferred interchange** | Additive fields/keys OK in minor releases. | `FountainDocument`, `ScriptElement`, `ScriptElementKind`, `FountainMetadataKey` |
-| **Evolving** | May change more freely; document in release notes. | `FountainScriptMetrics` fields, new `FountainScriptRendering` conformers, coarse tokenizer output (`FountainBodyLineTokenizer` / `FountainTokenizedLine` kinds), `FountainScriptElementsBuilder` (token→element parity may grow before it replaces the fast parser) |
+| **Evolving** | May change more freely; document in release notes. | `FountainScriptMetrics` fields, new `FountainScriptRendering` conformers, coarse tokenizer output (`FountainBodyLineTokenizer` / `FountainTokenizedLine` kinds), `FountainScriptElementsBuilder`, **`FNParserType/tokenPipeline`** on ``FNScript`` (tokenizer-first path; parity-tested vs ``fast`` — API and default may change before it becomes the sole engine) |
 | **Experimental** | Not semver-stable; may change or be removed. | Streaming APIs, `FountainMarkdownWriter`, `FountainFDXWriter` / `FountainPDFWriter` export layouts (minimal .fdx structure; PDF base64 via ``FountainScriptRendering`` — treat output format as evolving) |
 
 ## Modules

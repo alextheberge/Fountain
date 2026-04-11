@@ -79,7 +79,7 @@ This document turns [Project Specification- Fountain Swift (Next-Gen).md](../Pro
 
 **Goal:** **State-aware scanning** — classify **lines** (and line continuations) into **tokens** without building the final tree yet.
 
-**Status:** **Complete (initial)** — shared title-page prescan, structural line matchers, coarse body line tokenizer (aligned with ``FastFountainParser``), and existing forced-prefix + slug helpers. Production parse remains ``FastFountainParser``; the tokenizer is for tooling, previews, and incremental parser work.
+**Status:** **Complete (initial)** — shared title-page prescan, structural line matchers, coarse body line tokenizer (aligned with ``FastFountainParser``), and existing forced-prefix + slug helpers. Production parse remains ``FastFountainParser`` by default; **opt-in tokenizer-first load** is ``FNScript(…, parser: .tokenPipeline)`` via ``FountainParsePipeline`` (tests: ``TokenPipelineFNScriptTests``). The tokenizer is for tooling, previews, and the migration path toward a single canonical engine.
 
 | Step | Action | Done when |
 |------|--------|-----------|

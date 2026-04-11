@@ -24,15 +24,20 @@
 
 import Foundation
 
-/// Which parser implementation ``FNScript`` uses when you opt into the regex pipeline.
-public enum FNParserType {
+/// Which parser engine ``FNScript`` uses when not taking the default ``init(string:)`` / ``init(file:)`` path.
+public enum FNParserType: Sendable, Equatable {
+    /// Production **line-first** parser (``FastFountainParser``).
     case fast
+    /// Legacy **regex** pipeline (``FountainParser``).
     case regex
+    /// **Tokenizer-first** path: ``FountainTitlePagePrescan`` + ``FountainBodyLineTokenizer`` + ``FountainScriptElementsBuilder`` (Phase 3–4). Parity-tested against ``fast``; opt-in until promoted to default.
+    case tokenPipeline
 }
 
 /// Loaded Fountain screenplay: title page, body elements, and export helpers.
 ///
-/// By default ``init(string:)`` and ``init(file:)`` use ``FastFountainParser`` and run **synchronously** on the caller’s thread.
+/// By default ``init(string:)`` and ``init(file:)`` use ``FastFountainParser`` (``FNParserType/fast``) and run **synchronously** on the caller’s thread.
+/// Use ``init(string:parser:)`` with ``FNParserType/tokenPipeline`` to exercise the tokenizer-first architecture (same tests target parity with ``fast``).
 /// That is appropriate for **small** documents, unit tests, and tooling that already runs off the main thread.
 /// For **large** screenplays—or any full parse from the main thread—prefer ``parseStringAsync(_:)`` / ``parseFileAsync(_:)``
 /// (Phase 9.1: parse work runs in a detached task). Use ``asFountainDocument()`` for JSON/tooling via `FountainDocument`.
@@ -117,10 +122,15 @@ public class FNScript: CustomStringConvertible {
 
     public func loadFile(_ path: String, parser parserType: FNParserType) {
         filename = (path as NSString).lastPathComponent
-        if parserType == .regex {
+        switch parserType {
+        case .regex:
             elements = FountainParser.parseBody(ofFile: path)
             titlePage = FountainParser.parseTitlePage(ofFile: path)
-        } else {
+        case .tokenPipeline:
+            let parsed = FountainParsePipeline.parseDocument(file: path)
+            elements = parsed.elements
+            titlePage = parsed.titlePage
+        case .fast:
             let parser = FastFountainParser(file: path)
             elements = parser.elements
             titlePage = parser.titlePage
@@ -129,10 +139,15 @@ public class FNScript: CustomStringConvertible {
 
     public func loadString(_ string: String, parser parserType: FNParserType) {
         filename = nil
-        if parserType == .regex {
+        switch parserType {
+        case .regex:
             elements = FountainParser.parseBody(ofString: string)
             titlePage = FountainParser.parseTitlePage(ofString: string)
-        } else {
+        case .tokenPipeline:
+            let parsed = FountainParsePipeline.parseDocument(string: string)
+            elements = parsed.elements
+            titlePage = parsed.titlePage
+        case .fast:
             let parser = FastFountainParser(string: string)
             elements = parser.elements
             titlePage = parser.titlePage

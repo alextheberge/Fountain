@@ -4,10 +4,10 @@
 
 ## Parser and format regressions (Phase 7.4)
 
-When you fix a bug in **`FastFountainParser`**, **`FountainWriter`**, or the **`FountainDocument`** mapping:
+When you fix a bug in **`FastFountainParser`**, **`FountainBodyLineTokenizer`**, **`FountainScriptElementsBuilder`**, **`FountainWriter`**, or the **`FountainDocument`** mapping:
 
 1. Add a **minimal** reproduction as a string (or tiny `.fountain` under `Tests/FountainPackageTests/Fixtures/` when shared across tests). If you add a fixture file, extend **`Phase7ComplianceTests.testBundledFixtureInventory`** so the inventory stays accurate.
-2. Add or extend an SPM test in **`Tests/FountainPackageTests/`** (e.g. `SpecTraceabilityTests`, `Phase5ProductionFeaturesTests`, `Phase7ComplianceTests`) so `swift test` catches the regression.
+2. Add or extend an SPM test in **`Tests/FountainPackageTests/`** (e.g. `SpecTraceabilityTests`, `Phase5ProductionFeaturesTests`, `Phase7ComplianceTests`) so `swift test` catches the regression. If you touch the tokenizer pipeline, extend **`Phase4ParityTests`** and **`TokenPipelineFNScriptTests`** so **`.fast`** and **`.tokenPipeline`** stay aligned.
 3. Update **`docs/Fountain-1.1-Implementation-Roadmap.md`** spec traceability or phase tables if the change affects Fountain 1.1 coverage notes.
 4. Update **`docs/Fountain-1.1-Gap-Analysis.md`** if the change touches the feature matrix, fixture map, or “living baseline” narrative.
 

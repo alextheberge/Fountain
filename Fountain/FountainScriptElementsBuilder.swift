@@ -185,7 +185,6 @@ public enum FountainScriptElementsBuilder {
 
     /// Prescans title page like ``FastFountainParser``, tokenizes the body, then assembles elements.
     public static func buildElements(fromRawDocument raw: String) -> [FNElement] {
-        let (_, tokens) = FountainBodyLineTokenizer.tokenizeBodyAfterTitlePrescan(rawDocument: raw)
-        return buildElements(fromBodyTokens: tokens)
+        FountainParsePipeline.parseDocument(string: raw).elements
     }
 }
