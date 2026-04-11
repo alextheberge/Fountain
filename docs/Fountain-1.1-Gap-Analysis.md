@@ -22,6 +22,8 @@ This document **remains living**: as Phases 2–7 advance, update the matrix and
 
 **Where full 1.1 compliance is tracked:** Roadmap **Phase 7** (tests + traceability), not Phase 0. Phase 0 answers *what we have and where the risks are*. **Phase 7** is **roadmap-complete** (fixtures, structured assertions, external references doc, regression policy); the **feature matrix** below still tracks spec gaps until every **N** / **P** is closed.
 
+**Phase 9** is **roadmap-complete** for **async full parse** and **streaming snapshots**; **incremental** re-parse remains out of scope until [Fountain-Incremental-Parse-Spike.md](Fountain-Incremental-Parse-Spike.md) preconditions are met.
+
 ---
 
 ## Parser inventory (Phase 0.1)

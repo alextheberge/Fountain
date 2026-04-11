@@ -1,6 +1,7 @@
 import XCTest
 import Fountain
 
+/// Phase 9.1 — async full parse parity vs synchronous ``FNScript``; Phase 9.2 — stream aligned with ``parseStringAsync`` snapshot.
 final class FNScriptAsyncTests: XCTestCase {
     func testParseStringAsyncMatchesSyncParse() async {
         let source = "\nINT. ASYNC - DAY\n\nHello.\n"
@@ -8,6 +9,23 @@ final class FNScriptAsyncTests: XCTestCase {
         let syncScript = FNScript(string: source)
         XCTAssertEqual(asyncScript.elements.count, syncScript.elements.count)
         XCTAssertEqual(asyncScript.elements.map(\.elementType), syncScript.elements.map(\.elementType))
+    }
+
+    /// ``scriptElementStream(from:)`` must match a ``FountainDocument`` built from the same ``parseStringAsync`` parse (Phase 9.2 + detached parse path).
+    func testScriptElementStreamFromMatchesParseStringAsyncDocument() async {
+        let source = "\nINT. STREAM - DAY\n\nALICE\nOne.\n\nBOB\nTwo.\n"
+        let script = await FNScript.parseStringAsync(source)
+        let expected = FountainDocument(script: script).elements.map { ($0.kind, $0.text, $0.metadata) }
+        var got: [(ScriptElementKind, String, [String: String])] = []
+        for await el in FNScript.scriptElementStream(from: source) {
+            got.append((el.kind, el.text, el.metadata))
+        }
+        XCTAssertEqual(got.count, expected.count)
+        for i in 0 ..< got.count {
+            XCTAssertEqual(got[i].0, expected[i].0, "index \(i)")
+            XCTAssertEqual(got[i].1, expected[i].1, "index \(i)")
+            XCTAssertEqual(got[i].2, expected[i].2, "index \(i)")
+        }
     }
 
     /// Corpus-scale: async file parse must match sync ``init(file:)`` (Phase 9.1 + distribution smoke).

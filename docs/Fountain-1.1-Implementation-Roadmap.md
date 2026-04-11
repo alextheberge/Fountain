@@ -167,9 +167,9 @@ This document turns [Project Specification- Fountain Swift (Next-Gen).md](../Pro
 
 | Step | Action | Done when |
 |------|--------|-----------|
-| 9.1 | **`parse(_:)` async**: offload full parse to `Task.detached` or custom executor; **synchronous** wrapper documented as “small docs only.” | **Started:** ``FNScript.parseStringAsync`` / ``parseFileAsync`` + `FNScriptAsyncTests` (incl. **Brick & Steel** file parity vs sync) |
-| 9.2 | **Streaming API** (optional): `AsyncSequence` of elements for preview. | **Started:** ``FNScript.scriptElementStream(from:)`` / ``scriptElementStream(fromFile:)`` → `AsyncStream<ScriptElement>` (full parse, then yield); `FountainRoadmapExtensionsTests` field parity vs parallel ``FountainDocument`` (string + **Brick & Steel** file) |
-| 9.3 | **Incremental parse** (advanced): diff by line map; **last** after baseline is solid. | **Started:** [Fountain-Incremental-Parse-Spike.md](Fountain-Incremental-Parse-Spike.md) (go/no-go checklist) |
+| 9.1 | **`parse(_:)` async**: offload full parse to `Task.detached` or custom executor; **synchronous** wrapper documented as “small docs only.” | **Done:** ``FNScript.parseStringAsync`` / ``parseFileAsync`` (``Task.detached``) + class-level doc on sync vs async; `FNScriptAsyncTests` (string parity + **Brick & Steel** file parity vs sync) |
+| 9.2 | **Streaming API** (optional): `AsyncSequence` of elements for preview. | **Done:** ``FNScript.scriptElementStream(from:)`` (uses ``parseStringAsync``) / ``scriptElementStream(fromFile:)`` (``parseFileAsync`` + snapshot) → `AsyncStream<ScriptElement>`; `FountainRoadmapExtensionsTests` + `FNScriptAsyncTests` (stream vs async snapshot) |
+| 9.3 | **Incremental parse** (advanced): diff by line map; **last** after baseline is solid. | **Done (planning):** [Fountain-Incremental-Parse-Spike.md](Fountain-Incremental-Parse-Spike.md) — preconditions / risks / **explicit defer**; no incremental merge in tree until spike proves safe |
 
 ---
 
@@ -209,6 +209,9 @@ Fill as you implement. Link each row to tests.
 | Script metrics (scenes / transitions / page breaks / boneyard / sections / synopses / notes) | 5 | `FountainScriptMetricsTests` | ☑ |
 | Scene numbers + page break | 5 | `package-scene-pagebreak.fountain`, `PackageFixtureCorpusTests` | ☑ |
 | Dual dialogue HTML (grid CSS) | 8 | `package-dual-dialogue.fountain`, `FountainScriptRenderingTests` | ☑ |
+| Async full parse (string + file) | 9 | `FNScriptAsyncTests` | ☑ |
+| `scriptElementStream` preview (full parse, async load) | 9 | `FountainRoadmapExtensionsTests`, `FNScriptAsyncTests` | ☑ |
+| Incremental parse | 9 | [Fountain-Incremental-Parse-Spike.md](Fountain-Incremental-Parse-Spike.md) (deferred) | ☑ |
 
 ---
 
@@ -231,7 +234,7 @@ Fill as you implement. Link each row to tests.
 - [Project Specification- Fountain Swift (Next-Gen).md](../Project%20Specification-%20Fountain%20Swift%20(Next-Gen).md) — vision and constraints  
 - [README](../README.markdown) — current project state  
 - [Phase-1-Xcode-SPM-Integration.md](Phase-1-Xcode-SPM-Integration.md) — optional Xcode sample → local Swift package wiring  
-- [Fountain-Incremental-Parse-Spike.md](Fountain-Incremental-Parse-Spike.md) — Phase 9.3 incremental parse planning  
+- [Fountain-Incremental-Parse-Spike.md](Fountain-Incremental-Parse-Spike.md) — Phase 9.3 incremental parse planning (decision: deferred)  
 - [SPM-Release-Checklist.md](SPM-Release-Checklist.md) — Phase 10.1 tagging / semver  
 - [SwiftWasm-Experimental.md](SwiftWasm-Experimental.md) — Phase 10.3 Wasm notes  
 - [Deprecation-And-Distribution.md](Deprecation-And-Distribution.md) — Phases 0.3 & 1.2  

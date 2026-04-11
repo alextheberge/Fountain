@@ -32,8 +32,10 @@ public enum FNParserType {
 
 /// Loaded Fountain screenplay: title page, body elements, and export helpers.
 ///
-/// By default ``init(string:)`` and ``init(file:)`` use ``FastFountainParser``.
-/// Use `asFountainDocument()` for JSON/tooling via `FountainDocument`.
+/// By default ``init(string:)`` and ``init(file:)`` use ``FastFountainParser`` and run **synchronously** on the caller’s thread.
+/// That is appropriate for **small** documents, unit tests, and tooling that already runs off the main thread.
+/// For **large** screenplays—or any full parse from the main thread—prefer ``parseStringAsync(_:)`` / ``parseFileAsync(_:)``
+/// (Phase 9.1: parse work runs in a detached task). Use ``asFountainDocument()`` for JSON/tooling via `FountainDocument`.
 public class FNScript: CustomStringConvertible {
     public var filename: String?
     public var elements: [FNElement] = []
@@ -163,14 +165,15 @@ extension FNScript {
 // MARK: - Phase 9.1 (async parse)
 
 extension FNScript {
-    /// Parses on a detached task so callers can `await` without blocking the caller’s executor. Prefer synchronous ``init(string:)`` for tiny snippets.
+    /// Parses on a detached task so callers can `await` without blocking the caller’s executor.
+    /// Prefer synchronous ``init(string:)`` only for small snippets or when the caller is already on a background executor.
     public static func parseStringAsync(_ string: String) async -> FNScript {
         await Task.detached {
             FNScript(string: string)
         }.value
     }
 
-    /// Async variant of ``init(file:)`` using the default fast parser.
+    /// Async variant of ``init(file:)`` using the default fast parser; work runs in a detached task (Phase 9.1).
     public static func parseFileAsync(_ path: String) async -> FNScript {
         await Task.detached {
             FNScript(file: path)
@@ -180,10 +183,12 @@ extension FNScript {
     // MARK: - Phase 9.2 (streaming / preview)
 
     /// Async stream of ``ScriptElement`` after a **full** parse (handy for UI previews; not incremental).
+    /// Uses ``parseStringAsync(_:)`` so the heavy parse does not run synchronously on the caller.
     public static func scriptElementStream(from string: String) -> AsyncStream<ScriptElement> {
         AsyncStream { continuation in
             Task {
-                let doc = FountainDocument(script: FNScript(string: string))
+                let script = await parseStringAsync(string)
+                let doc = FountainDocument(script: script)
                 for el in doc.elements {
                     continuation.yield(el)
                 }

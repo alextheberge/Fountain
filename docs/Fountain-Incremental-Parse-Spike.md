@@ -1,6 +1,6 @@
 # Incremental parse spike (Phase 9.3)
 
-**Status:** Planning only — do **not** implement until the fast parser + `FountainDocument` round-trips are stable (see Phase 4.5 tests).
+**Status:** **Planning complete — implementation deferred.** Phase 9.3 is satisfied by recording preconditions, risks, and an explicit **no-ship** decision until a dedicated spike proves merge safety. Production path remains **full parse** via ``FNScript.parseStringAsync`` / ``parseFileAsync`` and preview via ``FNScript.scriptElementStream(from:)``.
 
 ## Goal
 
@@ -8,9 +8,9 @@ Re-parse only changed line ranges during live editing instead of scanning the fu
 
 ## Preconditions (go)
 
-- [ ] Phase 4.5 round-trip tests cover the element kinds you care about for editing.
-- [ ] A **line → element index** map exists (or can be derived) without ambiguity for dialogue blocks.
-- [ ] Clear definition of **invalidation boundaries**: scene headings, blank lines, boneyard open/close, title page.
+- [x] Phase 4.5 round-trip tests cover the element kinds you care about for editing (`Phase45RoundTripTests`, `GoldenDocumentTests`, corpus JSON checks — baseline stable for **full** parse).
+- [ ] A **line → element index** map exists (or can be derived) without ambiguity for dialogue blocks — **not implemented**; blocking for a safe incremental merge.
+- [x] Clear definition of **invalidation boundaries**: scene headings, blank lines, boneyard open/close, title page (documented below; title page still implies full pre-scan for edits near the top).
 
 ## No-go signals
 
@@ -24,6 +24,10 @@ Re-parse only changed line ranges during live editing instead of scanning the fu
 3. Re-run `FastFountainParser` on **synthetic document** = prefix (frozen) + affected window + suffix (frozen), then **merge** element arrays — validate with golden tests before shipping.
 4. If merge error rate > X% on random edits on Big Fish, stop and document “full parse only.”
 
-## Outcome
+## Outcome (recorded)
 
-Record the decision in this file (go / no-go / defer) and link any prototype branch from the roadmap.
+| Decision | Date | Notes |
+|----------|------|--------|
+| **Defer incremental parse** | 2026-04 | No prototype merged. **Phase 9** ships **async full parse** + **streaming snapshot** only. Revisit when a line→element map and invalidation proofs exist; until then, UIs should use ``parseFileAsync`` / ``parseStringAsync`` and optionally ``scriptElementStream`` for progressive display after one full parse. |
+
+Link from [Fountain-1.1-Implementation-Roadmap.md](Fountain-1.1-Implementation-Roadmap.md) Phase 9 table.
