@@ -11,11 +11,16 @@ final class ExportGoldenFixtureTests: XCTestCase {
             .trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
+    private func exportGoldenMinimalFountainText() throws -> String {
+        let bundle = Bundle.module
+        let url = try XCTUnwrap(bundle.url(forResource: "export-golden-minimal", withExtension: "fountain"))
+        return try String(contentsOf: url, encoding: .utf8)
+    }
+
     func testFDXWriterMatchesGoldenMinimalFixture() throws {
         let bundle = Bundle.module
-        let fountainURL = try XCTUnwrap(bundle.url(forResource: "export-golden-minimal", withExtension: "fountain"))
         let goldenURL = try XCTUnwrap(bundle.url(forResource: "export-golden-minimal", withExtension: "fdx"))
-        let fountainText = try String(contentsOf: fountainURL, encoding: .utf8)
+        let fountainText = try exportGoldenMinimalFountainText()
         let expected = try String(contentsOf: goldenURL, encoding: .utf8)
 
         let script = FNScript(string: fountainText)
@@ -28,11 +33,44 @@ final class ExportGoldenFixtureTests: XCTestCase {
         )
     }
 
+    /// Phase **15.3** — **FDX** bytes must not depend on which parser built ``FNScript`` (export fidelity).
+    func testFDXWriterGoldenMinimalFastParserMatchesTokenPipeline() throws {
+        let raw = try exportGoldenMinimalFountainText()
+        let fast = FNScript(string: raw, parser: .fast)
+        let token = FNScript(string: raw, parser: .tokenPipeline)
+        let fdxFast = try normalizeFDX(FountainFDXWriter().render(fast))
+        let fdxToken = try normalizeFDX(FountainFDXWriter().render(token))
+        XCTAssertEqual(fdxFast, fdxToken)
+    }
+
+    /// Phase **15.3** — full **HTML** document must match across parsers (pagination + body depend on element list).
+    func testHTMLWriterGoldenMinimalFastParserMatchesTokenPipeline() throws {
+        let raw = try exportGoldenMinimalFountainText()
+        let fast = FNScript(string: raw, parser: .fast)
+        let token = FNScript(string: raw, parser: .tokenPipeline)
+        let htmlFast = try FountainHTMLWriter().render(fast)
+        let htmlToken = try FountainHTMLWriter().render(token)
+        XCTAssertEqual(htmlFast, htmlToken)
+        XCTAssertTrue(htmlFast.contains("class='scene-heading'"))
+        XCTAssertTrue(htmlFast.contains("INT. GOLDEN TEST - DAY"))
+        XCTAssertTrue(htmlFast.contains("class='transition'"))
+        XCTAssertTrue(htmlFast.contains("FADE OUT."))
+    }
+
+    /// Phase **15.3** — **JSON** interchange semantics (kinds + text + syntax pin) match across parsers; **IDs** may differ.
+    func testFountainDocumentGoldenMinimalFastMatchesTokenPipelineSemantics() throws {
+        let raw = try exportGoldenMinimalFountainText()
+        let fastDoc = FNScript(string: raw, parser: .fast).asFountainDocument()
+        let tokenDoc = FNScript(string: raw, parser: .tokenPipeline).asFountainDocument()
+        XCTAssertEqual(fastDoc.fountainSyntaxVersion, tokenDoc.fountainSyntaxVersion)
+        XCTAssertEqual(fastDoc.elements.map(\.kind), tokenDoc.elements.map(\.kind))
+        XCTAssertEqual(fastDoc.elements.map(\.text), tokenDoc.elements.map(\.text))
+        XCTAssertEqual(fastDoc.elements.map(\.metadata), tokenDoc.elements.map(\.metadata))
+    }
+
     func testPDFWriterEmbedsFixtureBodyText() throws {
         #if canImport(PDFKit) && (os(macOS) || os(iOS) || os(tvOS) || os(visionOS))
-        let bundle = Bundle.module
-        let fountainURL = try XCTUnwrap(bundle.url(forResource: "export-golden-minimal", withExtension: "fountain"))
-        let fountainText = try String(contentsOf: fountainURL, encoding: .utf8)
+        let fountainText = try exportGoldenMinimalFountainText()
         let script = FNScript(string: fountainText)
         let data = try FountainPDFWriter().renderPDFData(script)
 
@@ -48,9 +86,7 @@ final class ExportGoldenFixtureTests: XCTestCase {
     }
 
     func testPDFRenderBase64RoundTripsToSameBytes() throws {
-        let bundle = Bundle.module
-        let fountainURL = try XCTUnwrap(bundle.url(forResource: "export-golden-minimal", withExtension: "fountain"))
-        let fountainText = try String(contentsOf: fountainURL, encoding: .utf8)
+        let fountainText = try exportGoldenMinimalFountainText()
         let script = FNScript(string: fountainText)
         let data = try FountainPDFWriter().renderPDFData(script)
         let roundTrip = try XCTUnwrap(Data(base64Encoded: data.base64EncodedString()))

@@ -10,6 +10,8 @@ import Foundation
 ///
 /// Paragraph ``Type`` values follow Final Draft’s script element names. Unsupported or unknown
 /// Fountain element types are emitted as **General** so content is preserved.
+/// For a given screenplay, output is expected to match across ``FNParserType/fast`` and **``.tokenPipeline``**
+/// when both parsers yield the same element sequence (see **export-golden-minimal** tests in **FountainPackageTests**).
 public struct FountainFDXWriter: FountainScriptRendering, Sendable {
     public init() {}
 
