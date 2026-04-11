@@ -15,6 +15,16 @@ jobs:
         run: swift build
       - name: Swift test
         run: swift test
+      - name: FountainCore sources must not import SwiftUI (Phase 13 boundary)
+        run: |
+          set -euo pipefail
+          cd Fountain
+          for f in *.swift; do
+            if grep -E '^[[:space:]]*import[[:space:]]+SwiftUI[[:space:]]*$' "$f"; then
+              echo "ERROR: $f must not import SwiftUI — keep SwiftUI in FountainUI/ only."
+              exit 1
+            fi
+          done
       - name: Parser core must not use UIKit/AppKit (Phase 10.2)
         run: |
           set -euo pipefail

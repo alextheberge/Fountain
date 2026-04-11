@@ -4,7 +4,8 @@
 //
 // Phase 10.4: **FountainCore** excludes UI pagination/HTML sources; CoreGraphics/CoreText appear only in
 // `FountainPDFWriter.swift` behind `#if canImport` + wasm32 stub (see ADR-008). **FountainHTML** holds
-// AppKit/UIKit. CI in `.github/workflows/swift.yml` greps both boundaries.
+// AppKit/UIKit. **FountainUI** (Phase 13) holds SwiftUI — keep `import SwiftUI` out of `Fountain/*.swift`.
+// CI in `.github/workflows/swift.yml` greps these boundaries.
 import PackageDescription
 
 // Package name must differ from the `Fountain` library target to avoid SPM test-runner build cycles.
@@ -27,6 +28,10 @@ let package = Package(
         .library(
             name: "FountainHTML",
             targets: ["FountainHTML"]
+        ),
+        .library(
+            name: "FountainUI",
+            targets: ["FountainUI"]
         ),
     ],
     targets: [
@@ -99,12 +104,22 @@ let package = Package(
                 "FountainPDFPagination.swift",
             ]
         ),
+        .target(
+            name: "FountainUI",
+            dependencies: ["FountainCore"],
+            path: "FountainUI"
+        ),
         .testTarget(
             name: "FountainPackageTests",
             dependencies: ["Fountain"],
             resources: [
                 .process("Fixtures"),
             ]
+        ),
+        .testTarget(
+            name: "FountainUIPackageTests",
+            dependencies: ["FountainUI", "FountainCore"],
+            path: "Tests/FountainUIPackageTests"
         ),
     ]
 )

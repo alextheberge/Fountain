@@ -11,6 +11,7 @@ The manifest **package name** is **`FountainSwiftPM`** so the umbrella **library
 | **`Fountain`** | One import: parse + HTML + JSON/plain writers. |
 | **`FountainCore`** | Parse, `FountainDocument`, metrics, plaintext/JSON writers — **no** UIKit/AppKit at link time from HTML stack. |
 | **`FountainHTML`** | `FNHTMLScript`, pagination, CSS resource — Apple platforms. |
+| **`FountainUI`** | Native **SwiftUI** preview of **`FountainDocument`** (`FountainView`) — optional; depends on **`FountainCore`** only (not bundled in **`Fountain`** umbrella). |
 
 ## Before tagging
 

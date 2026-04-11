@@ -65,6 +65,7 @@ protocol FountainWriter {
 // - FDXWriter — `FountainFDXWriter` → Final Draft `.fdx` XML (minimal importable structure)
 // - PDFWriter — `FountainPDFWriter` → CoreGraphics/CoreText US Letter PDF (`render` returns base64; `renderPDFData` → Data)
 // - MarkdownWriter — `FountainMarkdownWriter`
+// - SwiftUI — optional `FountainUI` product (`FountainView` over `FountainDocument`); **Phase 13** in [docs/Fountain-1.1-Implementation-Roadmap.md](docs/Fountain-1.1-Implementation-Roadmap.md#phase-13-swiftui-and-fountainui). Keeps **SwiftUI** out of `FountainCore`.
 
 
 5. Performance and Concurrency
