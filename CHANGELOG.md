@@ -15,6 +15,19 @@ A **package** bump (e.g. to **2.0.0**) does **not** by itself change the Fountai
 
 ---
 
+## [2.0.1] — 2026-04-11
+
+**Integrator readiness:** documentation, **README** SwiftPM–first guidance, and automated checks for **export** and **parser** consistency. **No intentional public API removals** (patch). Fountain **markup** target remains **1.1** (`FountainSyntaxPin.targetVersionLabel`).
+
+### Changed
+
+- **Phase 15.2:** single catalog ``FountainPackageBundledFountainFixtures`` for bundled **`.fountain`** files — shared by **Phase 7** inventory, **fast** vs **tokenPipeline** parity, and **Phase 4** ``FountainScriptElementsBuilder`` vs default parser parity; **Phase 7** inventory includes **`export-golden-minimal`**.
+- **Phase 15.3:** ``ExportGoldenFixtureTests`` — **FDX**, **HTML**, and **``FountainDocument``** semantics match across **`.fast`** and **``.tokenPipeline``** for **`export-golden-minimal`**; **`FountainView`** narrow **ImageRenderer** test; **`PackageFixtureCorpusTests`** kind sequence for golden minimal.
+- **Phase 15.4:** [Public-API-Surface.md](docs/Public-API-Surface.md) fixture contributor note; [SPM-Release-Checklist.md](docs/SPM-Release-Checklist.md) step for new fixtures; [docs/Deprecation-And-Distribution.md](docs/Deprecation-And-Distribution.md) / [docs/Fountain-1.1-Gap-Analysis.md](docs/Fountain-1.1-Gap-Analysis.md) **Phase 4.6** migration pointers.
+- **``FountainPackageVersion.librarySemanticVersion``** → **`2.0.1`**.
+
+---
+
 ## [2.0.0] — 2026-04-11
 
 SwiftPM **library** release **2.0.0**. Fountain **markup** target remains **1.1** (`FountainSyntaxPin.targetVersionLabel`).
@@ -34,15 +47,4 @@ SwiftPM **library** release **2.0.0**. Fountain **markup** target remains **1.1*
 
 ## [Unreleased]
 
-**Active epic:** **Phase 15** (polish) — [Fountain-1.1-Implementation-Roadmap.md](docs/Fountain-1.1-Implementation-Roadmap.md#phase-15).
-
-### Planned
-
-- **Phase 15.1** — SPM-native repository: remove **`Fountain.xcodeproj`**, migrate **Sample Project Mac/iOS** and **`FountainTests`** to SwiftPM-native targets (or a documented split repo), refresh CI and [Phase-1-Xcode-SPM-Integration.md](docs/Phase-1-Xcode-SPM-Integration.md) / **README** / **CONTRIBUTING**. *(Carried from the closed Phase 14 scope.)*
-
-### Changed (polish)
-
-- **Phase 15.2:** single catalog ``FountainPackageBundledFountainFixtures`` for all bundled **`.fountain`** fixtures — shared by **Phase 7** inventory and **fast** vs **tokenPipeline** parity tests; **Phase 7** inventory now includes **`export-golden-minimal`**.
-- **Phase 15.3:** **`FountainView`** ImageRenderer regression test for **narrow proposed size** (layout stress); **`PackageFixtureCorpusTests`** asserts **`export-golden-minimal`** parse kinds.
-- **Phase 15.4:** [Public-API-Surface.md](docs/Public-API-Surface.md) contributor note for bundled **`.fountain`** catalog; [SPM-Release-Checklist.md](docs/SPM-Release-Checklist.md) release step for new fixtures.
-- **Phase 15.3 (fidelity):** ``ExportGoldenFixtureTests`` now asserts **`.fast`** vs **``.tokenPipeline``** produce identical **FDX** and **HTML** for **`export-golden-minimal`**, and matching **``FountainDocument``** semantics (kinds, text, metadata, syntax pin); shared fixture text loader for PDF tests.
+**Planned:** **Phase 15.1** — SPM-native repository (remove **`Fountain.xcodeproj`**, migrate samples / **`FountainTests`**) — [Fountain-1.1-Implementation-Roadmap.md](docs/Fountain-1.1-Implementation-Roadmap.md#phase-15).

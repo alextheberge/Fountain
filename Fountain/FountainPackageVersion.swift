@@ -16,6 +16,6 @@ import Foundation
 /// When you cut a release, bump ``librarySemanticVersion`` in lockstep with **[CHANGELOG.md](../CHANGELOG.md)**
 /// and git tags — see [SPM-Release-Checklist.md](../docs/SPM-Release-Checklist.md).
 public enum FountainPackageVersion: Sendable {
-    /// Current **package** SemVer string (e.g. **`"2.0.0"`**).
-    public static let librarySemanticVersion = "2.0.0"
+    /// Current **package** SemVer string (e.g. **`"2.0.1"`**).
+    public static let librarySemanticVersion = "2.0.1"
 }

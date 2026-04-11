@@ -2,10 +2,10 @@ import XCTest
 import Fountain
 
 final class FountainPackageTests: XCTestCase {
-    /// Fountain **markup** generation (e.g. 1.1) must stay distinct from SwiftPM **package** SemVer (e.g. 2.0.0).
+    /// Fountain **markup** generation (e.g. 1.1) must stay distinct from SwiftPM **package** SemVer (e.g. 2.0.1).
     func testPackageSemverIsNotSyntaxVersionPin() {
         XCTAssertEqual(FountainSyntaxPin.targetVersionLabel, "1.1")
-        XCTAssertEqual(FountainPackageVersion.librarySemanticVersion, "2.0.0")
+        XCTAssertEqual(FountainPackageVersion.librarySemanticVersion, "2.0.1")
         XCTAssertNotEqual(
             FountainPackageVersion.librarySemanticVersion,
             FountainSyntaxPin.targetVersionLabel,

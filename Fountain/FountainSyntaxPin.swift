@@ -13,7 +13,7 @@ import Foundation
 ///
 /// ``targetVersionLabel`` (e.g. **`"1.1"`**) is **only** the screenplay **syntax / spec** level. It flows into
 /// interchange payloads as ``FountainDocument/fountainSyntaxVersion``. It is **independent** of the SwiftPM
-/// **library** version — see ``FountainPackageVersion/librarySemanticVersion`` (e.g. **`"2.0.0"`**).
+/// **library** version — see ``FountainPackageVersion/librarySemanticVersion`` (e.g. **`"2.0.1"`**).
 ///
 /// When locking a release for spec compliance, record the **fountain.io** revision (archive date or
 /// changelog URL) in release notes; the live site may drift. Phase 0.4 is satisfied by this URL +

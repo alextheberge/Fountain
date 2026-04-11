@@ -18,7 +18,7 @@ The manifest **package name** is **`FountainSwiftPM`** so the umbrella **library
 1. Run **`swift build`** and **`swift test`** on the oldest supported Xcode / Swift toolchain you claim.
 2. Update **[CHANGELOG.md](../CHANGELOG.md)** (move **Unreleased** into a versioned section for **major** bumps).
 3. If the **Swift package** SemVer changes, bump **`FountainPackageVersion.librarySemanticVersion`** in `Fountain/FountainPackageVersion.swift` to match the tag — **independently** of **`FountainSyntaxPin.targetVersionLabel`** (Fountain **markup** generation, e.g. **1.1**).
-4. Confirm **`FountainSyntaxPin.targetVersionLabel`** matches the **Fountain syntax** level documented in the README (do **not** bump this just because the package went **2.0.0**).
+4. Confirm **`FountainSyntaxPin.targetVersionLabel`** matches the **Fountain syntax** level documented in the README (do **not** bump this when only the **package** SemVer advances, e.g. **2.0.0** → **2.0.1**).
 5. Review **SemVer** impact:
    - **Major:** breaking public API or behavior changes to parse output.
    - **Minor:** additive API, new element metadata keys, new optional writers.
