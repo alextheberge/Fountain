@@ -111,13 +111,15 @@ This document turns [Project Specification- Fountain Swift (Next-Gen).md](../Pro
 
 **Goal:** Page breaks, scene numbers, omissions/notes, boneyard semantics for **metrics** and **export**.
 
+**Status:** **Complete (initial)** — production parse + export paths covered; ``FountainScriptMetrics`` extended for page breaks, boneyard, sections, synopses, and bracket notes; ``FNPaginator`` interaction with explicit page breaks tested; ``ScriptElementKind`` documents note vs boneyard for exporters.
+
 | Step | Action | Done when |
 |------|--------|-----------|
-| 5.1 | **Page breaks** (`===`…): distinct elements; interaction with pagination if you keep `FNPaginator`. | **Started:** `Phase5ProductionFeaturesTests.testPageBreakIsDistinctElement` |
-| 5.2 | **Scene numbers** (`#...#` on slugs): capture in attributes; optional `suppressSceneNumbers` flag. | **Started:** `Phase5ProductionFeaturesTests` (slug capture + `suppressSceneNumbers` export) |
-| 5.3 | **Boneyard** `/* ... */`: strip or isolate for **word-count / timing** estimators; verify **not** counted as dialogue. | **Started:** `FNScript.elementsExcludingBoneyard` + ``FNScript.metrics`` (`FountainScriptMetrics`: words, dialogue words, element counts, scene / transition counts, **character cue / dialogue element counts**) + `FountainScriptMetricsTests` + `package-boneyard-sandwich.fountain` |
-| 5.4 | **Notes** `[[ ... ]]` per 1.1: element type or annotation model; clarify vs boneyard for exporters. | **Started:** `Phase5ProductionFeaturesTests.testBracketNoteAfterBlankLine` (`Comment` element) |
-| 5.5 | **Sections / synopses** (`#`, `##`, `=`): hierarchical depth in attributes. | **Started:** `Phase5ProductionFeaturesTests` (depth + synopsis + Codable metadata) |
+| 5.1 | **Page breaks** (`===`…): distinct elements; interaction with pagination if you keep `FNPaginator`. | **Done:** `Phase5ProductionFeaturesTests` (distinct element + ``FNPaginator`` flush) |
+| 5.2 | **Scene numbers** (`#...#` on slugs): capture in attributes; optional `suppressSceneNumbers` flag. | **Done:** `Phase5ProductionFeaturesTests` (slug capture + `suppressSceneNumbers` export) |
+| 5.3 | **Boneyard** `/* ... */`: strip or isolate for **word-count / timing** estimators; verify **not** counted as dialogue. | **Done:** `FNScript.elementsExcludingBoneyard` + ``FNScript.metrics`` (body slice for words / dialogue / scenes / cues; **`boneyardElementCount`**) + `FountainScriptMetricsTests` + `package-boneyard-sandwich.fountain` |
+| 5.4 | **Notes** `[[ ... ]]` per 1.1: element type or annotation model; clarify vs boneyard for exporters. | **Done:** `Phase5ProductionFeaturesTests` + ``ScriptElementKind`` doc on ``comment`` vs ``boneyard`` + ``FountainScriptRendering`` behavior |
+| 5.5 | **Sections / synopses** (`#`, `##`, `=`): hierarchical depth in attributes. | **Done:** `Phase5ProductionFeaturesTests` + metrics **`sectionHeadingCount`** / **`synopsisCount`** |
 
 ---
 
@@ -202,7 +204,7 @@ Fill as you implement. Link each row to tests.
 | Sections / synopses | 5 | `SectionHeaders.fountain`, `Phase5ProductionFeaturesTests` | ☑ |
 | Brick & Steel sample | 7 | `Brick And Steel.txt`, `BrickSteelCorpusTests` | ☑ |
 | Boneyard between body lines | 5 | `package-boneyard-sandwich.fountain`, `PackageFixtureCorpusTests` | ☑ |
-| Script metrics (scenes / transitions) | 5 | `FountainScriptMetricsTests` | ☑ |
+| Script metrics (scenes / transitions / page breaks / boneyard / sections / synopses / notes) | 5 | `FountainScriptMetricsTests` | ☑ |
 | Scene numbers + page break | 5 | `package-scene-pagebreak.fountain`, `PackageFixtureCorpusTests` | ☑ |
 | Dual dialogue HTML (grid CSS) | 8 | `package-dual-dialogue.fountain`, `FountainScriptRenderingTests` | ☑ |
 

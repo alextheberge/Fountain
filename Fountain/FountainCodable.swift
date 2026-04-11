@@ -18,6 +18,10 @@ public enum FountainMetadataKey: String, Sendable {
 }
 
 /// Stable element kinds for export and AI/tooling pipelines (Fountain 1.1–aligned naming).
+///
+/// **Phase 5.4 — Notes vs boneyard:** ``comment`` maps from `Comment` elements (Fountain `[[ … ]]` notes after a blank line).
+/// ``boneyard`` maps from `Boneyard` elements (`/* … */`). Exporters often hide both from “visible” screenplay HTML;
+/// ``FountainScriptRendering`` emits notes as bracket Fountain and boneyard as HTML comments.
 public enum ScriptElementKind: String, Codable, CaseIterable, Sendable {
     case sceneHeading
     case action

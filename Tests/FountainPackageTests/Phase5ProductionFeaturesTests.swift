@@ -14,6 +14,17 @@ final class Phase5ProductionFeaturesTests: XCTestCase {
         XCTAssertEqual(script.elements[1].elementText.trimmingCharacters(in: .whitespaces), "===")
     }
 
+    /// Phase 5.1 — ``FNPaginator`` treats `Page Break` as a hard flush (new page).
+    func testPaginatorFlushesPageOnExplicitPageBreak() {
+        let script = FNScript(string: "\nINT. STUDIO - DAY\n\nLine before break.\n\n===\n\nLine after break.\n")
+        let paginator = FNPaginator(script: script)
+        XCTAssertGreaterThanOrEqual(paginator.numberOfPages, 2)
+        let hasFlush = (0 ..< paginator.numberOfPages).contains { i in
+            paginator.pageAtIndex(i).contains { $0.elementType == "Page Break" }
+        }
+        XCTAssertTrue(hasFlush)
+    }
+
     // MARK: - 5.2 Scene numbers
 
     func testSceneNumberCapturedOnStandardSlug() {

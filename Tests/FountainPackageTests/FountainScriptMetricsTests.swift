@@ -29,4 +29,15 @@ final class FountainScriptMetricsTests: XCTestCase {
         XCTAssertEqual(m.characterCueCount, 2)
         XCTAssertEqual(m.dialogueElementCount, 2)
     }
+
+    func testProductionStructureCountsPhase5() {
+        let script = FNScript(string: "\n# Act\n\n= beat\n\nINT. X - DAY\n\n===\n\n[[ note ]]\n\n/* z */\n\nVisible.\n")
+        let m = script.metrics
+        XCTAssertEqual(m.sectionHeadingCount, 1)
+        XCTAssertEqual(m.synopsisCount, 1)
+        XCTAssertEqual(m.pageBreakCount, 1)
+        XCTAssertEqual(m.commentNoteCount, 1)
+        XCTAssertEqual(m.boneyardElementCount, 1)
+        XCTAssertEqual(m.sceneHeadingCount, 1)
+    }
 }
