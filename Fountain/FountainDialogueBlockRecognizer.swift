@@ -1,8 +1,8 @@
 //
 //  FountainDialogueBlockRecognizer.swift
 //
-//  Phase 4.1 prototype — line roles inside a dialogue block (character → parenthetical(s) → dialogue).
-//  Does not replace ``FastFountainParser``; use for tests and future tokenizer alignment.
+//  Phase 4.1 — line roles inside a dialogue block (character → parenthetical(s) → dialogue).
+//  Parenthetical detection uses the same leading-`(` rule as ``FastFountainParser``. Does not replace the fast parser.
 //
 
 import Foundation
@@ -30,20 +30,19 @@ public enum FountainDialogueBlockRecognizer {
                 phase = .expectCharacter
                 continue
             }
-            let t = line.trimmingCharacters(in: .whitespaces)
             switch phase {
             case .expectCharacter:
                 out.append(.characterCue)
                 phase = .afterCharacter
             case .afterCharacter:
-                if t.hasPrefix("("), t.hasSuffix(")"), t.count >= 2 {
+                if line.isMatchedByRegex("^\\s*\\(") {
                     out.append(.parenthetical)
                 } else {
                     out.append(.dialogue)
                     phase = .inDialogue
                 }
             case .inDialogue:
-                if t.hasPrefix("("), t.hasSuffix(")"), t.count >= 2 {
+                if line.isMatchedByRegex("^\\s*\\(") {
                     out.append(.parenthetical)
                 } else {
                     out.append(.dialogue)

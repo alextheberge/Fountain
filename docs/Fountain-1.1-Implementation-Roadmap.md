@@ -95,13 +95,15 @@ This document turns [Project Specification- Fountain Swift (Next-Gen).md](../Pro
 
 **Goal:** Tokens → **blocks** (dialogue blocks, dual dialogue, continuity).
 
+**Status:** **Complete (initial)** — dialogue line roles align with ``FastFountainParser`` parenthetical detection; dual-`^` columns match the fast parser and ``FountainScriptElementsBuilder``; token→element assembly is parity-tested against ``FNScript`` on package fixtures. Canonical production parse remains ``FNScript`` / ``FastFountainParser``; the builder proves the Phase 3 tokenizer stream can reconstruct element **types** (and merges) for the same inputs.
+
 | Step | Action | Done when |
 |------|--------|-----------|
-| 4.1 | **Dialogue block** state machine: Character → optional Parenthetical → Dialogue (multi-line rules per 1.1). | **Started:** `FountainDialogueBlockRecognizer` + `DialogueBlockRecognizerTests` |
-| 4.2 | **Dual dialogue** (`^`): pair detection and **column** metadata in `attributes`. | **Started:** `SpecTraceabilityTests` (`dualDialogue` + `dualDialogueColumn` `0`/`1` on ``FNElement`` / ``FountainMetadataKey``) |
-| 4.3 | **Action** merging rules (soft line breaks vs hard breaks) — explicitly match 1.1; **remove reliance on trailing spaces** for forcing; prefer **`!`**. | **Started:** `ActionMergingTests` (soft merge + `!` continuation); prefer `!` over whitespace-only “forced” lines (parser still accepts legacy `^\\s{2,}$` action lines — document only) |
-| 4.4 | **Centered text** `> ... <` vs **forced transition** `>` — disambiguation per spec. | **Started:** `ParseStructureTests` |
-| 4.5 | Emit final **`[FNElement]`** list from token stream. | **Started:** `Phase45RoundTripTests` (JSON `FountainDocument` round-trip + `FountainWriter` re-parse kind sequence) |
+| 4.1 | **Dialogue block** state machine: Character → optional Parenthetical → Dialogue (multi-line rules per 1.1). | **Done:** `FountainDialogueBlockRecognizer` (leading-`(` rule) + `DialogueBlockRecognizerTests` |
+| 4.2 | **Dual dialogue** (`^`): pair detection and **column** metadata in `attributes`. | **Done:** Parser + ``FountainScriptElementsBuilder`` + `SpecTraceabilityTests` / `Phase4ParityTests` (`package-dual-dialogue.fountain`) |
+| 4.3 | **Action** merging rules (soft line breaks vs hard breaks) — explicitly match 1.1; **remove reliance on trailing spaces** for forcing; prefer **`!`**. | **Done:** `ActionMergingTests`; legacy all-whitespace action lines remain accepted in ``FastFountainParser`` (document-only preference for `!`) |
+| 4.4 | **Centered text** `> ... <` vs **forced transition** `>` — disambiguation per spec. | **Done:** `ParseStructureTests` + tokenizer order (`> … TO:` → transition before bare-`>` branch) |
+| 4.5 | Emit final **`[FNElement]`** list from token stream. | **Done:** `FountainScriptElementsBuilder` + `Phase4ParityTests` (element-type parity vs ``FNScript`` on fixtures) + existing `Phase45RoundTripTests` / export round-trip |
 
 ---
 

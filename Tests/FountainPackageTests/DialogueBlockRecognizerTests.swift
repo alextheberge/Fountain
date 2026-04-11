@@ -25,4 +25,13 @@ final class DialogueBlockRecognizerTests: XCTestCase {
             [.characterCue, .dialogue, .blank, .characterCue, .dialogue]
         )
     }
+
+    /// Matches ``FastFountainParser`` parenthetical rule: leading `(` after optional space, not “balanced on one line”.
+    func testParentheticalDetectedWithLeadingParenOnly() {
+        let lines = ["BOB", "  (not closed on same line", "Still parenthetical extension."]
+        XCTAssertEqual(
+            FountainDialogueBlockRecognizer.lineRoles(forNormalizedLines: lines),
+            [.characterCue, .parenthetical, .dialogue]
+        )
+    }
 }

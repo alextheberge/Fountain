@@ -58,6 +58,7 @@ let package = Package(
                 "FountainTitlePagePrescan.swift",
                 "FountainStructuralLineMatchers.swift",
                 "FountainBodyLineTokenizer.swift",
+                "FountainScriptElementsBuilder.swift",
                 "FountainDialogueBlockRecognizer.swift",
                 "FountainScriptRendering.swift",
                 "FountainInlineMarkup.swift",
