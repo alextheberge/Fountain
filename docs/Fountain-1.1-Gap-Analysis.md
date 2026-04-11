@@ -74,6 +74,8 @@ Roadmap Phase 0.2 — how patterns are used today. **Spec-critical** patterns pa
 
 `FastFountainParser` uses **separate** inline patterns (`FastFountainParser.swift`) for title-page heuristics plus line-first body rules; it does **not** use most of the table above directly. **Polish:** ``FountainSceneHeadingMatcher`` uses Swift ``Regex`` on **macOS 13+ / iOS 16+** and `NSRegularExpression` on older deployment targets (Phase 3.5). **Polish:** ``FountainStructuralLineMatchers`` avoids `NSRegularExpression` for page breaks, boneyard shapes, bracket notes, `TO:` transitions, and all-caps cues (string scans).
 
+**Planned migration:** Refactor **`FountainRegexes.swift`** to **Swift 5.7+ `Regex` / `RegexBuilder`** (including **`/…/` literals** where appropriate) and **remove `NSRegularExpression` entirely** from **`String+Regex.swift`** so shared helpers are faster, typed, and free of **`NSString`**/`NSRange` bridging (important for **WebAssembly** and **Linux**). Tracked as **Phase 11** in [Fountain-1.1-Implementation-Roadmap.md](Fountain-1.1-Implementation-Roadmap.md#phase-11-regex-modernization-swift-native).
+
 **Objective-C / `.m` patterns:** Not duplicated in this doc. Anything not in `FountainRegexes.swift` lives under `Fountain/Legacy/` and is out of SwiftPM scope (Phase 0.2 covers the **Swift** inventory).
 
 ---

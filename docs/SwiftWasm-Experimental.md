@@ -6,7 +6,7 @@
 
 - `Package.swift` declares **Apple** platforms (`macOS(.v12)`, `iOS(.v15)`). Cross-compiling with a **Swift SDK for Wasm** is still the supported experiment path; there is no `SupportedPlatform.wasi` entry in this manifest yet.
 - **`FountainHTML`** depends on **UIKit/AppKit** (`Platform.swift`, `FNHTMLScript`, `FNPaginator`) and is **not** Wasm-viable as-is — exclude from Wasm builds (same split as today’s `FountainCore` / `FountainHTML` targets).
-- **`FountainCore`** uses **Foundation** (`NSString`, `NSRegularExpression`, file paths in `FNScript.init(file:)`). A Wasm deployment should treat **file URL** entry points as unsupported or bridge from JS (see below). **PDF:** ``FountainPDFWriter`` is a stub on **wasm32** (CoreGraphics/CoreText are unavailable); use ``FountainFDXWriter`` / plaintext / JSON instead.
+- **`FountainCore`** uses **Foundation** (today: **`NSRegularExpression`** via **`String+Regex.swift`**, plus file paths in `FNScript.init(file:)`). **Roadmap [Phase 11: Regex modernization](Fountain-1.1-Implementation-Roadmap.md#phase-11-regex-modernization-swift-native)** targets **Swift-native `Regex`** for **`FountainRegexes.swift`** and **removing `NSRegularExpression` from `String+Regex.swift`** to reduce bridging cost and improve performance on **Wasm** and any future **Linux** CI. A Wasm deployment should still treat **file URL** entry points as unsupported or bridge from JS (see below). **PDF:** ``FountainPDFWriter`` is a stub on **wasm32** (CoreGraphics/CoreText are unavailable); use ``FountainFDXWriter`` / plaintext / JSON instead.
 
 ## Build script (local or CI)
 
@@ -27,6 +27,7 @@ Uses **`swift:6.0.3-noble`** + **`swiftwasm/setup-swiftwasm@v2`** + the script a
 |---------------|--------|
 | **`FNScript(file:)`** / **`parseFileAsync(_:)`** reading host paths | No traditional POSIX filesystem in the browser; pass **`String`** / async string from JS host. |
 | **`FountainHTML`** (`FNHTMLScript`, `FNPaginator`, `Platform`) | UIKit/AppKit — **omit** from Wasm products. |
+| **`NSRegularExpression` / `NSString` regex bridging** | Temporary; remove per **Phase 11** (`String+Regex.swift`, `FountainRegexes.swift`) — see [roadmap](Fountain-1.1-Implementation-Roadmap.md#phase-11-regex-modernization-swift-native). |
 | **`Task.detached`** (Phase 9.1 async parse) | Verify against your SwiftWasm concurrency/runtime version; prefer cooperative tasks if issues appear. |
 | **Full `swift test` on Wasm** | Not in CI yet; tests assume Apple test bundles and fixtures. |
 

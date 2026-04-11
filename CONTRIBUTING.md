@@ -11,6 +11,8 @@ When you fix a bug in **`FastFountainParser`**, **`FountainBodyLineTokenizer`**,
 3. Update **`docs/Fountain-1.1-Implementation-Roadmap.md`** spec traceability or phase tables if the change affects Fountain 1.1 coverage notes.
 4. Update **`docs/Fountain-1.1-Gap-Analysis.md`** if the change touches the feature matrix, fixture map, or “living baseline” narrative.
 
+**Regex (`FountainRegexes.swift`, `String+Regex.swift`):** Prefer **Swift `Regex` / `RegexBuilder`** for new patterns. Planned migration and acceptance criteria are **Phase 11** in [docs/Fountain-1.1-Implementation-Roadmap.md](docs/Fountain-1.1-Implementation-Roadmap.md#phase-11-regex-modernization-swift-native) (remove **`NSRegularExpression`** from shared `String` helpers; re-check **Wasm** per [docs/SwiftWasm-Experimental.md](docs/SwiftWasm-Experimental.md)).
+
 **FDX export shape:** If you change **`FountainFDXWriter`**, update **`Tests/FountainPackageTests/Fixtures/export-golden-minimal.fdx`** in the same PR so **`ExportGoldenFixtureTests`** stays green unless the change is intentional across the team.
 
 **Third-party test cases:** see [docs/External-Fountain-Test-References.md](docs/External-Fountain-Test-References.md) (Phase 7.3) before copying tests into the repo.

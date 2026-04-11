@@ -87,7 +87,7 @@ This document turns [Project Specification- Fountain Swift (Next-Gen).md](../Pro
 | 3.2 | Implement **line splitter** honoring Fountain newline rules; normalize `\r\n` once at input. | **Done:** `FountainLineEndingNormalizer` / `FountainLineSplitter` + `LineSplitterTests` |
 | 3.3 | Implement **title page pre-scan** (before body) consistent with 1.1; **do not** mis-classify body lines like `FADE IN:` as title keys (regression from current fast parser fixes). | **Done:** `FountainTitlePagePrescan` (used by ``FastFountainParser``) + `TitlePageRegressionTests` + `Phase3TokenizationTests` |
 | 3.4 | Map **forced prefixes** to tokens: `.` scene, `!` action, `@` character, `~` lyrics, `>` transition (non-centered), etc. | **Done:** `FountainForcedPrefixScanner` + `ForcedPrefixScannerTests`; body tokenizer applies full line order including forced lines |
-| 3.5 | Replace fragile regex-only checks with **scanner + Regex hybrid**: use `Regex` for **localized** patterns (e.g. scene heading stem), not whole-document substitution. | **Done:** `FountainSceneHeadingMatcher` + `FountainStructuralLineMatchers` + corpus smoke (`BigFishCorpusTests`); **polish:** Swift `Regex` slug stem on **macOS 13+ / iOS 16+**, `NSRegularExpression` fallback for package floors (macOS 12 / iOS 15) |
+| 3.5 | Replace fragile regex-only checks with **scanner + Regex hybrid**: use `Regex` for **localized** patterns (e.g. scene heading stem), not whole-document substitution. | **Done:** `FountainSceneHeadingMatcher` + `FountainStructuralLineMatchers` + corpus smoke (`BigFishCorpusTests`); **polish:** Swift `Regex` slug stem on **macOS 13+ / iOS 16+**, `NSRegularExpression` fallback for package floors (macOS 12 / iOS 15). **Follow-up:** [Phase 11](#phase-11-regex-modernization-swift-native) removes `NSRegularExpression` from **`String+Regex.swift`** and modernizes **`FountainRegexes.swift`**. |
 
 ---
 
@@ -185,6 +185,21 @@ This document turns [Project Specification- Fountain Swift (Next-Gen).md](../Pro
 
 ---
 
+## Phase 11: Regex modernization (Swift-native)
+
+**Goal:** Express pattern libraries and `String` matching helpers with **Swift 5.7+ `Regex` / `RegexBuilder`** (including **`/…/` literals** where readability wins), and **remove `NSRegularExpression`** from the shared **`String+Regex.swift`** surface so **WebAssembly** and any future **Linux** **`FountainCore`** work avoid **NSString** bridging, gain stricter typing at boundaries, and improve match performance.
+
+**Status:** **Not started** — checklist below.
+
+| Step | Action | Done when |
+|------|--------|-----------|
+| 11.1 | Refactor **`Fountain/FountainRegexes.swift`** to use **`RegexBuilder`** and/or **`Regex` literals** (`/…/`) while preserving semantics for **`FountainParser`**, **`FNHTMLScript`**, and other consumers of those constants. | `- [ ]` All patterns used in-package compile as Swift `Regex` (or thin wrappers); **`swift test`** green; no intentional behavior change on legacy regex pipeline + HTML styling paths (existing tests + spot-check **`FountainInlineMarkup`** / export tests). |
+| 11.2 | Remove **`NSRegularExpression`** from **`Fountain/String+Regex.swift`** completely: reimplement **`isMatchedByRegex`**, **`replacingOccurrencesOfRegex`**, **`nsRangeOfRegex`**, **`stringByMatching`**, **`componentsMatchedByRegex`** using **native Swift `Regex`** (captures, replacements, range reporting in **`String.Index`** space). Migrate **`FountainCore`** call sites as needed. | `- [ ]` File contains **no** `NSRegularExpression` (and no regex-only **`NSRange`**/`NSString` bridging left solely for those helpers); **`swift test`** green on **macOS**; **`FountainSceneHeadingMatcher`** and other dual-path code either use one Swift `Regex` implementation across supported OS versions **or** document a temporary `#available` shim with a dated removal issue; **Wasm:** run **`scripts/build-fountaincore-wasm.sh`** and record outcome in [SwiftWasm-Experimental.md](SwiftWasm-Experimental.md). |
+
+**Note:** Completing **11.2** may allow removing the **`NSRegularExpression`** fallback called out in **Phase 3.5** / **Polish § Phase 3.5** once deployment targets and CI agree on a single Swift `Regex` floor.
+
+---
+
 ## Spec traceability matrix (seed)
 
 Fill as you implement. Link each row to tests.
@@ -218,6 +233,7 @@ Fill as you implement. Link each row to tests.
 | SPM distribution + semver tagging | 10 | [SPM-Release-Checklist.md](SPM-Release-Checklist.md) | ☑ |
 | Parser free of UIKit/AppKit (core sources) | 10 | `.github/workflows/swift.yml` (Phase 10.2 grep) | ☑ |
 | Wasm **FountainCore** (optional CI) | 10 | `scripts/build-fountaincore-wasm.sh`, [SwiftWasm-Experimental.md](SwiftWasm-Experimental.md), `fountaincore-wasm.yml` | ☑ |
+| Swift **`Regex` / `RegexBuilder`** + no `NSRegularExpression` in **`String+Regex.swift`** | 11 | [§ Phase 11](#phase-11-regex-modernization-swift-native); `FountainRegexes.swift`, `String+Regex.swift`, Wasm script + [SwiftWasm-Experimental.md](SwiftWasm-Experimental.md) | ☐ |
 
 ---
 
@@ -231,7 +247,8 @@ Fill as you implement. Link each row to tests.
 6. **Phase 6** — Rich text when core parse is stable.  
 7. **Phase 8** — Writers / ``FountainScriptRendering`` (**initial complete**; FDX/PDF baseline shipped — refine layout vs Final Draft in follow-ups).  
 8. **Phase 9** — Async + perf.  
-9. **Phase 10** — SPM / Wasm distribution and parser–UI boundary (roadmap complete; optional Wasm CI is manual).
+9. **Phase 10** — SPM / Wasm distribution and parser–UI boundary (roadmap complete; optional Wasm CI is manual).  
+10. **Phase 11** — Regex modernization (**`FountainRegexes.swift`**, **`String+Regex.swift`**) when raising the Swift/os floor or doing a focused perf/Wasm pass.
 
 ---
 
@@ -248,6 +265,7 @@ Small, continuous improvements after numbered phases are **initial-complete**:
 | **Phase 9.3** | Incremental parse — [Fountain-Incremental-Parse-Spike.md](Fountain-Incremental-Parse-Spike.md) (deferred until preconditions met). |
 | **Gap analysis** | **Closed (matrix):** feature matrix all **Y** with SPM regression pointers — ``GapMatrixClosureTests`` + prior tests; see [Fountain-1.1-Gap-Analysis.md](Fountain-1.1-Gap-Analysis.md). |
 | **Structural matchers** | **Polish:** ``FountainStructuralLineMatchers`` page break / boneyard / bracket / `TO:` / all-caps cue use **string logic** (no `NSRegularExpression`). |
+| **Phase 11** | **Planned:** Swift **`Regex` / `RegexBuilder`** for **`FountainRegexes.swift`**; remove **`NSRegularExpression`** from **`String+Regex.swift`** — see [§ Phase 11](#phase-11-regex-modernization-swift-native) (Wasm + Linux performance). |
 
 ---
 

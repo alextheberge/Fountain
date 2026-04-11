@@ -47,6 +47,7 @@ Recent maintenance aligned **FastFountainParser** with practical Fountain docume
 
 - **Scene headings**: the scene-heading regular expression uses a character class written so **`NSRegularExpression` compiles** (dot, hyphen, and whitespace are explicit; a buggy class caused every scene line to fall through as action).
 - **Title page**: a lone directive-only line before the first blank line (for example **`FADE IN:`** with nothing after the colon) is **not** treated as a title-page field, so sluglines are not stripped from the body.
+- **Regex modernization (planned):** [docs/Fountain-1.1-Implementation-Roadmap.md](docs/Fountain-1.1-Implementation-Roadmap.md#phase-11-regex-modernization-swift-native) **Phase 11** — migrate **`FountainRegexes.swift`** to Swift **`Regex` / `RegexBuilder`** and remove **`NSRegularExpression`** from **`String+Regex.swift`** for Wasm/Linux performance and typing.
 
 If you rely on the older **FountainParser** / **RegexKitLite** Objective-C path, those files remain under `Fountain/Legacy/`.
 
